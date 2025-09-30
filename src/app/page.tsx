@@ -21,10 +21,10 @@ export default function Home() {
           <div className="container mx-auto px-4 relative">
             <div className="max-w-3xl mx-auto">
               <h1 className="font-headline text-4xl md:text-6xl font-bold text-primary mb-4 animate-fade-in-down">
-                Accelerate Your B.Tech Journey
+                Project Hub
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
-                Discover high-quality, ready-to-use projects to excel in your studies and build an impressive portfolio.
+                complete your final year project now
               </p>
               <div className="flex justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
