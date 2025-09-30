@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2 } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, Lock } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -105,12 +105,19 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 {projectFiles.map((file) => (
                    <div key={file.name} className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50">
                     <span>{file.name}</span>
-                    <Button asChild variant="outline" size="sm" disabled={!isPurchased}>
-                      <a href={isPurchased ? file.url : undefined} download>
-                        <Download className="mr-2 h-4 w-4" />
+                    {isPurchased ? (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={file.url} download>
+                          <Download className="mr-2 h-4 w-4" />
+                          Download
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button variant="outline" size="sm" disabled>
+                        <Lock className="mr-2 h-4 w-4" />
                         Download
-                      </a>
-                    </Button>
+                      </Button>
+                    )}
                   </div>
                 ))}
               </CardContent>
