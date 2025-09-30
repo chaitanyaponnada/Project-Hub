@@ -12,7 +12,8 @@ import { usePathname } from 'next/navigation';
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/#projects", label: "Projects" },
+  { href: "/about", label: "About" },
+  { href: "/projects", label: "Projects" },
   { href: "/admin", label: "Admin", admin: true },
 ];
 
@@ -31,7 +32,10 @@ export function Header() {
         <Link
           key={link.href}
           href={link.href}
-          className="text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1"
+          className={cn(
+            "text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1",
+            pathname === link.href && "text-primary font-semibold"
+          )}
           onClick={() => setMenuOpen(false)}
         >
           {link.admin && <ShieldCheck className="h-4 w-4 text-accent" />}

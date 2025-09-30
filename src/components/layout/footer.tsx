@@ -4,32 +4,56 @@ import { Button } from '@/components/ui/button';
 
 export function Footer() {
   return (
-    <footer className="bg-muted text-muted-foreground mt-auto">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <Code className="h-7 w-7 text-primary" />
-            <span className="font-headline text-xl font-bold text-primary">BTech Central</span>
+    <footer className="bg-muted text-muted-foreground mt-auto border-t">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-1">
+            <Link href="/" className="flex items-center gap-2 mb-4">
+                <Code className="h-7 w-7 text-primary" />
+                <span className="font-headline text-xl font-bold text-primary">BTech Central</span>
+            </Link>
+            <p className="text-sm pr-4">
+              Your central marketplace for high-quality B.Tech projects.
+            </p>
+             <p className="text-xs text-muted-foreground mt-4">
+              © {new Date().getFullYear()} BTech Central. All rights reserved.
+            </p>
           </div>
-          <p className="text-sm text-center md:text-left">
-            © {new Date().getFullYear()} BTech Central. All rights reserved.
-          </p>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="#" aria-label="Twitter">
-                <Twitter className="h-5 w-5" />
-              </Link>
-            </Button>
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="#" aria-label="GitHub">
-                <Github className="h-5 w-5" />
-              </Link>
-            </Button>
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="#" aria-label="LinkedIn">
-                <Linkedin className="h-5 w-5" />
-              </Link>
-            </Button>
+          <div className="col-span-1">
+            <h4 className="font-headline font-semibold text-primary mb-4">Navigate</h4>
+            <ul className="space-y-2">
+              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">About</Link></li>
+              <li><Link href="/projects" className="hover:text-primary transition-colors">Projects</Link></li>
+              <li><Link href="/admin" className="hover:text-primary transition-colors">Admin</Link></li>
+            </ul>
+          </div>
+          <div className="col-span-1">
+            <h4 className="font-headline font-semibold text-primary mb-4">Legal</h4>
+            <ul className="space-y-2">
+              <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+            </ul>
+          </div>
+          <div className="col-span-1">
+            <h4 className="font-headline font-semibold text-primary mb-4">Connect</h4>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="#" aria-label="Twitter">
+                  <Twitter className="h-5 w-5" />
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="#" aria-label="GitHub">
+                  <Github className="h-5 w-5" />
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="#" aria-label="LinkedIn">
+                  <Linkedin className="h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
