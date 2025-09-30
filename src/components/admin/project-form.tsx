@@ -144,7 +144,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
                 name="price"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Price (₹)</FormLabel>
+                    <FormLabel>Price (Rs.)</FormLabel>
                     <FormControl>
                         <Input type="number" step="0.01" placeholder="5000.00" {...field} />
                     </FormControl>

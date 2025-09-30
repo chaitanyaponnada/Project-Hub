@@ -103,7 +103,7 @@ export default function AdminProjectsPage() {
                   <TableCell className="hidden md:table-cell">
                     <Badge variant="secondary">{project.category}</Badge>
                   </TableCell>
-                  <TableCell>₹{project.price.toFixed(2)}</TableCell>
+                  <TableCell>Rs. ₹{project.price.toFixed(2)}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
