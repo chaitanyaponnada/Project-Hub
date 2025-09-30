@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Code, Feather, Zap, Users, Target, Search, Loader2, Send } from "lucide-react";
 import Image from "next/image";
-import { ProjectCard } from "@/components/project-card";
 import { projects, categories, faqs } from "@/lib/placeholder-data";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -160,40 +159,28 @@ export default function Home() {
         <section id="projects" className="py-20">
             <div className="container mx-auto px-4">
               <header className="mb-12 text-center">
-                <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Project Marketplace</h2>
+                <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
                 </p>
               </header>
               
-              <form onSubmit={handleSearch} className="mb-8 flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input name="search" placeholder="Search for projects..." className="pl-10" />
-                </div>
-                <Select name="category" onValueChange={(value) => router.push(`/projects?category=${value}`)}>
-                  <SelectTrigger className="w-full md:w-[200px]">
-                    <SelectValue placeholder="Filter by category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category.toLowerCase().replace(" ", "-")}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button type="submit">Search</Button>
-              </form>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
                 {projects.slice(0, 3).map((project, i) => (
-                  <div key={project.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                    <ProjectCard project={project} isBlurred={!user && !loading} />
+                  <div key={project.id} className="p-2 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                     <Link href={`/projects/${project.id}`}>
+                      <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
+                        <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
+                          <Code className="h-8 w-8" />
+                        </div>
+                        <h3 className="font-headline text-xl font-bold mb-2">{project.title}</h3>
+                        <p className="text-muted-foreground text-sm line-clamp-3">{project.description}</p>
+                      </Card>
+                    </Link>
                   </div>
                 ))}
               </div>
+
               <div className="text-center mt-12">
                   <Button asChild size="lg">
                     <Link href="/projects">View All Projects</Link>
