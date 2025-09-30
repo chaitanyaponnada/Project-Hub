@@ -18,11 +18,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { categories } from "@/lib/placeholder-data";
-import { Wand2, Loader2, Sparkles, Paperclip, PlusCircle, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Paperclip, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { generateProjectTitle } from "@/ai/flows/generate-project-title";
-import { generateProjectDescription } from "@/ai/flows/generate-project-description";
 
 const projectFormSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
@@ -30,7 +27,6 @@ const projectFormSchema = z.object({
   category: z.string({ required_error: "Please select a category." }),
   technologies: z.string().min(3, "Please list at least one technology."),
   price: z.coerce.number().min(0, "Price must be a positive number."),
-  projectDetailsPrompt: z.string().min(10, "Please provide some details for AI generation."),
   files: z.array(z.object({
     name: z.string().min(1, "File name is required."),
     file: z.custom<FileList>().refine(files => files.length > 0, 'A file is required.'),
@@ -40,8 +36,6 @@ const projectFormSchema = z.object({
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export function ProjectForm() {
-  const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
-  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<ProjectFormValues>({
@@ -51,7 +45,6 @@ export function ProjectForm() {
       description: "",
       technologies: "",
       price: 0,
-      projectDetailsPrompt: "",
       files: [{ name: "", file: undefined }],
     },
   });
@@ -60,53 +53,6 @@ export function ProjectForm() {
     control: form.control,
     name: "files"
   });
-
-  const handleGenerateTitle = async () => {
-    const projectDetails = form.getValues("projectDetailsPrompt");
-    if (!projectDetails) {
-      form.setError("projectDetailsPrompt", { message: "Please enter some project details first." });
-      return;
-    }
-    setIsGeneratingTitle(true);
-    try {
-      const result = await generateProjectTitle({ projectDetails });
-      form.setValue("title", result.title, { shouldValidate: true });
-      toast({ title: "Title generated successfully!", variant: "default" });
-    } catch (error) {
-      toast({ title: "Error generating title", description: "Please try again.", variant: "destructive" });
-    } finally {
-      setIsGeneratingTitle(false);
-    }
-  };
-  
-  const handleGenerateDescription = async () => {
-    const values = form.getValues();
-    if (!values.projectDetailsPrompt) {
-        form.setError("projectDetailsPrompt", { message: "Please enter some project details first." });
-        return;
-    }
-    if (!values.title) {
-        form.setError("title", { message: "Please provide a title or generate one first." });
-        return;
-    }
-
-    setIsGeneratingDesc(true);
-    try {
-        const result = await generateProjectDescription({
-            projectTitle: values.title,
-            projectCategory: values.category,
-            projectTechnologies: values.technologies,
-            projectDescriptionPrompt: values.projectDetailsPrompt,
-        });
-        form.setValue("description", result.generatedDescription, { shouldValidate: true });
-        toast({ title: "Description generated successfully!", variant: "default" });
-    } catch (error) {
-        toast({ title: "Error generating description", description: "Please try again.", variant: "destructive" });
-    } finally {
-        setIsGeneratingDesc(false);
-    }
-  };
-
 
   function onSubmit(data: ProjectFormValues) {
     console.log(data);
@@ -121,35 +67,6 @@ export function ProjectForm() {
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="p-4 border rounded-lg bg-muted/30 space-y-4">
-                <FormField
-                control={form.control}
-                name="projectDetailsPrompt"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel className="flex items-center gap-2 text-base font-headline">
-                        <Sparkles className="w-5 h-5 text-accent" /> AI Content Generation
-                    </FormLabel>
-                    <FormDescription>
-                        Provide some details about the project (features, purpose, etc.) and let AI help you write the content.
-                    </FormDescription>
-                    <Textarea placeholder="e.g., A social media dashboard built with React and Firebase. Allows users to connect multiple accounts and view analytics..." {...field} />
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <div className="flex flex-col sm:flex-row gap-2">
-                    <Button type="button" variant="outline" onClick={handleGenerateTitle} disabled={isGeneratingTitle || isGeneratingDesc}>
-                        {isGeneratingTitle ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                        Generate Title
-                    </Button>
-                    <Button type="button" variant="outline" onClick={handleGenerateDescription} disabled={isGeneratingTitle || isGeneratingDesc}>
-                        {isGeneratingDesc ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                        Generate Description
-                    </Button>
-                </div>
-            </div>
-
             <FormField
               control={form.control}
               name="title"
@@ -302,7 +219,7 @@ export function ProjectForm() {
                </FormDescription>
             </div>
             
-            <Button type="submit" disabled={isGeneratingTitle || isGeneratingDesc}>Save Project</Button>
+            <Button type="submit">Save Project</Button>
           </form>
         </Form>
       </CardContent>
