@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "proj1-img1",
+      "description": "Abstract code lines on a dark background",
+      "imageUrl": "https://images.unsplash.com/photo-1594729095022-e2f6d2eece9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29kZSUyMGFic3RyYWN0fGVufDB8fHx8MTc1OTE1NTA3M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "code abstract"
+    },
+    {
+      "id": "proj1-img2",
+      "description": "A developer's desk setup",
+      "imageUrl": "https://images.unsplash.com/photo-1629934266257-69467879efa7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkZXNrJTIwc2V0dXB8ZW58MHx8fHwxNzU5MTcxNDc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "desk setup"
+    },
+    {
+      "id": "proj2-img1",
+      "description": "A mobile application UI design mockup",
+      "imageUrl": "https://images.unsplash.com/photo-1629697776275-725482b486f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhcHAlMjBtb2NrdXB8ZW58MHx8fHwxNzU5MjM1OTU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "app mockup"
+    },
+    {
+      "id": "proj2-img2",
+      "description": "A person using a fitness tracking app",
+      "imageUrl": "https://images.unsplash.com/photo-1532435109783-fdb8a2be0baa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmaXRuZXNzJTIwdHJhY2tlcnxlbnwwfHx8fDE3NTkyMTMyMjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fitness tracker"
+    },
+    {
+      "id": "proj3-img1",
+      "description": "A circuit board with glowing lines",
+      "imageUrl": "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaXJjdWl0JTIwYm9hcmR8ZW58MHx8fHwxNzU5MjM0NjU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "circuit board"
+    },
+    {
+      "id": "proj3-img2",
+      "description": "A camera view with object detection boxes",
+      "imageUrl": "https://images.unsplash.com/photo-1599350686877-382a54114d2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvYmplY3QlMjBkZXRlY3Rpb258ZW58MHx8fHwxNzU5MjM1OTU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "object detection"
+    },
+    {
+      "id": "proj4-img1",
+      "description": "A robot arm in a futuristic setting",
+      "imageUrl": "https://images.unsplash.com/photo-1637002722490-5f8ceed9774c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyb2JvdCUyMGFybXxlbnwwfHx8fDE3NTkxMjkzNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "robot arm"
+    },
+    {
+      "id": "proj4-img2",
+      "description": "A top-down view of a maze",
+      "imageUrl": "https://images.unsplash.com/photo-1611920507986-b41638a9054f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYXplfGVufDB8fHx8MTc1OTIzNTk1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "maze"
+    },
+    {
+      "id": "proj5-img1",
+      "description": "Data visualization with glowing nodes and connections",
+      "imageUrl": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxkYXRhJTIwdmlzdWFsaXphdGlvbnxlbnwwfHx8fDE3NTkyMTg5MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data visualization"
+    },
+    {
+      "id": "proj5-img2",
+      "description": "A business dashboard with charts and graphs",
+      "imageUrl": "https://images.unsplash.com/photo-1608222351212-18fe0ec7b13b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXNoYm9hcmR8ZW58MHx8fHwxNzU5MTg2Mzc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dashboard"
+    },
+    {
+      "id": "proj6-img1",
+      "description": "A 3D render of a complex mechanical part",
+      "imageUrl": "https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHwzZCUyMHJlbmRlcnxlbnwwfHx8fDE3NTkxODMwNTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "3d render"
+    },
+    {
+      "id": "proj6-img2",
+      "description": "A screenshot from a 3D platformer game",
+      "imageUrl": "https://images.unsplash.com/photo-1716817279190-a56b0cb05da1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnYW1lJTIwd29ybGR8ZW58MHx8fHwxNzU5MjM1OTU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "game world"
+    }
+  ]
 }
