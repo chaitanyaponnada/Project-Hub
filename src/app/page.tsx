@@ -165,32 +165,20 @@ export default function Home() {
                   Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
                 </p>
               </header>
-              <form onSubmit={handleSearch} className="mb-8 flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input name="search" placeholder="Search for projects by title or technology..." className="pl-10" />
-                </div>
-                <Select defaultValue="all">
-                  <SelectTrigger className="w-full md:w-[200px]">
-                    <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat.toLowerCase().replace(" ", "-")}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button type="submit">Search</Button>
-              </form>
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {projects.slice(0, 6).map((project, i) => (
+                {projects.slice(0, 3).map((project, i) => (
                   <div key={project.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
                     <ProjectCard project={project} isBlurred={!user && !loading} />
                   </div>
                 ))}
+              </div>
+              <div className="text-center mt-12">
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/projects">
+                    View All Projects <ArrowRight className="ml-2" />
+                  </Link>
+                </Button>
               </div>
             </div>
         </section>
