@@ -68,27 +68,36 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
         </div>
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <div>
-          <Carousel className="w-full">
-            <CarouselContent>
-              {project.imageUrls.map((url, index) => (
-                <CarouselItem key={index}>
-                  <Card className="overflow-hidden">
-                    <div className="aspect-[3/2] relative">
-                      <Image
-                        src={url}
-                        alt={`${project.title} - preview ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={project.imageHints[index]}
-                      />
-                    </div>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
-          </Carousel>
+           <div className="relative">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {project.imageUrls.map((url, index) => (
+                    <CarouselItem key={index}>
+                      <Card className="overflow-hidden">
+                        <div className="aspect-[3/2] relative">
+                          <Image
+                            src={url}
+                            alt={`${project.title} - preview ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            data-ai-hint={project.imageHints[index]}
+                          />
+                        </div>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+              </Carousel>
+              {project.tags && project.tags.length > 0 && (
+                <div className="absolute top-4 left-4 flex gap-2 z-10">
+                    {project.tags.map(tag => (
+                    <Badge key={tag} variant="destructive" className="text-sm shadow-lg">{tag}</Badge>
+                    ))}
+                </div>
+              )}
+           </div>
         </div>
         <div>
           <Badge variant="secondary" className="mb-2">{project.category}</Badge>
@@ -146,7 +155,12 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
           ) : (
             <Card className="bg-background/50">
               <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p className="text-4xl font-bold text-primary">Rs. {project.price}</p>
+                <div className="flex items-baseline gap-2">
+                    <p className="text-4xl font-bold text-primary">Rs. {project.price.toFixed(2)}</p>
+                    {project.originalPrice && (
+                        <p className="text-xl text-muted-foreground line-through">Rs. {project.originalPrice.toFixed(2)}</p>
+                    )}
+                </div>
                 <Button 
                   size="lg"
                   onClick={() => addToCart(project)}

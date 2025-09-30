@@ -29,6 +29,8 @@ const projectFormSchema = z.object({
   category: z.string().min(3, "Please enter a category."),
   technologies: z.string().min(3, "Please list at least one technology."),
   price: z.coerce.number().min(0, "Price must be a positive number."),
+  originalPrice: z.coerce.number().optional(),
+  tags: z.string().optional(),
   files: z.array(z.object({
     name: z.string().min(1, "File name is required."),
     file: z.instanceof(FileList).optional(),
@@ -55,6 +57,8 @@ export function ProjectForm({ project }: ProjectFormProps) {
       category: project?.category || "",
       technologies: project?.technologies.join(", ") || "",
       price: project?.price || 0,
+      originalPrice: project?.originalPrice || undefined,
+      tags: project?.tags?.join(", ") || "",
       files: project ? [{ name: "Project Source Code" }] : [{ name: "", file: undefined }],
     },
   });
@@ -148,11 +152,46 @@ export function ProjectForm({ project }: ProjectFormProps) {
                     <FormControl>
                         <Input type="number" step="0.01" placeholder="5000.00" {...field} />
                     </FormControl>
+                     <FormDescription>The final price for the project.</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}
                 />
             </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <FormField
+                  control={form.control}
+                  name="originalPrice"
+                  render={({ field }) => (
+                      <FormItem>
+                      <FormLabel>Original Price (Optional)</FormLabel>
+                      <FormControl>
+                          <Input type="number" step="0.01" placeholder="6000.00" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                          A strikethrough price to show a discount.
+                      </FormDescription>
+                      <FormMessage />
+                      </FormItem>
+                  )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tags"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Marketing Tags (Optional)</FormLabel>
+                        <FormControl>
+                            <Input placeholder="e.g. Best Seller, New" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                            Comma-separated tags like "Best Seller".
+                        </FormDescription>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+             </div>
 
             <FormField
               control={form.control}

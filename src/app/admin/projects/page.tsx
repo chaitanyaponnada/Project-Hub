@@ -91,6 +91,7 @@ export default function AdminProjectsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
+                <TableHead className="hidden sm:table-cell">Tags</TableHead>
                 <TableHead className="hidden md:table-cell">Category</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -100,10 +101,22 @@ export default function AdminProjectsPage() {
               {filteredProjects.map((project) => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">{project.title}</TableCell>
+                   <TableCell className="hidden sm:table-cell">
+                    <div className="flex gap-1">
+                      {project.tags?.map(tag => <Badge key={tag} variant="destructive">{tag}</Badge>)}
+                    </div>
+                  </TableCell>
                   <TableCell className="hidden md:table-cell">
                     <Badge variant="secondary">{project.category}</Badge>
                   </TableCell>
-                  <TableCell>Rs. {project.price.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <div className="flex items-baseline gap-2">
+                        <span>Rs. {project.price.toFixed(2)}</span>
+                        {project.originalPrice && (
+                            <span className="text-xs text-muted-foreground line-through">Rs. {project.originalPrice.toFixed(2)}</span>
+                        )}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

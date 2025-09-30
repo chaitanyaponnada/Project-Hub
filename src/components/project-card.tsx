@@ -16,7 +16,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
   const cardContent = (
     <>
-      <CardHeader className="p-0">
+      <CardHeader className="p-0 relative">
         <div className="aspect-[3/2] relative w-full overflow-hidden rounded-t-lg">
           <Image
             src={project.imageUrls[0]}
@@ -26,6 +26,13 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
             data-ai-hint={project.imageHints[0]}
           />
         </div>
+        {project.tags && project.tags.length > 0 && (
+          <div className="absolute top-2 left-2 flex gap-1">
+            {project.tags.map(tag => (
+              <Badge key={tag} variant="destructive" className="text-xs shadow-md">{tag}</Badge>
+            ))}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="flex-1 p-4">
         <Badge variant="secondary" className="mb-2 text-xs">{project.category}</Badge>
@@ -37,9 +44,16 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between items-center">
-        <p className="text-xl font-bold text-primary">
-          Rs. {project.price.toFixed(2)}
-        </p>
+        <div className="flex items-baseline gap-2">
+            <p className="text-xl font-bold text-primary">
+            Rs. {project.price.toFixed(2)}
+            </p>
+            {project.originalPrice && (
+                <p className="text-sm text-muted-foreground line-through">
+                Rs. {project.originalPrice.toFixed(2)}
+                </p>
+            )}
+        </div>
         <Button asChild variant="outline" size="sm">
           <span className="flex items-center">
             View <ArrowRight className="ml-1.5 h-4 w-4" />
@@ -72,5 +86,3 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
      </Link>
   );
 }
-
-    

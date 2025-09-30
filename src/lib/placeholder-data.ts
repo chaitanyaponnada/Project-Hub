@@ -1,3 +1,4 @@
+
 export type Project = {
   id: string;
   title: string;
@@ -5,6 +6,8 @@ export type Project = {
   category: string;
   technologies: string[];
   price: number;
+  originalPrice?: number;
+  tags?: string[];
   imageUrls: string[];
   imageHints: string[];
 };
@@ -26,6 +29,8 @@ export const projects: Project[] = [
     category: "Web Development",
     technologies: ["React", "Node.js", "Express", "MongoDB", "Stripe"],
     price: 150,
+    originalPrice: 200,
+    tags: ["Best Seller"],
     imageUrls: ["https://picsum.photos/seed/proj1/600/400", "https://picsum.photos/seed/proj1-2/600/400"],
     imageHints: ["code abstract", "online store"]
   },
@@ -36,6 +41,7 @@ export const projects: Project[] = [
     category: "Mobile App Development",
     technologies: ["React Native", "Firebase", "Redux"],
     price: 120,
+    tags: ["Buying Fast"],
     imageUrls: ["https://picsum.photos/seed/proj5/600/400", "https://picsum.photos/seed/proj5-2/600/400"],
     imageHints: ["app mockup", "fitness tracker"]
   },
@@ -56,6 +62,8 @@ export const projects: Project[] = [
     category: "Robotics",
     technologies: ["Arduino", "C++", "A* Algorithm"],
     price: 180,
+    originalPrice: 220,
+    tags: ["New"],
     imageUrls: ["https://picsum.photos/seed/proj3/600/400", "https://picsum.photos/seed/proj3-2/600/400"],
     imageHints: ["robot arm", "maze"]
   },
@@ -76,6 +84,7 @@ export const projects: Project[] = [
     category: "Game Development",
     technologies: ["Unity", "C#", "Blender"],
     price: 160,
+    tags: ["Best Seller"],
     imageUrls: ["https://picsum.photos/seed/proj6/600/400", "https://picsum.photos/seed/proj6-2/600/400"],
     imageHints: ["3d render", "game world"]
   }
