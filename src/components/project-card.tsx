@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +17,7 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
   const cardContent = (
     <>
       <CardHeader className="p-0">
-        <div className="aspect-[3/2] relative w-full overflow-hidden">
+        <div className="aspect-[3/2] relative w-full overflow-hidden rounded-t-lg">
           <Image
             src={project.imageUrls[0]}
             alt={project.title}
@@ -26,19 +27,19 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
           />
         </div>
       </CardHeader>
-      <CardContent className="flex-1 p-6">
-        <Badge variant="secondary" className="mb-2">{project.category}</Badge>
-        <CardTitle className="font-headline text-xl mb-2">
+      <CardContent className="flex-1 p-4">
+        <Badge variant="secondary" className="mb-2 text-xs">{project.category}</Badge>
+        <CardTitle className="font-headline text-lg mb-2 leading-tight">
           {project.title}
         </CardTitle>
       </CardContent>
-      <CardFooter className="p-6 pt-0 flex justify-between items-center">
-        <p className="text-2xl font-bold text-primary">
+      <CardFooter className="p-4 pt-0 flex justify-between items-center">
+        <p className="text-xl font-bold text-primary">
           Rs. {project.price}
         </p>
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" size="sm">
           <span className="flex items-center">
-            View Details <ArrowRight className="ml-2 h-4 w-4" />
+            View <ArrowRight className="ml-1.5 h-4 w-4" />
           </span>
         </Button>
       </CardFooter>
@@ -48,12 +49,12 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
   if (isBlurred) {
     return (
       <Link href="/login">
-        <Card className="relative flex flex-col overflow-hidden transition-all duration-300">
+        <Card className="relative group flex flex-col overflow-hidden transition-all duration-300 h-full">
           <div className="blur-md pointer-events-none">{cardContent}</div>
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 text-white p-4">
-            <EyeOff className="h-12 w-12 mb-4" />
-            <h3 className="font-headline text-xl font-bold text-center">Login to View Project</h3>
-            <p className="text-center text-sm">You must be logged in to see details and purchase.</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 text-white p-4 text-center">
+            <EyeOff className="h-10 w-10 mb-3" />
+            <h3 className="font-headline text-lg font-bold">Login to View</h3>
+            <p className="text-xs">Access details and purchase.</p>
           </div>
         </Card>
       </Link>
@@ -62,7 +63,7 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
 
   return (
      <Link href={`/projects/${project.id}`}>
-        <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full">
+        <Card className="group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 h-full">
             {cardContent}
         </Card>
      </Link>
