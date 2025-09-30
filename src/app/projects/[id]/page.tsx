@@ -10,18 +10,27 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ShoppingCart, CheckCircle, Download, Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const project = projects.find((p) => p.id === id);
-  const { addToCart, cartItems, purchasedItems } = useCart();
-  const { user, loading } = useAuth();
+  const [id, setId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    setId(params.id);
+  }, [params.id]);
+
+  const project = useMemo(() => {
+    if (!id) return null;
+    return projects.find((p) => p.id === id) || null;
+  }, [id]);
+  
+  const { addToCart, cartItems, purchasedItems } = useCart();
+  const { user, loading } = useAuth();
+  
+  useEffect(() => {
+    if (!loading && !user && id) {
       router.push('/login?redirect=/projects/' + id);
     }
   }, [user, loading, router, id]);
@@ -30,11 +39,11 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
   const isPurchased = useMemo(() => purchasedItems.some(item => item.id === project?.id), [purchasedItems, project]);
 
-  if (!project) {
+  if (!project && id) {
     notFound();
   }
 
-  if (loading || !user) {
+  if (loading || !user || !project) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
