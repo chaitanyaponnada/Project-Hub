@@ -9,7 +9,6 @@ import { usePathname } from 'next/navigation';
 export function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());
   const pathname = usePathname();
-  const router = usePathname();
 
   useEffect(() => {
     setYear(new Date().getFullYear());
@@ -23,7 +22,7 @@ export function Footer() {
       document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
     } else if (href.includes("#")) {
         e.preventDefault();
-        router.push(`/${href.split("#")[1]}`);
+        window.location.href = `/${href.split("#")[1]}`;
     }
   };
 
@@ -53,7 +52,6 @@ export function Footer() {
               <li><Link href="#home" onClick={handleScroll} className="hover:text-primary transition-colors">Home</Link></li>
               <li><Link href="#about" onClick={handleScroll} className="hover:text-primary transition-colors">About</Link></li>
               <li><Link href="#projects" onClick={handleScroll} className="hover:text-primary transition-colors">Projects</Link></li>
-              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Admin Login</Link></li>
             </ul>
           </div>
           <div className="col-span-1">
@@ -61,6 +59,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+               <li><Link href="/admin/login" className="hover:text-primary transition-colors">Admin Login</Link></li>
             </ul>
           </div>
           <div className="col-span-1">
