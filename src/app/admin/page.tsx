@@ -36,7 +36,7 @@ export default function AdminDashboardPage() {
                 axisLine={false}
               />
               <YAxis
-                tickFormatter={(value) => `₹${Number(value) / 1000}k`}
+                tickFormatter={(value) => `Rs. ${Number(value) / 1000}k`}
               />
               <ChartTooltip
                 cursor={false}

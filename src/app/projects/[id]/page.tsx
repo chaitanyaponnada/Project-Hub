@@ -123,7 +123,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
           ) : (
             <Card className="bg-background/50">
               <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p className="text-4xl font-bold text-primary">Rs. ₹{project.price}</p>
+                <p className="text-4xl font-bold text-primary">Rs. {project.price}</p>
                 <Button 
                   size="lg"
                   onClick={() => addToCart(project)}

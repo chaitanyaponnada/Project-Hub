@@ -46,7 +46,7 @@ export default function AdminUsersPage() {
                   </TableCell>
                   <TableCell className="hidden md:table-cell">{user.joined}</TableCell>
                   <TableCell className="hidden sm:table-cell">{user.orders}</TableCell>
-                  <TableCell className="text-right font-mono">Rs. ₹{user.totalSpent.toFixed(2)}</TableCell>
+                  <TableCell className="text-right font-mono">Rs. {user.totalSpent.toFixed(2)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -34,7 +34,7 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
       </CardContent>
       <CardFooter className="p-6 pt-0 flex justify-between items-center">
         <p className="text-2xl font-bold text-primary">
-          Rs. ₹{project.price}
+          Rs. {project.price}
         </p>
         <Button asChild variant="outline">
           <span className="flex items-center">
