@@ -32,10 +32,13 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
         <CardTitle className="font-headline text-lg mb-2 leading-tight">
           {project.title}
         </CardTitle>
+        <p className="text-muted-foreground text-sm line-clamp-3">
+          {project.description}
+        </p>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between items-center">
         <p className="text-xl font-bold text-primary">
-          Rs. {project.price}
+          Rs. {project.price.toFixed(2)}
         </p>
         <Button asChild variant="outline" size="sm">
           <span className="flex items-center">
@@ -69,3 +72,5 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
      </Link>
   );
 }
+
+    
