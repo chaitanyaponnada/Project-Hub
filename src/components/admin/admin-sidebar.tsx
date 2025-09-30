@@ -1,8 +1,9 @@
+
 "use client"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Code, LayoutDashboard, Package, Users, LogOut, PanelLeft } from "lucide-react"
+import { Code, LayoutDashboard, Package, Users, LogOut, PanelLeft, MessageSquare } from "lucide-react"
 import {
   Sidebar,
   SidebarHeader,
@@ -18,6 +19,7 @@ const menuItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/projects", label: "Projects", icon: Package },
   { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/inquiries", label: "Inquiries", icon: MessageSquare },
 ]
 
 export function AdminSidebar() {

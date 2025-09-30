@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -52,6 +53,8 @@ export function Footer() {
               <li><Link href="#home" onClick={handleScroll} className="hover:text-primary transition-colors">Home</Link></li>
               <li><Link href="#about" onClick={handleScroll} className="hover:text-primary transition-colors">About</Link></li>
               <li><Link href="#projects" onClick={handleScroll} className="hover:text-primary transition-colors">Projects</Link></li>
+              <li><Link href="#faq" onClick={handleScroll} className="hover:text-primary transition-colors">FAQ</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
             </ul>
           </div>
           <div className="col-span-1">

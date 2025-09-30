@@ -103,3 +103,28 @@ export const salesData = [
   { name: "Nov", revenue: 9000 },
   { name: "Dec", revenue: 8500 },
 ];
+
+export const faqs = [
+  {
+    question: "What do I get when I purchase a project?",
+    answer: "You receive a full source code package, detailed documentation, and any necessary assets. The project is ready for you to deploy or customize further."
+  },
+  {
+    question: "Can I get a refund if I'm not satisfied?",
+    answer: "Due to the digital nature of our products, all sales are final. We encourage you to review the project details and demos carefully before purchasing. If you encounter a technical issue, our support team is happy to help."
+  },
+  {
+    question: "Are the projects beginner-friendly?",
+    answer: "Our projects range from beginner to advanced levels. Each project's description includes the technologies used and its complexity, helping you choose one that matches your skill level."
+  },
+  {
+    question: "How are the projects licensed?",
+    answer: "All projects are licensed for personal and educational use. You can use them in your portfolio, for learning, or as a foundation for your own applications. Redistribution or commercial resale is not permitted."
+  }
+];
+
+export const inquiries = [
+    { id: '1', name: 'John Doe', email: 'john.doe@example.com', message: 'I have a question about the e-commerce platform. Can it be integrated with other payment gateways?', receivedAt: '2024-07-28' },
+    { id: '2', name: 'Jane Smith', email: 'jane.smith@example.com', message: 'I am interested in the fitness tracker app but need to know if it supports watchOS.', receivedAt: '2024-07-27' },
+    { id: '3', name: 'Peter Jones', email: 'peter.jones@example.com', message: 'The object detection system is impressive. Is it possible to get a consultation on customizing the model?', receivedAt: '2024-07-27' },
+];

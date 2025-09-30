@@ -7,10 +7,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Code, Feather, Zap, Users, Target, Search } from "lucide-react";
 import Image from "next/image";
 import { ProjectCard } from "@/components/project-card";
-import { projects, categories } from "@/lib/placeholder-data";
+import { projects, categories, faqs } from "@/lib/placeholder-data";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -191,6 +192,28 @@ export default function Home() {
                 </div>
               </div>
             </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section id="faq" className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
+              <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
+            </div>
+            <div className="max-w-3xl mx-auto">
+              <Accordion type="single" collapsible className="w-full">
+                {faqs.map((faq, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="font-semibold text-lg hover:no-underline text-left">{faq.question}</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground text-base">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
         </section>
 
       </main>
