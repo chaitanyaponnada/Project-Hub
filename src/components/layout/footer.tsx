@@ -1,11 +1,17 @@
-
 "use client";
 
 import Link from 'next/link';
 import { Code, Github, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 
 export function Footer() {
+  const [year, setYear] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     const href = e.currentTarget.href;
     if (href.includes("#")) {
@@ -28,7 +34,7 @@ export function Footer() {
               Your central marketplace for high-quality projects.
             </p>
              <p className="text-xs text-muted-foreground mt-4">
-              © {new Date().getFullYear()} Project Hub. All rights reserved.
+              © {year} Project Hub. All rights reserved.
             </p>
           </div>
           <div className="col-span-1">
