@@ -29,6 +29,7 @@ import { useInquiry } from "@/hooks/use-inquiry";
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/layout/footer";
 import { ProjectCard } from "@/components/project-card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -166,13 +167,26 @@ export default function Home() {
                 </p>
               </header>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {projects.slice(0, 3).map((project, i) => (
-                  <div key={project.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                    <ProjectCard project={project} isBlurred={!user && !loading} />
-                  </div>
-                ))}
-              </div>
+              <Carousel 
+                opts={{
+                    align: "start",
+                    loop: true,
+                }}
+                className="w-full max-w-5xl mx-auto"
+              >
+                <CarouselContent>
+                    {projects.slice(0, 5).map((project, i) => (
+                    <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
+                        <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                            <ProjectCard project={project} isBlurred={!user && !loading} />
+                        </div>
+                    </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+              
               <div className="text-center mt-12">
                 <Button asChild size="lg" variant="outline">
                   <Link href="/projects">
@@ -329,4 +343,5 @@ export default function Home() {
   );
 }
 
+    
     
