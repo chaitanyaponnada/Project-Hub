@@ -36,7 +36,7 @@ export const projects: Project[] = [
     imageUrls: ["https://picsum.photos/seed/proj1/600/400", "https://picsum.photos/seed/proj1-2/600/400"],
     imageHints: ["code abstract", "online store"],
     includedFiles: ["Full Source Code (ZIP)", "Deployment Guide (PDF)", "API Documentation"],
-    downloadUrl: "#",
+    downloadUrl: "/sample-project.zip",
   },
   {
     id: "2",
@@ -49,7 +49,7 @@ export const projects: Project[] = [
     imageUrls: ["https://picsum.photos/seed/proj5/600/400", "https://picsum.photos/seed/proj5-2/600/400"],
     imageHints: ["app mockup", "fitness tracker"],
     includedFiles: ["React Native Source Code", "Firebase Setup Guide", "UI Component Library"],
-    downloadUrl: "#",
+    downloadUrl: "/sample-project.zip",
   },
   {
     id: "3",
@@ -61,7 +61,7 @@ export const projects: Project[] = [
     imageUrls: ["https://picsum.photos/seed/proj2/600/400", "https://picsum.photos/seed/proj2-2/600/400"],
     imageHints: ["circuit board", "object detection"],
     includedFiles: ["Python Scripts", "Jupyter Notebooks", "Trained Model File (.h5)"],
-    downloadUrl: "#",
+    downloadUrl: "/sample-project.zip",
   },
   {
     id: "4",
@@ -75,7 +75,7 @@ export const projects: Project[] = [
     imageUrls: ["https://picsum.photos/seed/proj3/600/400", "https://picsum.photos/seed/proj3-2/600/400"],
     imageHints: ["robot arm", "maze"],
     includedFiles: ["Arduino Code (.ino)", "Circuit Diagrams", "3D Printable Parts (.stl)"],
-    downloadUrl: "#",
+    downloadUrl: "/sample-project.zip",
   },
   {
     id: "5",
@@ -87,7 +87,7 @@ export const projects: Project[] = [
     imageUrls: ["https://picsum.photos/seed/proj4/600/400", "https://picsum.photos/seed/proj4-2/600/400"],
     imageHints: ["data visualization", "dashboard"],
     includedFiles: ["React/Next.js Source Code", "Sample Datasets (CSV)", "User Manual"],
-    downloadUrl: "#",
+    downloadUrl: "/sample-project.zip",
   },
   {
     id: "6",
@@ -100,7 +100,7 @@ export const projects: Project[] = [
     imageUrls: ["https://picsum.photos/seed/proj6/600/400", "https://picsum.photos/seed/proj6-2/600/400"],
     imageHints: ["3d render", "game world"],
     includedFiles: ["Unity Project Folder", "Game Design Document (GDD)", "Original 3D Models (.blend)"],
-    downloadUrl: "#",
+    downloadUrl: "/sample-project.zip",
   }
 ];
 

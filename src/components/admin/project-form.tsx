@@ -66,15 +66,31 @@ export function ProjectForm({ project }: ProjectFormProps) {
     setIsLoading(true);
     console.log(data);
 
-    // In a real app, you would handle file upload here.
+    // In a real app, you would handle file upload here to a cloud storage
+    // and get a downloadable URL.
     if (!isEditMode && (!data.projectFile || data.projectFile.length === 0)) {
-        form.setError("projectFile", { message: "Project file is required." });
+        form.setError("projectFile", { message: "Project file is required for new projects." });
         setIsLoading(false);
         return;
     }
 
-    // Simulate API call
+    // Simulate API call for file upload and data saving
     await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // In a real app, you'd get the new project's ID and URL from the backend.
+    // For now, we simulate this.
+    const newProject = {
+      ...data,
+      id: isEditMode ? project.id : Date.now().toString(),
+      imageUrls: project?.imageUrls || ['https://picsum.photos/seed/new/600/400'],
+      imageHints: project?.imageHints || ['code'],
+      downloadUrl: project?.downloadUrl || '/sample-project.zip', // Placeholder URL
+      technologies: data.technologies.split(',').map(t => t.trim()),
+      tags: data.tags?.split(',').map(t => t.trim()) || [],
+      includedFiles: data.includedFiles.split('\n'),
+    };
+
+    console.log("Saving project:", newProject);
 
     toast({
       title: isEditMode ? "Project Updated!" : "Project Submitted!",
@@ -83,10 +99,10 @@ export function ProjectForm({ project }: ProjectFormProps) {
     
     setIsLoading(false);
     
-    // In a real app, you would have API calls here to save/update the data.
-    // Since we're using placeholder data, we'll just navigate back.
+    // This navigation simulates a successful form submission. In a real app,
+    // you would likely invalidate a cache or refetch data.
     router.push('/admin/projects');
-    router.refresh(); // To reflect changes if data was from a real backend
+    router.refresh(); 
   }
 
   return (
@@ -246,11 +262,10 @@ export function ProjectForm({ project }: ProjectFormProps) {
                           type="file" 
                           accept=".zip,.rar,.tar"
                           onChange={(e) => onChange(e.target.files)}
-                          {...fieldProps}
                         />
                       </FormControl>
                       <FormDescription>
-                        Upload the single ZIP or RAR file for the user to download.
+                        {isEditMode ? "Upload a new file to replace the existing one." : "Upload the single ZIP or RAR file for the user to download."}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
