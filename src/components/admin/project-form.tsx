@@ -16,15 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { categories } from "@/lib/placeholder-data";
 import { Paperclip, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const projectFormSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
   description: z.string().min(20, "Description must be at least 20 characters."),
-  category: z.string({ required_error: "Please select a category." }),
+  category: z.string().min(3, "Please enter a category."),
   technologies: z.string().min(3, "Please list at least one technology."),
   price: z.coerce.number().min(0, "Price must be a positive number."),
   files: z.array(z.object({
@@ -43,6 +41,7 @@ export function ProjectForm() {
     defaultValues: {
       title: "",
       description: "",
+      category: "",
       technologies: "",
       price: 0,
       files: [{ name: "", file: undefined }],
@@ -105,20 +104,14 @@ export function ProjectForm() {
                 name="category"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select a project category" />
-                        </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                        {categories.map((cat) => (
-                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                        ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
+                      <FormLabel>Category</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Web Development" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Enter a new or existing category.
+                      </FormDescription>
+                      <FormMessage />
                     </FormItem>
                 )}
                 />
@@ -128,9 +121,9 @@ export function ProjectForm() {
                 name="price"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Price ($)</FormLabel>
+                    <FormLabel>Price (₹)</FormLabel>
                     <FormControl>
-                        <Input type="number" placeholder="100.00" {...field} />
+                        <Input type="number" placeholder="5000.00" {...field} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -183,7 +176,7 @@ export function ProjectForm() {
                             <FormItem>
                               <FormLabel>File</FormLabel>
                               <FormControl>
-                                <Input type="file" onChange={(e) => onChange(e.target.files)} {...fieldProps} />
+                                <Input type="file" onChange={(e) => onChange(e.target.files)} {...fieldProps} required />
                               </FormControl>
                               <FormMessage />
                             </FormItem>

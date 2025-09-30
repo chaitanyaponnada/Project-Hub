@@ -31,7 +31,7 @@ export default function CartPage() {
                 <div className="flex-1">
                   <h2 className="font-headline font-semibold text-lg">{item.title}</h2>
                   <p className="text-sm text-muted-foreground">{item.category}</p>
-                  <p className="text-lg font-bold text-primary mt-2">${item.price}</p>
+                  <p className="text-lg font-bold text-primary mt-2">₹{item.price}</p>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)} aria-label={`Remove ${item.title} from cart`}>
                   <Trash2 className="h-5 w-5 text-destructive" />
@@ -47,7 +47,7 @@ export default function CartPage() {
             <CardContent className="space-y-4">
               <div className="flex justify-between">
                 <span>Subtotal ({cartCount} {cartCount === 1 ? 'item' : 'items'})</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>₹{totalPrice.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Taxes</span>
@@ -56,7 +56,7 @@ export default function CartPage() {
               <Separator />
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>₹{totalPrice.toFixed(2)}</span>
               </div>
             </CardContent>
             <CardFooter>

@@ -36,7 +36,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       </CardContent>
       <CardFooter className="p-6 pt-0 flex justify-between items-center">
         <p className="text-2xl font-bold text-primary">
-          ${project.price}
+          ₹{project.price}
         </p>
         <Button asChild variant="outline">
           <Link href={`/projects/${project.id}`}>
