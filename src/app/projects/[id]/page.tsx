@@ -1,3 +1,4 @@
+
 "use client";
 
 import { notFound, useRouter } from "next/navigation";
@@ -14,18 +15,19 @@ import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const project = projects.find((p) => p.id === params.id);
-  const { addToCart, cartItems } = useCart();
+  const { addToCart, cartItems, purchasedItems } = useCart();
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push('/login?redirect=/projects/' + params.id);
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, params.id]);
 
 
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
+  const isPurchased = useMemo(() => purchasedItems.some(item => item.id === project?.id), [purchasedItems, project]);
 
   if (!project) {
     notFound();
@@ -93,7 +95,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 {projectFiles.map((file) => (
                    <div key={file.name} className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50">
                     <span>{file.name}</span>
-                    <Button asChild variant="outline" size="sm">
+                    <Button asChild variant="outline" size="sm" disabled={!isPurchased}>
                       <a href={file.url} download>
                         <Download className="mr-2 h-4 w-4" />
                         Download
@@ -105,29 +107,31 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </Card>
           </div>
           
-          <Card className="bg-background/50">
-            <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <p className="text-4xl font-bold text-primary">₹{project.price}</p>
-              <Button 
-                size="lg"
-                onClick={() => addToCart(project)}
-                disabled={isInCart}
-                className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground"
-              >
-                {isInCart ? (
-                  <>
-                    <CheckCircle className="mr-2 h-5 w-5" />
-                    Added to Cart
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="mr-2 h-5 w-5" />
-                    Add to Cart
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
+          {!isPurchased && (
+            <Card className="bg-background/50">
+              <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p className="text-4xl font-bold text-primary">₹{project.price}</p>
+                <Button 
+                  size="lg"
+                  onClick={() => addToCart(project)}
+                  disabled={isInCart}
+                  className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground"
+                >
+                  {isInCart ? (
+                    <>
+                      <CheckCircle className="mr-2 h-5 w-5" />
+                      Added to Cart
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="mr-2 h-5 w-5" />
+                      Add to Cart
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

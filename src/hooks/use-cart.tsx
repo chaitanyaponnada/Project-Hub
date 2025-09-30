@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Project } from '@/lib/placeholder-data';
@@ -10,9 +11,11 @@ interface CartItem extends Project {
 
 interface CartContextType {
   cartItems: CartItem[];
+  purchasedItems: CartItem[];
   addToCart: (project: Project) => void;
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
+  addPurchasedItems: (items: CartItem[]) => void;
   cartCount: number;
   totalPrice: number;
 }
@@ -21,6 +24,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const { toast } = useToast();
 
   const addToCart = (project: Project) => {
@@ -49,13 +53,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = () => {
     setCartItems([]);
   };
+
+  const addPurchasedItems = (items: CartItem[]) => {
+    setPurchasedItems(prevPurchased => [...prevPurchased, ...items]);
+  };
   
   const cartCount = cartItems.length;
 
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, cartCount, totalPrice }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, removeFromCart, clearCart, addPurchasedItems, cartCount, totalPrice }}>
       {children}
     </CartContext.Provider>
   );
