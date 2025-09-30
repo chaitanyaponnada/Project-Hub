@@ -42,7 +42,7 @@ export default function Home() {
         <section className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose BTech Central?</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8 text-center">

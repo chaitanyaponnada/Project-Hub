@@ -10,13 +10,13 @@ export function Footer() {
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
                 <Code className="h-7 w-7 text-primary" />
-                <span className="font-headline text-xl font-bold text-primary">BTech Central</span>
+                <span className="font-headline text-xl font-bold text-primary">Project Hub</span>
             </Link>
             <p className="text-sm pr-4">
               Your central marketplace for high-quality B.Tech projects.
             </p>
              <p className="text-xs text-muted-foreground mt-4">
-              © {new Date().getFullYear()} BTech Central. All rights reserved.
+              © {new Date().getFullYear()} Project Hub. All rights reserved.
             </p>
           </div>
           <div className="col-span-1">

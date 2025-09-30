@@ -28,7 +28,7 @@ export function AdminSidebar() {
       <SidebarHeader>
         <div className="flex items-center gap-2">
           <Code className="size-7 text-primary" />
-          <span className="font-headline text-lg font-bold text-primary">BTech Central</span>
+          <span className="font-headline text-lg font-bold text-primary">Project Hub</span>
           <div className="ml-auto">
              <SidebarTrigger />
           </div>

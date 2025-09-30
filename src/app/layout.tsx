@@ -7,8 +7,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/hooks/use-cart';
 
 export const metadata: Metadata = {
-  title: 'BTech Central',
-  description: 'Your central marketplace for B.Tech projects.',
+  title: 'Project Hub',
+  description: 'Your central marketplace for high-quality projects.',
 };
 
 export default function RootLayout({

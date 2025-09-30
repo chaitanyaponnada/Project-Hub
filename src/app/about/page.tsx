@@ -8,7 +8,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="py-24 md:py-32 text-center bg-muted/30">
         <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4">About BTech Central</h1>
+          <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4">About Project Hub</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             We are dedicated to empowering the next generation of engineers and developers by providing high-quality, real-world project examples.
           </p>
@@ -22,7 +22,7 @@ export default function AboutPage() {
             <div className="animate-fade-in-right">
               <h2 className="font-headline text-3xl font-bold text-primary mb-4">Our Mission</h2>
               <p className="text-muted-foreground text-lg mb-6">
-                Our mission is to bridge the gap between academic learning and practical application. We believe that hands-on experience is crucial for success in the tech industry. BTech Central provides a curated marketplace of projects to help students learn, grow, and build a portfolio that stands out.
+                Our mission is to bridge the gap between academic learning and practical application. We believe that hands-on experience is crucial for success in the tech industry. Project Hub provides a curated marketplace of projects to help students learn, grow, and build a portfolio that stands out.
               </p>
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-accent text-accent-foreground rounded-full mt-1">

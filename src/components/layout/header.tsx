@@ -50,7 +50,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Code className="h-7 w-7 text-primary" />
-          <span className="font-headline text-xl font-bold text-primary">BTech Central</span>
+          <span className="font-headline text-xl font-bold text-primary">Project Hub</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
@@ -89,7 +89,7 @@ export function Header() {
                 <div className="flex items-center justify-between border-b pb-4">
                     <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
                         <Code className="h-7 w-7 text-primary" />
-                        <span className="font-headline text-xl font-bold text-primary">BTech Central</span>
+                        <span className="font-headline text-xl font-bold text-primary">Project Hub</span>
                     </Link>
                     <Button variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
                         <X className="h-6 w-6" />
