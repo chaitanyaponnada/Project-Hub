@@ -18,6 +18,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Paperclip, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import type { Project } from "@/lib/placeholder-data";
+import { useRouter } from "next/navigation";
 
 const projectFormSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
@@ -27,24 +29,33 @@ const projectFormSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number."),
   files: z.array(z.object({
     name: z.string().min(1, "File name is required."),
-    file: z.custom<FileList>().refine(files => files.length > 0, 'A file is required.'),
+    // Make file optional for edit mode
+    file: z.custom<FileList>().refine(files => files.length > 0, 'A file is required.').optional(),
   })).min(1, "At least one project file is required."),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
-export function ProjectForm() {
+interface ProjectFormProps {
+  project?: Project;
+}
+
+export function ProjectForm({ project }: ProjectFormProps) {
   const { toast } = useToast();
+  const router = useRouter();
+  const isEditMode = !!project;
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      category: "",
-      technologies: "",
-      price: 0,
-      files: [{ name: "", file: undefined }],
+      title: project?.title || "",
+      description: project?.description || "",
+      category: project?.category || "",
+      technologies: project?.technologies.join(", ") || "",
+      price: project?.price || 0,
+      // In edit mode, we just show the name, not require a file upload again.
+      // For a real app, you'd handle file management differently.
+      files: project ? [{ name: "Project Source Code" }] : [{ name: "", file: undefined }],
     },
   });
 
@@ -56,9 +67,12 @@ export function ProjectForm() {
   function onSubmit(data: ProjectFormValues) {
     console.log(data);
     toast({
-      title: "Project Submitted!",
-      description: "The new project has been saved.",
+      title: isEditMode ? "Project Updated!" : "Project Submitted!",
+      description: `The project "${data.title}" has been ${isEditMode ? 'updated' : 'saved'}.`,
     });
+    // In a real app, you would have API calls here to save/update the data.
+    // Since we're using placeholder data, we'll just navigate back.
+    router.push('/admin/projects');
   }
 
   return (
@@ -176,7 +190,8 @@ export function ProjectForm() {
                             <FormItem>
                               <FormLabel>File</FormLabel>
                               <FormControl>
-                                <Input type="file" onChange={(e) => onChange(e.target.files)} {...fieldProps} required />
+                                {/* In edit mode, file upload is not required */}
+                                <Input type="file" onChange={(e) => onChange(e.target.files)} {...fieldProps} required={!isEditMode} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -197,22 +212,24 @@ export function ProjectForm() {
                   </Card>
                 ))}
               </div>
-               <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="mt-4"
-                onClick={() => append({ name: "", file: undefined })}
-              >
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Add Another File
-              </Button>
+               {!isEditMode && (
+                 <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => append({ name: "", file: undefined })}
+                  >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Another File
+                  </Button>
+               )}
                <FormDescription className="mt-2">
                   Upload the project source code, documentation, and any other relevant files.
                </FormDescription>
             </div>
             
-            <Button type="submit">Save Project</Button>
+            <Button type="submit">{isEditMode ? "Update Project" : "Save Project"}</Button>
           </form>
         </Form>
       </CardContent>
