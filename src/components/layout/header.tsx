@@ -2,47 +2,90 @@
 "use client";
 
 import Link from "next/link";
-import { Code, ShoppingCart, User, Menu, X, ShieldCheck } from "lucide-react";
+import { Code, ShoppingCart, User, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut, type User as FirebaseUser } from "firebase/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 
 const navLinks = [
   { href: "#home", label: "Home" },
   { href: "#about", label: "About" },
   { href: "#projects", label: "Projects" },
-  { href: "/admin", label: "Admin", admin: true },
 ];
 
 export function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { cartCount } = useCart();
   const pathname = usePathname();
+  const router = useRouter();
   const [activeLink, setActiveLink] = useState('#home');
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
       const sections = navLinks.map(link => document.getElementById(link.href.substring(1))).filter(Boolean);
       const scrollPosition = window.scrollY + 100;
 
+      let currentSection = '';
       for (const section of sections) {
         if (section && scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
-          setActiveLink(`#${section.id}`);
+          currentSection = `#${section.id}`;
           break;
         }
       }
+      
+      // If no section is in view (e.g., at the very top or bottom), fallback based on scroll position
+      if (!currentSection) {
+        if (window.scrollY < 200) {
+            currentSection = '#home';
+        }
+      }
+
+      setActiveLink(currentSection);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    if (pathname === '/') {
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Initial check
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [pathname]);
 
   if (pathname.startsWith('/admin')) {
     return null;
+  }
+  
+  const handleSignOut = async () => {
+    await signOut(auth);
+    router.push('/');
+  };
+
+  const getInitials = (name?: string | null) => {
+    if (!name) return "";
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 
   const NavLinks = ({ className }: { className?: string }) => (
@@ -53,17 +96,19 @@ export function Header() {
           href={link.href}
           className={cn(
             "text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1",
-            activeLink === link.href && "text-primary font-semibold"
+            activeLink === link.href && pathname === '/' && "text-primary font-semibold"
           )}
           onClick={(e) => {
-            if (link.href.startsWith("#")) {
+            if (pathname === '/' && link.href.startsWith("#")) {
               e.preventDefault();
               document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' });
+            } else if (link.href.startsWith("#")) {
+              e.preventDefault();
+              router.push(`/${link.href}`);
             }
             setMenuOpen(false);
           }}
         >
-          {link.admin && <ShieldCheck className="h-4 w-4 text-accent" />}
           {link.label}
         </Link>
       ))}
@@ -95,12 +140,38 @@ export function Header() {
             </Link>
           </Button>
 
-          <Button variant="outline" size="sm" asChild className="hidden sm:flex">
-             <Link href="/login">
-                <User className="mr-2 h-4 w-4" />
-                Login
-            </Link>
-          </Button>
+          {user ? (
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                        <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                    </Avatar>
+                   </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium leading-none">{user.displayName}</p>
+                            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                        </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="outline" size="sm" asChild className="hidden sm:flex">
+               <Link href="/login">
+                  <User className="mr-2 h-4 w-4" />
+                  Login
+              </Link>
+            </Button>
+          )}
 
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
@@ -124,12 +195,19 @@ export function Header() {
                 <div className="flex-1 mt-6">
                   <NavLinks className="flex-col items-start gap-4 text-lg" />
                 </div>
-                <Button variant="outline" asChild>
-                    <Link href="/login" onClick={() => setMenuOpen(false)}>
-                        <User className="mr-2 h-4 w-4" />
-                        Login / Register
-                    </Link>
-                </Button>
+                {user ? (
+                   <Button variant="outline" onClick={() => { handleSignOut(); setMenuOpen(false); }}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Logout
+                  </Button>
+                ) : (
+                  <Button variant="outline" asChild>
+                      <Link href="/login" onClick={() => setMenuOpen(false)}>
+                          <User className="mr-2 h-4 w-4" />
+                          Login / Register
+                      </Link>
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>

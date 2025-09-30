@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 export function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());
   const pathname = usePathname();
+  const router = usePathname();
 
   useEffect(() => {
     setYear(new Date().getFullYear());
@@ -16,10 +17,13 @@ export function Footer() {
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     const href = e.currentTarget.href;
-    if (href.includes("#")) {
+    if (pathname === '/' && href.includes("#")) {
       e.preventDefault();
       const targetId = href.split("#")[1];
       document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
+    } else if (href.includes("#")) {
+        e.preventDefault();
+        router.push(`/${href.split("#")[1]}`);
     }
   };
 
@@ -49,7 +53,7 @@ export function Footer() {
               <li><Link href="#home" onClick={handleScroll} className="hover:text-primary transition-colors">Home</Link></li>
               <li><Link href="#about" onClick={handleScroll} className="hover:text-primary transition-colors">About</Link></li>
               <li><Link href="#projects" onClick={handleScroll} className="hover:text-primary transition-colors">Projects</Link></li>
-              <li><Link href="/admin" className="hover:text-primary transition-colors">Admin</Link></li>
+              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Admin Login</Link></li>
             </ul>
           </div>
           <div className="col-span-1">
