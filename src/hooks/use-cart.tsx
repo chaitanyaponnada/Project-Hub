@@ -50,7 +50,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const buyNow = (project: Project) => {
-    setCartItems([{...project, quantity: 1}]);
+    setCartItems(prevItems => {
+        // First, check if the item is already in the cart. If so, just proceed.
+        const existingItem = prevItems.find(item => item.id === project.id);
+        if (prevItems.length === 1 && existingItem) {
+            return prevItems;
+        }
+        // Otherwise, clear the cart and add only this item.
+        return [{...project, quantity: 1}];
+    });
     router.push('/checkout');
   };
 

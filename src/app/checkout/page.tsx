@@ -27,9 +27,9 @@ export default function CheckoutPage() {
         clearCart();
         toast({
             title: "Purchase Successful!",
-            description: "Your projects are now available for download.",
+            description: "Your projects are now available in your profile.",
         });
-        router.push('/');
+        router.push('/profile');
     };
 
     if (loading || !user) {
@@ -46,10 +46,10 @@ export default function CheckoutPage() {
           <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
           <h1 className="font-headline text-2xl font-bold text-primary mb-2">Purchase Complete!</h1>
           <p className="text-muted-foreground mb-6">
-            Thank you for your order. Your projects are now available for download in your account. Click below to return to the homepage.
+            Thank you for your order. Your projects are now available for download in your profile. Click below to view your purchased projects.
           </p>
           <Button onClick={handleFinalizePurchase}>
-            Back to Home
+            Go to My Profile
           </Button>
         </CardContent>
       </Card>
