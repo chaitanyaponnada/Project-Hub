@@ -1,15 +1,19 @@
+"use client";
+
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ProjectCard } from "@/components/project-card"
 import { projects, categories } from "@/lib/placeholder-data"
 import { Search } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectsPage() {
+  const { user, loading } = useAuth();
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in">
       <header className="mb-12 text-center">
         <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-2">
-          B.Tech Project Marketplace
+          Project Marketplace
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
@@ -39,7 +43,7 @@ export default function ProjectsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project, i) => (
           <div key={project.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-            <ProjectCard project={project} />
+            <ProjectCard project={project} isBlurred={!user && !loading} />
           </div>
         ))}
       </div>

@@ -7,9 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Trash2, ShoppingBag } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CartPage() {
   const { cartItems, removeFromCart, totalPrice, cartCount } = useCart();
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+
+  if (loading || !user) {
+      return (
+        <div className="flex items-center justify-center h-[50vh]">
+            <p>Loading...</p>
+        </div>
+      );
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">

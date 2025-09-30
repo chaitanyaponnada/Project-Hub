@@ -1,6 +1,6 @@
 "use client";
 
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import Image from "next/image";
 import { projects } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
@@ -9,16 +9,34 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ShoppingCart, CheckCircle, Download } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const project = projects.find((p) => p.id === params.id);
   const { addToCart, cartItems } = useCart();
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
 
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
 
   if (!project) {
     notFound();
+  }
+
+  if (loading || !user) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+          <p>Loading...</p>
+      </div>
+    );
   }
 
   // Dummy data for project files for now

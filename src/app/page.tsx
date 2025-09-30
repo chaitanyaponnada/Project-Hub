@@ -1,4 +1,6 @@
 
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,9 +10,10 @@ import { ProjectCard } from "@/components/project-card";
 import { projects, categories } from "@/lib/placeholder-data";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Home() {
+  const { user, loading } = useAuth();
   const featuredProjects = projects.slice(0, 3);
 
   return (
@@ -114,7 +117,7 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {projects.map((project, i) => (
                   <div key={project.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                    <ProjectCard project={project} />
+                    <ProjectCard project={project} isBlurred={!user && !loading} />
                   </div>
                 ))}
               </div>

@@ -10,7 +10,7 @@ import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from 'next/navigation';
 import { auth } from "@/lib/firebase";
-import { onAuthStateChanged, signOut, type User as FirebaseUser } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/use-auth";
 
 
 const navLinks = [
@@ -34,14 +35,7 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [activeLink, setActiveLink] = useState('#home');
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {

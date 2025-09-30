@@ -1,9 +1,30 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CheckoutPage() {
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+        router.push('/login');
+        }
+    }, [user, loading, router]);
+
+    if (loading || !user) {
+        return (
+            <div className="flex items-center justify-center h-[50vh]">
+                <p>Loading...</p>
+            </div>
+        );
+    }
   return (
     <div className="container mx-auto px-4 py-20 flex items-center justify-center">
       <Card className="max-w-md w-full text-center p-8">
