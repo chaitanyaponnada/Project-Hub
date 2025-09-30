@@ -1,8 +1,20 @@
+
+"use client";
+
 import Link from 'next/link';
 import { Code, Github, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Footer() {
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const href = e.currentTarget.href;
+    if (href.includes("#")) {
+      e.preventDefault();
+      const targetId = href.split("#")[1];
+      document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <footer className="bg-muted text-muted-foreground mt-auto border-t">
       <div className="container mx-auto px-4 py-12">
@@ -13,7 +25,7 @@ export function Footer() {
                 <span className="font-headline text-xl font-bold text-primary">Project Hub</span>
             </Link>
             <p className="text-sm pr-4">
-              Your central marketplace for high-quality B.Tech projects.
+              Your central marketplace for high-quality projects.
             </p>
              <p className="text-xs text-muted-foreground mt-4">
               © {new Date().getFullYear()} Project Hub. All rights reserved.
@@ -22,9 +34,9 @@ export function Footer() {
           <div className="col-span-1">
             <h4 className="font-headline font-semibold text-primary mb-4">Navigate</h4>
             <ul className="space-y-2">
-              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
-              <li><Link href="/about" className="hover:text-primary transition-colors">About</Link></li>
-              <li><Link href="/projects" className="hover:text-primary transition-colors">Projects</Link></li>
+              <li><Link href="#home" onClick={handleScroll} className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link href="#about" onClick={handleScroll} className="hover:text-primary transition-colors">About</Link></li>
+              <li><Link href="#projects" onClick={handleScroll} className="hover:text-primary transition-colors">Projects</Link></li>
               <li><Link href="/admin" className="hover:text-primary transition-colors">Admin</Link></li>
             </ul>
           </div>

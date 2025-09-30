@@ -1,19 +1,20 @@
+
 "use client";
 
 import Link from "next/link";
 import { Code, ShoppingCart, User, Menu, X, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
 import { usePathname } from 'next/navigation';
 
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
+  { href: "#home", label: "Home" },
+  { href: "#about", label: "About" },
+  { href: "#projects", label: "Projects" },
   { href: "/admin", label: "Admin", admin: true },
 ];
 
@@ -21,6 +22,24 @@ export function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { cartCount } = useCart();
   const pathname = usePathname();
+  const [activeLink, setActiveLink] = useState('#home');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navLinks.map(link => document.getElementById(link.href.substring(1))).filter(Boolean);
+      const scrollPosition = window.scrollY + 100;
+
+      for (const section of sections) {
+        if (section && scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
+          setActiveLink(`#${section.id}`);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (pathname.startsWith('/admin')) {
     return null;
@@ -34,9 +53,15 @@ export function Header() {
           href={link.href}
           className={cn(
             "text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1",
-            pathname === link.href && "text-primary font-semibold"
+            activeLink === link.href && "text-primary font-semibold"
           )}
-          onClick={() => setMenuOpen(false)}
+          onClick={(e) => {
+            if (link.href.startsWith("#")) {
+              e.preventDefault();
+              document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' });
+            }
+            setMenuOpen(false);
+          }}
         >
           {link.admin && <ShieldCheck className="h-4 w-4 text-accent" />}
           {link.label}
