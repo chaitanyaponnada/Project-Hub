@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/hooks/use-cart';
 import { AuthProvider } from '@/hooks/use-auth';
@@ -37,7 +36,6 @@ export default function RootLayout({
             <CartProvider>
               <Header />
               <main className="flex-1">{children}</main>
-              <Footer />
               <Toaster />
             </CartProvider>
           </InquiryProvider>

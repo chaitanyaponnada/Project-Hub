@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/hooks/use-auth";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRouter } from "next/navigation";
+import { Footer } from "@/components/layout/footer";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -198,6 +199,7 @@ export default function Home() {
         </section>
 
       </main>
+      <Footer />
     </div>
   );
 }
