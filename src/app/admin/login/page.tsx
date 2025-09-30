@@ -20,8 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Code, Loader2 } from "lucide-react";
-import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import Link from "next/link";
@@ -40,6 +38,7 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "").split(',');
+  const adminPasswords = (process.env.NEXT_PUBLIC_ADMIN_PASSWORDS || "").split(',');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,30 +50,21 @@ export default function AdminLoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    try {
-      const result = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const user = result.user;
+    
+    const adminEmailIndex = adminEmails.findIndex(email => email.trim() === values.email.trim());
 
-      if (user.email && adminEmails.includes(user.email)) {
-        toast({ title: "Admin login successful!" });
-        router.push("/admin");
-      } else {
-        await signOut(auth);
-        toast({
-          title: "Unauthorized",
-          description: "You are not authorized to access the admin dashboard.",
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
+    if (adminEmailIndex !== -1 && adminPasswords[adminEmailIndex].trim() === values.password) {
+      toast({ title: "Admin login successful!" });
+      router.push("/admin");
+    } else {
       toast({
-        title: "Admin Sign-in Failed",
-        description: error.message,
+        title: "Unauthorized",
+        description: "Invalid credentials. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   }
 
   return (

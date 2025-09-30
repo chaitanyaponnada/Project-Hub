@@ -3,6 +3,10 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 const getFirebaseApp = () => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
   if (getApps().length > 0) {
     return getApp();
   }
@@ -24,4 +28,4 @@ const getFirebaseApp = () => {
 
 // Initialize Firebase
 const app = getFirebaseApp();
-export const auth = getAuth(app);
+export const auth = app ? getAuth(app) : ({} as any);
