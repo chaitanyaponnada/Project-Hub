@@ -14,16 +14,17 @@ import { useMemo, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
-  const project = projects.find((p) => p.id === params.id);
+  const { id } = params;
+  const project = projects.find((p) => p.id === id);
   const { addToCart, cartItems, purchasedItems } = useCart();
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login?redirect=/projects/' + params.id);
+      router.push('/login?redirect=/projects/' + id);
     }
-  }, [user, loading, router, params.id]);
+  }, [user, loading, router, id]);
 
 
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
