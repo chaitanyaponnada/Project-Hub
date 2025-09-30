@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2, Lock, ArrowLeft, FileCheck2 } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, Lock, ArrowLeft, FileCheck2, Zap } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -26,7 +26,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
     return projects.find((p) => p.id === id) || null;
   }, [id]);
   
-  const { addToCart, cartItems, purchasedItems } = useCart();
+  const { addToCart, buyNow, cartItems, purchasedItems } = useCart();
   const { user, loading } = useAuth();
   
   useEffect(() => {
@@ -34,6 +34,12 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       router.push('/login?redirect=/projects/' + id);
     }
   }, [user, loading, router, id]);
+
+  const handleBuyNow = () => {
+    if(project) {
+        buyNow(project);
+    }
+  };
 
 
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
@@ -140,31 +146,42 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </Card>
           ) : (
             <Card className="bg-background/50">
-              <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div className="flex items-baseline gap-2">
+              <CardContent className="p-6">
+                 <div className="flex items-baseline gap-2 mb-6">
                     <p className="text-4xl font-bold text-primary">Rs. {project.price.toFixed(2)}</p>
                     {project.originalPrice && (
                         <p className="text-xl text-muted-foreground line-through">Rs. {project.originalPrice.toFixed(2)}</p>
                     )}
                 </div>
-                <Button 
-                  size="lg"
-                  onClick={() => addToCart(project)}
-                  disabled={isInCart}
-                  className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground"
-                >
-                  {isInCart ? (
-                    <>
-                      <CheckCircle className="mr-2 h-5 w-5" />
-                      Added to Cart
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart className="mr-2 h-5 w-5" />
-                      Add to Cart
-                    </>
-                  )}
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <Button 
+                        size="lg"
+                        onClick={handleBuyNow}
+                        className="w-full bg-accent hover:bg-accent/90 text-accent-foreground flex-1"
+                    >
+                        <Zap className="mr-2 h-5 w-5" />
+                        Buy Now
+                    </Button>
+                    <Button 
+                      size="lg"
+                      variant="outline"
+                      onClick={() => addToCart(project)}
+                      disabled={isInCart}
+                      className="w-full flex-1"
+                    >
+                      {isInCart ? (
+                        <>
+                          <CheckCircle className="mr-2 h-5 w-5" />
+                          Added to Cart
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart className="mr-2 h-5 w-5" />
+                          Add to Cart
+                        </>
+                      )}
+                    </Button>
+                </div>
               </CardContent>
             </Card>
           )}

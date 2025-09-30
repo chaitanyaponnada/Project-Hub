@@ -4,6 +4,7 @@
 import type { Project } from '@/lib/placeholder-data';
 import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 import { useToast } from './use-toast';
+import { useRouter } from 'next/navigation';
 
 interface CartItem extends Project {
   quantity: number;
@@ -13,6 +14,7 @@ interface CartContextType {
   cartItems: CartItem[];
   purchasedItems: CartItem[];
   addToCart: (project: Project) => void;
+  buyNow: (project: Project) => void;
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
@@ -26,6 +28,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const { toast } = useToast();
+  const router = useRouter();
 
   const addToCart = (project: Project) => {
     setCartItems(prevItems => {
@@ -46,6 +49,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const buyNow = (project: Project) => {
+    setCartItems([{...project, quantity: 1}]);
+    router.push('/checkout');
+  };
+
   const removeFromCart = (projectId: string) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== projectId));
   };
@@ -55,7 +63,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addPurchasedItems = (items: CartItem[]) => {
-    setPurchasedItems(prevPurchased => [...prevPurchased, ...items]);
+    setPurchasedItems(prevPurchased => {
+      const newItems = items.filter(item => !prevPurchased.some(p => p.id === item.id));
+      return [...prevPurchased, ...newItems];
+    });
   };
   
   const cartCount = cartItems.length;
@@ -63,7 +74,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, removeFromCart, clearCart, addPurchasedItems, cartCount, totalPrice }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, addPurchasedItems, cartCount, totalPrice }}>
       {children}
     </CartContext.Provider>
   );
