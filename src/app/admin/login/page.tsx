@@ -52,9 +52,12 @@ export default function AdminLoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     
+    // Simulate a brief delay for a better user experience
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const adminEmailIndex = adminEmails.findIndex(email => email.trim() === values.email.trim());
 
-    if (adminEmailIndex !== -1 && adminPasswords[adminEmailIndex].trim() === values.password) {
+    if (adminEmailIndex !== -1 && adminPasswords[adminEmailIndex] && adminPasswords[adminEmailIndex].trim() === values.password) {
       toast({ title: "Admin login successful!" });
       router.push("/admin");
     } else {

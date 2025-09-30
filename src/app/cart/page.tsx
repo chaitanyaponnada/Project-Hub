@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -6,7 +7,7 @@ import { useCart } from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Trash2, ShoppingBag } from "lucide-react";
+import { Trash2, ShoppingBag, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -18,7 +19,7 @@ export default function CartPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push('/login?redirect=/cart');
     }
   }, [user, loading, router]);
 
@@ -26,7 +27,7 @@ export default function CartPage() {
   if (loading || !user) {
       return (
         <div className="flex items-center justify-center h-[50vh]">
-            <p>Loading...</p>
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       );
   }
@@ -92,7 +93,7 @@ export default function CartPage() {
           <h2 className="font-headline text-2xl font-semibold mb-2">Your cart is empty</h2>
           <p className="text-muted-foreground mb-6">Looks like you haven't added any projects yet.</p>
           <Button asChild>
-            <Link href="/">Browse Projects</Link>
+            <Link href="/projects">Browse Projects</Link>
           </Button>
         </Card>
       )}

@@ -1,36 +1,41 @@
 
 "use client";
 
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CheckoutPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const { clearCart, cartItems, addPurchasedItems } = useCart();
+    const { toast } = useToast();
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push('/login');
+            router.push('/login?redirect=/checkout');
         }
     }, [user, loading, router]);
 
     const handleFinalizePurchase = () => {
         addPurchasedItems(cartItems);
         clearCart();
+        toast({
+            title: "Purchase Successful!",
+            description: "Your projects are now available for download.",
+        });
         router.push('/');
     };
 
     if (loading || !user) {
         return (
             <div className="flex items-center justify-center h-[50vh]">
-                <p>Loading...</p>
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
         );
     }

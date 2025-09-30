@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { Code, Github, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     setYear(new Date().getFullYear());
@@ -17,13 +18,14 @@ export function Footer() {
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     const href = e.currentTarget.href;
-    if (pathname === '/' && href.includes("#")) {
+    const targetId = href.split("#")[1];
+
+    if (pathname === '/') {
       e.preventDefault();
-      const targetId = href.split("#")[1];
       document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
-    } else if (href.includes("#")) {
-        e.preventDefault();
-        window.location.href = `/${href.split("#")[1]}`;
+    } else {
+      e.preventDefault();
+      router.push(`/#${targetId}`);
     }
   };
 
@@ -51,8 +53,8 @@ export function Footer() {
             <h4 className="font-headline font-semibold text-primary mb-4">Navigate</h4>
             <ul className="space-y-2">
               <li><Link href="#home" onClick={handleScroll} className="hover:text-primary transition-colors">Home</Link></li>
-              <li><Link href="#about" onClick={handleScroll} className="hover:text-primary transition-colors">About</Link></li>
-              <li><Link href="#projects" onClick={handleScroll} className="hover:text-primary transition-colors">Projects</Link></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">About</Link></li>
+              <li><Link href="/projects" className="hover:text-primary transition-colors">Projects</Link></li>
               <li><Link href="#faq" onClick={handleScroll} className="hover:text-primary transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
             </ul>

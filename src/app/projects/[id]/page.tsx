@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -36,7 +36,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   if (loading || !user) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
-          <p>Loading...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -96,7 +96,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                    <div key={file.name} className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50">
                     <span>{file.name}</span>
                     <Button asChild variant="outline" size="sm" disabled={!isPurchased}>
-                      <a href={file.url} download>
+                      <a href={isPurchased ? file.url : undefined} download>
                         <Download className="mr-2 h-4 w-4" />
                         Download
                       </a>
@@ -105,9 +105,22 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 ))}
               </CardContent>
             </Card>
+            {!isPurchased && (
+                <p className="text-xs text-muted-foreground mt-2">You must purchase the project to download the files.</p>
+            )}
           </div>
           
-          {!isPurchased && (
+          {isPurchased ? (
+             <Card className="bg-green-100 dark:bg-green-900/30 border-green-500">
+                <CardContent className="p-6 flex items-center gap-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                    <div>
+                        <h3 className="font-bold text-green-800 dark:text-green-300">Project Purchased!</h3>
+                        <p className="text-sm text-green-700 dark:text-green-400">You can now download the project files above.</p>
+                    </div>
+                </CardContent>
+            </Card>
+          ) : (
             <Card className="bg-background/50">
               <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p className="text-4xl font-bold text-primary">₹{project.price}</p>

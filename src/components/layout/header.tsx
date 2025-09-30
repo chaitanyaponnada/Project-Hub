@@ -24,9 +24,10 @@ import { useAuth } from "@/hooks/use-auth";
 
 
 const navLinks = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
+  { href: "/#home", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/projects", label: "Projects" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Header() {
@@ -34,39 +35,16 @@ export function Header() {
   const { cartCount } = useCart();
   const pathname = usePathname();
   const router = useRouter();
-  const [activeLink, setActiveLink] = useState('#home');
+  const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navLinks.map(link => document.getElementById(link.href.substring(1))).filter(Boolean);
-      const scrollPosition = window.scrollY + 100;
-
-      let currentSection = '';
-      for (const section of sections) {
-        if (section && scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
-          currentSection = `#${section.id}`;
-          break;
-        }
-      }
-      
-      // If no section is in view (e.g., at the very top or bottom), fallback based on scroll position
-      if (!currentSection) {
-        if (window.scrollY < 200) {
-            currentSection = '#home';
-        }
-      }
-
-      setActiveLink(currentSection);
+      setIsScrolled(window.scrollY > 10);
     };
-
-    if (pathname === '/') {
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Initial check
-    }
-
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname]);
+  }, []);
 
   if (pathname.startsWith('/admin')) {
     return null;
@@ -89,19 +67,10 @@ export function Header() {
           key={link.href}
           href={link.href}
           className={cn(
-            "text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1",
-            activeLink === link.href && pathname === '/' && "text-primary font-semibold"
+            "text-foreground/80 hover:text-foreground transition-colors",
+             pathname === link.href && "text-primary font-semibold"
           )}
-          onClick={(e) => {
-            if (pathname === '/' && link.href.startsWith("#")) {
-              e.preventDefault();
-              document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' });
-            } else if (link.href.startsWith("#")) {
-              e.preventDefault();
-              router.push(`/${link.href}`);
-            }
-            setMenuOpen(false);
-          }}
+          onClick={() => setMenuOpen(false)}
         >
           {link.label}
         </Link>
@@ -110,7 +79,10 @@ export function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={cn(
+        "sticky top-0 z-50 w-full border-b transition-colors duration-300",
+        isScrolled ? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" : "bg-transparent border-transparent"
+    )}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Code className="h-7 w-7 text-primary" />

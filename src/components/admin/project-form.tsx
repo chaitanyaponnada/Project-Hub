@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
@@ -16,10 +17,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Paperclip, PlusCircle, Trash2 } from "lucide-react";
+import { Paperclip, PlusCircle, Trash2, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Project } from "@/lib/placeholder-data";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const projectFormSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
@@ -29,8 +31,7 @@ const projectFormSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number."),
   files: z.array(z.object({
     name: z.string().min(1, "File name is required."),
-    // Make file optional for edit mode
-    file: z.custom<FileList>().refine(files => files.length > 0, 'A file is required.').optional(),
+    file: z.instanceof(FileList).optional(),
   })).min(1, "At least one project file is required."),
 });
 
@@ -43,6 +44,7 @@ interface ProjectFormProps {
 export function ProjectForm({ project }: ProjectFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!project;
 
   const form = useForm<ProjectFormValues>({
@@ -53,8 +55,6 @@ export function ProjectForm({ project }: ProjectFormProps) {
       category: project?.category || "",
       technologies: project?.technologies.join(", ") || "",
       price: project?.price || 0,
-      // In edit mode, we just show the name, not require a file upload again.
-      // For a real app, you'd handle file management differently.
       files: project ? [{ name: "Project Source Code" }] : [{ name: "", file: undefined }],
     },
   });
@@ -64,15 +64,24 @@ export function ProjectForm({ project }: ProjectFormProps) {
     name: "files"
   });
 
-  function onSubmit(data: ProjectFormValues) {
+  async function onSubmit(data: ProjectFormValues) {
+    setIsLoading(true);
     console.log(data);
+
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
     toast({
       title: isEditMode ? "Project Updated!" : "Project Submitted!",
       description: `The project "${data.title}" has been ${isEditMode ? 'updated' : 'saved'}.`,
     });
+    
+    setIsLoading(false);
+    
     // In a real app, you would have API calls here to save/update the data.
     // Since we're using placeholder data, we'll just navigate back.
     router.push('/admin/projects');
+    router.refresh(); // To reflect changes if data was from a real backend
   }
 
   return (
@@ -137,7 +146,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
                     <FormItem>
                     <FormLabel>Price (₹)</FormLabel>
                     <FormControl>
-                        <Input type="number" placeholder="5000.00" {...field} />
+                        <Input type="number" step="0.01" placeholder="5000.00" {...field} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -175,7 +184,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
                           name={`files.${index}.name`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>File Name</FormLabel>
+                              <FormLabel>File Description</FormLabel>
                               <FormControl>
                                 <Input placeholder="e.g., Source Code (ZIP)" {...field} />
                               </FormControl>
@@ -186,12 +195,15 @@ export function ProjectForm({ project }: ProjectFormProps) {
                        <FormField
                           control={form.control}
                           name={`files.${index}.file`}
-                          render={({ field: { onChange, ...fieldProps } }) => (
+                          render={({ field }) => (
                             <FormItem>
-                              <FormLabel>File</FormLabel>
+                              <FormLabel>File Upload</FormLabel>
                               <FormControl>
-                                {/* In edit mode, file upload is not required */}
-                                <Input type="file" onChange={(e) => onChange(e.target.files)} {...fieldProps} required={!isEditMode} />
+                                <Input 
+                                  type="file" 
+                                  onChange={(e) => field.onChange(e.target.files)} 
+                                  required={!isEditMode}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -212,24 +224,27 @@ export function ProjectForm({ project }: ProjectFormProps) {
                   </Card>
                 ))}
               </div>
-               {!isEditMode && (
-                 <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="mt-4"
-                    onClick={() => append({ name: "", file: undefined })}
-                  >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Another File
-                  </Button>
-               )}
-               <FormDescription className="mt-2">
+              
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-4"
+                onClick={() => append({ name: "", file: undefined })}
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Another File
+              </Button>
+              
+              <FormDescription className="mt-2">
                   Upload the project source code, documentation, and any other relevant files.
-               </FormDescription>
+              </FormDescription>
             </div>
             
-            <Button type="submit">{isEditMode ? "Update Project" : "Save Project"}</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isEditMode ? "Update Project" : "Save Project"}
+            </Button>
           </form>
         </Form>
       </CardContent>
