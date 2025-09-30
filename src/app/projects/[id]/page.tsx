@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2, Lock, ArrowLeft } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, Lock, ArrowLeft, FileCheck2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -50,13 +50,6 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       </div>
     );
   }
-
-  // Dummy data for project files for now
-  const projectFiles = [
-    { name: "Source Code (ZIP)", url: "#" },
-    { name: "Documentation (PDF)", url: "#" },
-    { name: "Database Schema (PNG)", url: "#" },
-  ];
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -114,42 +107,35 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
           </div>
 
           <div className="mb-8">
-            <h2 className="text-lg font-semibold mb-3 font-headline">Project Files</h2>
+            <h2 className="text-lg font-semibold mb-3 font-headline">What's Included</h2>
             <Card>
               <CardContent className="p-4 space-y-3">
-                {projectFiles.map((file) => (
-                   <div key={file.name} className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50">
-                    <span>{file.name}</span>
-                    {isPurchased ? (
-                      <Button asChild variant="outline" size="sm">
-                        <a href={file.url} download>
-                          <Download className="mr-2 h-4 w-4" />
-                          Download
-                        </a>
-                      </Button>
-                    ) : (
-                      <Button variant="outline" size="sm" disabled>
-                        <Lock className="mr-2 h-4 w-4" />
-                        Download
-                      </Button>
-                    )}
+                {project.includedFiles.map((file, index) => (
+                   <div key={index} className="flex items-center gap-3 p-2 text-sm">
+                    <FileCheck2 className="h-5 w-5 text-primary" />
+                    <span>{file}</span>
                   </div>
                 ))}
               </CardContent>
             </Card>
-            {!isPurchased && (
-                <p className="text-xs text-muted-foreground mt-2">You must purchase the project to download the files.</p>
-            )}
           </div>
           
           {isPurchased ? (
              <Card className="bg-green-100 dark:bg-green-900/30 border-green-500">
-                <CardContent className="p-6 flex items-center gap-4">
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                    <div>
-                        <h3 className="font-bold text-green-800 dark:text-green-300">Project Purchased!</h3>
-                        <p className="text-sm text-green-700 dark:text-green-400">You can now download the project files above.</p>
+                <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center gap-4">
+                        <CheckCircle className="h-8 w-8 text-green-600" />
+                        <div>
+                            <h3 className="font-bold text-green-800 dark:text-green-300">Project Purchased!</h3>
+                            <p className="text-sm text-green-700 dark:text-green-400">You can now download the project files.</p>
+                        </div>
                     </div>
+                     <Button asChild size="lg">
+                        <a href={project.downloadUrl} download>
+                          <Download className="mr-2 h-5 w-5" />
+                          Download Project
+                        </a>
+                      </Button>
                 </CardContent>
             </Card>
           ) : (

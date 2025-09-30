@@ -10,6 +10,8 @@ export type Project = {
   tags?: string[];
   imageUrls: string[];
   imageHints: string[];
+  includedFiles: string[];
+  downloadUrl: string;
 };
 
 export const categories = [
@@ -32,7 +34,9 @@ export const projects: Project[] = [
     originalPrice: 200,
     tags: ["Best Seller"],
     imageUrls: ["https://picsum.photos/seed/proj1/600/400", "https://picsum.photos/seed/proj1-2/600/400"],
-    imageHints: ["code abstract", "online store"]
+    imageHints: ["code abstract", "online store"],
+    includedFiles: ["Full Source Code (ZIP)", "Deployment Guide (PDF)", "API Documentation"],
+    downloadUrl: "#",
   },
   {
     id: "2",
@@ -43,7 +47,9 @@ export const projects: Project[] = [
     price: 120,
     tags: ["Buying Fast"],
     imageUrls: ["https://picsum.photos/seed/proj5/600/400", "https://picsum.photos/seed/proj5-2/600/400"],
-    imageHints: ["app mockup", "fitness tracker"]
+    imageHints: ["app mockup", "fitness tracker"],
+    includedFiles: ["React Native Source Code", "Firebase Setup Guide", "UI Component Library"],
+    downloadUrl: "#",
   },
   {
     id: "3",
@@ -53,7 +59,9 @@ export const projects: Project[] = [
     technologies: ["Python", "TensorFlow", "OpenCV", "Jupyter"],
     price: 200,
     imageUrls: ["https://picsum.photos/seed/proj2/600/400", "https://picsum.photos/seed/proj2-2/600/400"],
-    imageHints: ["circuit board", "object detection"]
+    imageHints: ["circuit board", "object detection"],
+    includedFiles: ["Python Scripts", "Jupyter Notebooks", "Trained Model File (.h5)"],
+    downloadUrl: "#",
   },
   {
     id: "4",
@@ -65,7 +73,9 @@ export const projects: Project[] = [
     originalPrice: 220,
     tags: ["New"],
     imageUrls: ["https://picsum.photos/seed/proj3/600/400", "https://picsum.photos/seed/proj3-2/600/400"],
-    imageHints: ["robot arm", "maze"]
+    imageHints: ["robot arm", "maze"],
+    includedFiles: ["Arduino Code (.ino)", "Circuit Diagrams", "3D Printable Parts (.stl)"],
+    downloadUrl: "#",
   },
   {
     id: "5",
@@ -75,7 +85,9 @@ export const projects: Project[] = [
     technologies: ["React", "D3.js", "Next.js"],
     price: 130,
     imageUrls: ["https://picsum.photos/seed/proj4/600/400", "https://picsum.photos/seed/proj4-2/600/400"],
-    imageHints: ["data visualization", "dashboard"]
+    imageHints: ["data visualization", "dashboard"],
+    includedFiles: ["React/Next.js Source Code", "Sample Datasets (CSV)", "User Manual"],
+    downloadUrl: "#",
   },
   {
     id: "6",
@@ -86,7 +98,9 @@ export const projects: Project[] = [
     price: 160,
     tags: ["Best Seller"],
     imageUrls: ["https://picsum.photos/seed/proj6/600/400", "https://picsum.photos/seed/proj6-2/600/400"],
-    imageHints: ["3d render", "game world"]
+    imageHints: ["3d render", "game world"],
+    includedFiles: ["Unity Project Folder", "Game Design Document (GDD)", "Original 3D Models (.blend)"],
+    downloadUrl: "#",
   }
 ];
 

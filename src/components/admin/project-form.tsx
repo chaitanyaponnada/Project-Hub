@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Paperclip, PlusCircle, Trash2, Loader2 } from "lucide-react";
+import { Paperclip, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Project } from "@/lib/placeholder-data";
 import { useRouter } from "next/navigation";
@@ -31,10 +31,8 @@ const projectFormSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number."),
   originalPrice: z.coerce.number().optional(),
   tags: z.string().optional(),
-  files: z.array(z.object({
-    name: z.string().min(1, "File name is required."),
-    file: z.instanceof(FileList).optional(),
-  })).min(1, "At least one project file is required."),
+  includedFiles: z.string().min(10, "Please list the files included in the download."),
+  projectFile: z.instanceof(FileList).optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -59,18 +57,21 @@ export function ProjectForm({ project }: ProjectFormProps) {
       price: project?.price || 0,
       originalPrice: project?.originalPrice || undefined,
       tags: project?.tags?.join(", ") || "",
-      files: project ? [{ name: "Project Source Code" }] : [{ name: "", file: undefined }],
+      includedFiles: project?.includedFiles?.join("\n") || "Source Code (ZIP)\nDocumentation (PDF)\nDatabase Schema (PNG)",
+      projectFile: undefined,
     },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "files"
   });
 
   async function onSubmit(data: ProjectFormValues) {
     setIsLoading(true);
     console.log(data);
+
+    // In a real app, you would handle file upload here.
+    if (!isEditMode && (!data.projectFile || data.projectFile.length === 0)) {
+        form.setError("projectFile", { message: "Project file is required." });
+        setIsLoading(false);
+        return;
+    }
 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -210,74 +211,51 @@ export function ProjectForm({ project }: ProjectFormProps) {
               )}
             />
             
-            <div>
-              <FormLabel className="flex items-center gap-2 mb-4">
-                <Paperclip className="w-4 h-4" /> Project Files
-              </FormLabel>
-              <div className="space-y-4">
-                {fields.map((field, index) => (
-                  <Card key={field.id} className="p-4 bg-muted/50 relative">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                       <FormField
-                          control={form.control}
-                          name={`files.${index}.name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>File Description</FormLabel>
-                              <FormControl>
-                                <Input placeholder="e.g., Source Code (ZIP)" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
+            <div className="space-y-6">
+               <FormField
+                  control={form.control}
+                  name="includedFiles"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Included Files</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="List each file on a new line. e.g., Source Code (ZIP)"
+                          className="min-h-[100px]"
+                          {...field}
                         />
-                       <FormField
-                          control={form.control}
-                          name={`files.${index}.file`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>File Upload</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  type="file" 
-                                  onChange={(e) => field.onChange(e.target.files)} 
-                                  required={!isEditMode}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                      </FormControl>
+                      <FormDescription>
+                        List all the files that the user will get in the download. This is for display purposes.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="projectFile"
+                  render={({ field: { onChange, ...fieldProps } }) => (
+                    <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                            <Paperclip className="w-4 h-4" /> Project Download File
+                        </FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="file" 
+                          accept=".zip,.rar,.tar"
+                          onChange={(e) => onChange(e.target.files)}
+                          {...fieldProps}
                         />
-                    </div>
-                     {fields.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2 text-destructive"
-                          onClick={() => remove(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
-                  </Card>
-                ))}
-              </div>
-              
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="mt-4"
-                onClick={() => append({ name: "", file: undefined })}
-              >
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Add Another File
-              </Button>
-              
-              <FormDescription className="mt-2">
-                  Upload the project source code, documentation, and any other relevant files.
-              </FormDescription>
+                      </FormControl>
+                      <FormDescription>
+                        Upload the single ZIP or RAR file for the user to download.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
             
             <Button type="submit" disabled={isLoading}>
