@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { categories } from "@/lib/placeholder-data";
-import { Wand2, Loader2, Sparkles } from "lucide-react";
+import { Wand2, Loader2, Sparkles, Paperclip } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { generateProjectTitle } from "@/ai/flows/generate-project-title";
@@ -30,7 +30,8 @@ const projectFormSchema = z.object({
   category: z.string({ required_error: "Please select a category." }),
   technologies: z.string().min(3, "Please list at least one technology."),
   price: z.coerce.number().min(0, "Price must be a positive number."),
-  projectDetailsPrompt: z.string().min(10, "Please provide some details for AI generation.")
+  projectDetailsPrompt: z.string().min(10, "Please provide some details for AI generation."),
+  files: z.custom<FileList>().refine(files => files.length > 0, 'At least one file is required.'),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -222,6 +223,30 @@ export function ProjectForm() {
                   </FormControl>
                    <FormDescription>
                     List the main technologies used in the project.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="files"
+              render={({ field: { onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Paperclip className="w-4 h-4" /> Project Files
+                  </FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="file" 
+                      multiple 
+                      onChange={(e) => onChange(e.target.files)}
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Upload the project source code, documentation, and any other relevant files.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
