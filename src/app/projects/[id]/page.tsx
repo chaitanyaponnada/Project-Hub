@@ -8,48 +8,46 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2, Lock, ArrowLeft, FileCheck2, Zap } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Zap } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
-  const [id, setId] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-
+  
   useEffect(() => {
-    setId(params.id);
-  }, [params.id]);
+    setIsClient(true);
+  }, []);
 
   const project = useMemo(() => {
-    if (!id) return null;
-    return projects.find((p) => p.id === id) || null;
-  }, [id]);
+    return projects.find((p) => p.id === params.id) || null;
+  }, [params.id]);
   
   const { addToCart, buyNow, cartItems, purchasedItems } = useCart();
   const { user, loading } = useAuth();
   
   useEffect(() => {
-    if (!loading && !user && id) {
-      router.push('/login?redirect=/projects/' + id);
+    if (!loading && !user) {
+      router.push('/login?redirect=/projects/' + params.id);
     }
-  }, [user, loading, router, id]);
+  }, [user, loading, router, params.id]);
 
   const handleBuyNow = () => {
     if(project) {
-        buyNow(project);
+        buyNow(project, '/checkout');
     }
   };
-
 
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
   const isPurchased = useMemo(() => purchasedItems.some(item => item.id === project?.id), [purchasedItems, project]);
 
-  if (!project && id) {
+  if (!project) {
     notFound();
   }
 
-  if (loading || !user || !project) {
+  if (loading || !user || !isClient) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
