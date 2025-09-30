@@ -10,6 +10,7 @@ import { projects, categories } from "@/lib/placeholder-data"
 import { Search } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth";
 import type { Project } from "@/lib/placeholder-data";
+import { Button } from "@/components/ui/button";
 
 function ProjectsContent() {
   const { user, loading } = useAuth();
