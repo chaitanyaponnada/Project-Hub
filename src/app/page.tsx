@@ -26,10 +26,12 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useInquiry } from "@/hooks/use-inquiry";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Footer } from "@/components/layout/footer";
 import { ProjectCard } from "@/components/project-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -43,6 +45,10 @@ export default function Home() {
   const { toast } = useToast();
   const { addInquiry } = useInquiry();
   const [isLoading, setIsLoading] = useState(false);
+
+  const plugin = useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -172,6 +178,9 @@ export default function Home() {
                     align: "start",
                     loop: true,
                 }}
+                plugins={[plugin.current]}
+                onMouseEnter={() => plugin.current.stop()}
+                onMouseLeave={() => plugin.current.reset()}
                 className="w-full max-w-5xl mx-auto"
               >
                 <CarouselContent>
