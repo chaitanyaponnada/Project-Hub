@@ -31,6 +31,8 @@ const projectFormSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number."),
   originalPrice: z.coerce.number().optional(),
   tags: z.string().optional(),
+  imageUrls: z.string().min(1, "At least one image URL is required."),
+  imageHints: z.string().min(1, "At least one image hint is required."),
   includedFiles: z.string().min(10, "Please list the files included in the download."),
   projectFile: z.instanceof(FileList).optional(),
 });
@@ -57,6 +59,8 @@ export function ProjectForm({ project }: ProjectFormProps) {
       price: project?.price || 0,
       originalPrice: project?.originalPrice || undefined,
       tags: project?.tags?.join(", ") || "",
+      imageUrls: project?.imageUrls.join(", ") || "",
+      imageHints: project?.imageHints.join(", ") || "",
       includedFiles: project?.includedFiles?.join("\n") || "Source Code (ZIP)\nDocumentation (PDF)\nDatabase Schema (PNG)",
       projectFile: undefined,
     },
@@ -82,8 +86,8 @@ export function ProjectForm({ project }: ProjectFormProps) {
     const newProject = {
       ...data,
       id: isEditMode ? project.id : Date.now().toString(),
-      imageUrls: project?.imageUrls || ['https://picsum.photos/seed/new/600/400'],
-      imageHints: project?.imageHints || ['code'],
+      imageUrls: data.imageUrls.split(',').map(url => url.trim()),
+      imageHints: data.imageHints.split(',').map(hint => hint.trim()),
       downloadUrl: project?.downloadUrl || '/sample-project.zip', // Placeholder URL
       technologies: data.technologies.split(',').map(t => t.trim()),
       tags: data.tags?.split(',').map(t => t.trim()) || [],
@@ -221,6 +225,44 @@ export function ProjectForm({ project }: ProjectFormProps) {
                   </FormControl>
                    <FormDescription>
                     List the main technologies used in the project.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="imageUrls"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image URLs</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Comma-separated URLs for project images"
+                      className="min-h-[100px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Provide direct links to your project images, separated by commas.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="imageHints"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image Hints</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., code abstract, app mockup" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Provide comma-separated keywords for each image, in the same order as the URLs.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
