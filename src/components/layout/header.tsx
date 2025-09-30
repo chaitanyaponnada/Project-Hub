@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Code, ShoppingCart, User, Menu, X, LogOut } from "lucide-react";
+import { Code, ShoppingCart, User, Menu, X, LogOut, CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
@@ -123,6 +123,13 @@ export function Header() {
                             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
                         </div>
                     </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                     <DropdownMenuItem asChild>
+                        <Link href="/profile">
+                          <CircleUser className="mr-2 h-4 w-4" />
+                          <span>My Profile</span>
+                        </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut}>
                         <LogOut className="mr-2 h-4 w-4" />
