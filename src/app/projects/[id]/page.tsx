@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo } from "react";
 
@@ -20,6 +20,13 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   if (!project) {
     notFound();
   }
+
+  // Dummy data for project files for now
+  const projectFiles = [
+    { name: "Source Code (ZIP)", url: "#" },
+    { name: "Documentation (PDF)", url: "#" },
+    { name: "Database Schema (PNG)", url: "#" },
+  ];
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -59,6 +66,25 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 <Badge key={tech} variant="outline">{tech}</Badge>
               ))}
             </div>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold mb-3 font-headline">Project Files</h2>
+            <Card>
+              <CardContent className="p-4 space-y-3">
+                {projectFiles.map((file) => (
+                   <div key={file.name} className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50">
+                    <span>{file.name}</span>
+                    <Button asChild variant="outline" size="sm">
+                      <a href={file.url} download>
+                        <Download className="mr-2 h-4 w-4" />
+                        Download
+                      </a>
+                    </Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
           
           <Card className="bg-background/50">
