@@ -3,21 +3,54 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Code, Feather, Zap, Users, Target, Search } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, Code, Feather, Zap, Users, Target, Search, Loader2, Send } from "lucide-react";
 import Image from "next/image";
 import { ProjectCard } from "@/components/project-card";
 import { projects, categories, faqs } from "@/lib/placeholder-data";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRouter } from "next/navigation";
 import { Footer } from "@/components/layout/footer";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { useInquiry } from "@/hooks/use-inquiry";
+import { useState } from "react";
+
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.string().email("Please enter a valid email address."),
+  message: z.string().min(10, "Message must be at least 10 characters.").max(1000, "Message must not exceed 1000 characters."),
+});
 
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
+  const { addInquiry } = useInquiry();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: user?.displayName || "",
+      email: user?.email || "",
+      message: "",
+    },
+  });
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +58,25 @@ export default function Home() {
     const query = formData.get('search');
     router.push(`/projects?q=${query}`);
   };
+
+  async function onContactSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    addInquiry({
+      ...values,
+      date: new Date().toISOString(),
+      id: Math.random().toString(36).substring(7)
+    });
+    toast({
+      title: "Message Sent!",
+      description: "Thank you for contacting us. We'll get back to you shortly.",
+    });
+    form.reset({
+        ...form.getValues(),
+        message: ''
+    });
+    setIsLoading(false);
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -198,8 +250,92 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Contact Section */}
+        <section id="contact" className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
+              <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
+            </div>
+            <div className="max-w-2xl mx-auto">
+              <Card>
+                  <CardHeader>
+                      <CardTitle className="font-headline text-2xl">Send a Message</CardTitle>
+                      <CardDescription>We typically respond within 24-48 hours.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <Form {...form}>
+                          <form onSubmit={form.handleSubmit(onContactSubmit)} className="space-y-6">
+                              <FormField
+                                  control={form.control}
+                                  name="name"
+                                  render={({ field }) => (
+                                      <FormItem>
+                                          <FormLabel>Your Name</FormLabel>
+                                          <FormControl>
+                                              <Input placeholder="John Doe" {...field} />
+                                          </FormControl>
+                                          <FormMessage />
+                                      </FormItem>
+                                  )}
+                              />
+                              <FormField
+                                  control={form.control}
+                                  name="email"
+                                  render={({ field }) => (
+                                      <FormItem>
+                                          <FormLabel>Email Address</FormLabel>
+                                          <FormControl>
+                                              <Input type="email" placeholder="you@example.com" {...field} />
+                                          </FormControl>
+                                          <FormMessage />
+                                      </FormItem>
+                                  )}
+                              />
+                              <FormField
+                                  control={form.control}
+                                  name="message"
+                                  render={({ field }) => (
+                                      <FormItem>
+                                          <FormLabel>Your Message</FormLabel>
+                                          <FormControl>
+                                              <Textarea
+                                                  placeholder="Tell us what's on your mind..."
+                                                  className="min-h-[150px]"
+                                                  {...field}
+                                              />
+                                          </FormControl>
+                                          <FormMessage />
+                                      </FormItem>
+                                  )}
+                              />
+                              <div className="flex justify-end">
+                                  <Button type="submit" disabled={isLoading} size="lg">
+                                      {isLoading ? (
+                                          <>
+                                              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                              Sending...
+                                          </>
+                                      ) : (
+                                          <>
+                                              <Send className="mr-2 h-5 w-5" />
+                                              Send Message
+                                          </>
+                                      )}
+                                  </Button>
+                              </div>
+                          </form>
+                      </Form>
+                  </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
       </main>
       <Footer />
     </div>
   );
 }
+
+    
