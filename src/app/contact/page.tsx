@@ -24,9 +24,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -39,6 +40,7 @@ export default function ContactPage() {
   const { user } = useAuth();
   const { addInquiry } = useInquiry();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,7 +78,13 @@ export default function ContactPage() {
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-2xl mx-auto">
-            <header className="text-center mb-12">
+            <header className="text-center mb-12 relative">
+                <div className="absolute top-0 left-0">
+                  <Button variant="outline" onClick={() => router.back()}>
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back
+                  </Button>
+                </div>
                 <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">Contact Us</h1>
                 <p className="text-lg text-muted-foreground mt-2">
                     Have a question or feedback? Drop us a line!

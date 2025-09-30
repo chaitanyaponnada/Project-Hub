@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2, Lock } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, Lock, ArrowLeft } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -60,6 +60,12 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
   return (
     <div className="container mx-auto px-4 py-12">
+        <div className="mb-8">
+          <Button variant="outline" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Projects
+          </Button>
+        </div>
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <div>
           <Carousel className="w-full">

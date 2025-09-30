@@ -4,7 +4,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Loader2, User, Package, MessageSquare } from "lucide-react";
+import { Loader2, ArrowLeft, Package, MessageSquare } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -41,7 +41,13 @@ export default function ProfilePage() {
 
     return (
         <div className="container mx-auto px-4 py-12">
-            <div className="flex flex-col md:flex-row items-start gap-8">
+            <div className="relative mb-8">
+                 <Button variant="outline" onClick={() => router.back()} className="absolute top-0 left-0">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back
+                  </Button>
+            </div>
+            <div className="flex flex-col md:flex-row items-start gap-8 pt-12">
                 <Card className="w-full md:w-1/4 sticky top-24">
                     <CardContent className="p-6 text-center">
                         <Avatar className="h-24 w-24 mx-auto mb-4">
