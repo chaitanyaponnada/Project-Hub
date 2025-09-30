@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { Code, Github, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());
+  const pathname = usePathname();
 
   useEffect(() => {
     setYear(new Date().getFullYear());
@@ -20,6 +22,10 @@ export function Footer() {
       document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <footer className="bg-muted text-muted-foreground mt-auto border-t">
