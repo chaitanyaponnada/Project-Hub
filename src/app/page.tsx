@@ -195,8 +195,8 @@ export default function Home() {
                         </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="-left-4" />
-                    <CarouselNext className="-right-4" />
+                    <CarouselPrevious className="-left-4 z-20" />
+                    <CarouselNext className="-right-4 z-20" />
                 </Carousel>
               </div>
               
