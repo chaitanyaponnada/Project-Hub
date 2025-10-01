@@ -85,6 +85,8 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       if (userCredential.user) {
         await updateProfile(userCredential.user, { displayName: values.name });
+        // Reload the user to get the updated displayName
+        await userCredential.user.reload();
       }
       router.push("/");
       toast({ title: "Account created successfully!" });
@@ -106,7 +108,7 @@ export default function RegisterPage() {
       await signInWithPopup(auth, provider);
       router.push("/");
       toast({ title: "Signed in with Google successfully!" });
-    } catch (error: any) {
+    } catch (error: any) => {
       toast({
         title: "Google Sign-in Failed",
         description: error.message,
@@ -243,5 +245,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-    
