@@ -31,8 +31,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { NodeGarden } from "@/components/node-garden";
-import { checkUserExists, checkAdminExists } from "@/lib/firebase-services";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getUserById } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -48,7 +47,6 @@ export default function LoginPage() {
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState("user");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,24 +66,17 @@ export default function LoginPage() {
       );
       const user = userCredential.user;
 
-      if (activeTab === "admin") {
-        const adminExists = await checkAdminExists(user.email!);
-        if (adminExists) {
+      const userDoc = await getUserById(user.uid);
+      
+      if (userDoc && userDoc.isAdmin) {
           toast({ title: "Admin login successful!" });
           router.push('/admin');
-        } else {
-          await auth.signOut();
-          toast({ title: "Login Failed", description: "You are not authorized as an admin.", variant: "destructive" });
-        }
-      } else {
-        const userExists = await checkUserExists(user.email!);
-        if (userExists) {
+      } else if (userDoc) {
           toast({ title: "Login successful!" });
           router.push(redirectUrl);
-        } else {
+      } else {
           await auth.signOut();
           toast({ title: "Login Failed", description: "No user record found.", variant: "destructive" });
-        }
       }
 
     } catch (error: any) {
@@ -135,100 +126,6 @@ export default function LoginPage() {
     }
 }
 
-  const LoginForm = () => (
-    <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleLogin)}>
-            <CardContent className="space-y-4 pt-4">
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                            <Input
-                            type="email"
-                            placeholder="m@example.com"
-                            {...field}
-                            />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                        <div className="flex items-center justify-between">
-                            <FormLabel>Password</FormLabel>
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button variant="link" className="p-0 h-auto text-xs">Forgot Password?</Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Reset Password</DialogTitle>
-                                        <DialogDescription>
-                                            Enter your email address below. We'll send you a link to reset your password.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <div className="space-y-4 py-2">
-                                        <Input
-                                            type="email"
-                                            placeholder="you@example.com"
-                                            value={resetEmail}
-                                            onChange={(e) => setResetEmail(e.target.value)}
-                                        />
-                                    </div>
-                                    <DialogFooter>
-                                        <DialogClose asChild>
-                                            <Button type="button" variant="outline">Cancel</Button>
-                                        </DialogClose>
-                                        <Button onClick={handlePasswordReset} disabled={isResetting}>
-                                            {isResetting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                            Send Reset Link
-                                        </Button>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-                        <FormControl>
-                            <div className="relative">
-                            <Input type={showPassword ? "text" : "password"} {...field} />
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:bg-transparent"
-                                onClick={() => setShowPassword((prev: boolean) => !prev)}
-                            >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </Button>
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign In as {activeTab === 'user' ? 'User' : 'Admin'}
-                </Button>
-                <div className="text-center text-sm">
-                Don't have an account?{" "}
-                <Link href="/register" className="underline text-primary hover:text-primary/80">
-                    Sign up
-                </Link>
-                </div>
-            </CardFooter>
-        </form>
-    </Form>
-  )
-
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
       <NodeGarden />
@@ -248,21 +145,98 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         
-        <Tabs defaultValue="user" onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="user">User</TabsTrigger>
-            <TabsTrigger value="admin">Admin</TabsTrigger>
-          </TabsList>
-          <TabsContent value="user">
-            <LoginForm />
-          </TabsContent>
-          <TabsContent value="admin">
-            <LoginForm />
-          </TabsContent>
-        </Tabs>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleLogin)}>
+                <CardContent className="space-y-4 pt-4">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                                <Input
+                                type="email"
+                                placeholder="m@example.com"
+                                {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                            <div className="flex items-center justify-between">
+                                <FormLabel>Password</FormLabel>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="link" className="p-0 h-auto text-xs">Forgot Password?</Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Reset Password</DialogTitle>
+                                            <DialogDescription>
+                                                Enter your email address below. We'll send you a link to reset your password.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="space-y-4 py-2">
+                                            <Input
+                                                type="email"
+                                                placeholder="you@example.com"
+                                                value={resetEmail}
+                                                onChange={(e) => setResetEmail(e.target.value)}
+                                            />
+                                        </div>
+                                        <DialogFooter>
+                                            <DialogClose asChild>
+                                                <Button type="button" variant="outline">Cancel</Button>
+                                            </DialogClose>
+                                            <Button onClick={handlePasswordReset} disabled={isResetting}>
+                                                {isResetting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                                Send Reset Link
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                            <FormControl>
+                                <div className="relative">
+                                <Input type={showPassword ? "text" : "password"} {...field} />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:bg-transparent"
+                                    onClick={() => setShowPassword((prev: boolean) => !prev)}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </Button>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </CardContent>
+                <CardFooter className="flex flex-col gap-4">
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Sign In
+                    </Button>
+                    <div className="text-center text-sm">
+                    Don't have an account?{" "}
+                    <Link href="/register" className="underline text-primary hover:text-primary/80">
+                        Sign up
+                    </Link>
+                    </div>
+                </CardFooter>
+            </form>
+        </Form>
       </Card>
     </div>
   );
 }
-
-    

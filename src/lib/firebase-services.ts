@@ -8,76 +8,76 @@ import type { Project } from './placeholder-data';
 
 /**
  * Adds a new user to the `users` collection in Firestore.
+ * Sets isAdmin to true for the first admin.
  * @param user The user object from Firebase Auth.
  */
 export const addUserToUsersCollection = async (user: User) => {
     if (!user) return;
     const userRef = doc(db, 'users', user.uid);
+    let isAdmin = false;
+
+    // Secure, one-time bootstrap for the first admin
+    if (user.email === 'chaitanyaponnada657@gmail.com') {
+        const adminDocRef = doc(db, 'users', user.uid);
+        const adminDoc = await getDoc(adminDocRef);
+        if (!adminDoc.exists() || !adminDoc.data().isAdmin) {
+             const userCountSnapshot = await getDocs(collection(db, 'users'));
+             const adminUsers = userCountSnapshot.docs.filter(d => d.data().isAdmin);
+             if(adminUsers.length === 0) {
+                isAdmin = true;
+             }
+        }
+    }
+
     await setDoc(userRef, {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
         photoURL: user.photoURL,
         createdAt: serverTimestamp(),
-    });
+        isAdmin: isAdmin,
+    }, { merge: true });
 };
 
-
 /**
- * Adds a new admin user to the `admins` collection in Firestore.
- * @param user The user object from Firebase Auth.
- */
-export const addAdminToAdminsCollection = async (user: User) => {
-    if (!user) return;
-    const adminRef = doc(db, 'admins', user.uid);
-    await setDoc(adminRef, {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        createdAt: serverTimestamp(),
-    });
-};
-
-
-/**
- * Checks if a user's email exists in the `users` collection.
- * @param email The user's email.
- */
-export const checkUserExists = async (email: string): Promise<boolean> => {
-    if (!email) return false;
-    const usersRef = collection(db, 'users');
-    const q = query(usersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
-};
-
-
-/**
- * Checks if an admin's email exists in the `admins` collection.
- * @param email The admin's email.
- */
-export const checkAdminExists = async (email: string): Promise<boolean> => {
-    if (!email) return false;
-    const adminsRef = collection(db, 'admins');
-    const q = query(adminsRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
-};
-
-
-/**
- * Checks if a user is an admin by looking for their UID in the 'admins' collection.
- * This function can be used for securing backend operations or UI elements.
+ * Checks if a user is an admin by looking for their UID in the 'users' collection and checking the isAdmin flag.
  * @param uid The user's ID.
  */
 export const isAdmin = async (uid: string): Promise<boolean> => {
     if (!uid) return false;
     try {
-        const adminDoc = await getDoc(doc(db, 'admins', uid));
-        return adminDoc.exists();
+        const userDoc = await getDoc(doc(db, 'users', uid));
+        return userDoc.exists() && userDoc.data().isAdmin === true;
     } catch (error) {
         console.error("Error checking admin status:", error);
         return false;
+    }
+};
+
+/**
+ * Promotes a user to an admin.
+ * @param uid The user's ID to promote.
+ */
+export const promoteToAdmin = async (uid: string) => {
+    if (!uid) return;
+    const userRef = doc(db, 'users', uid);
+    await updateDoc(userRef, {
+        isAdmin: true
+    });
+};
+
+
+/**
+ * Fetches a single user by their ID from Firestore.
+ * @param id The user ID.
+ */
+export const getUserById = async (id: string): Promise<any | null> => {
+    const userDoc = doc(db, 'users', id);
+    const userSnapshot = await getDoc(userDoc);
+    if (userSnapshot.exists()) {
+        return userSnapshot.data();
+    } else {
+        return null;
     }
 };
 
@@ -125,12 +125,12 @@ export const addProject = async (projectData: Omit<Project, 'id' | 'imageUrls' |
 };
 
 /**
- * Updates an existing project in Firestore.
- * @param projectId The ID of the project to update.
- * @param projectData The new data for the project.
- * @param newImageFiles Optional new images to upload.
- * @param newProjectFile Optional new project file to upload.
- */
+* Updates an existing project in Firestore.
+* @param projectId The ID of the project to update.
+* @param projectData The new data for the project.
+* @param newImageFiles Optional new images to upload.
+* @param newProjectFile Optional new project file to upload.
+*/
 export const updateProject = async (
     projectId: string,
     projectData: Partial<Omit<Project, 'id' | 'createdAt'>>,
@@ -261,5 +261,3 @@ export const getInquiries = async () => {
 export const deleteInquiry = async (inquiryId: string) => {
     await deleteDoc(doc(db, 'inquiries', inquiryId));
 };
-
-    

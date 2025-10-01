@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { checkAdminExists } from '@/lib/firebase-services';
+import { isAdmin } from '@/lib/firebase-services';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { LayoutDashboard, Package, Users, MessageSquare } from 'lucide-react';
@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       if (!user) {
         router.push('/login');
       } else {
-        checkAdminExists(user.email!).then(adminStatus => {
+        isAdmin(user.uid).then(adminStatus => {
           setIsUserAdmin(adminStatus);
           setCheckingAdmin(false);
           if (!adminStatus) {
@@ -98,5 +98,3 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </SidebarProvider>
   );
 }
-
-    

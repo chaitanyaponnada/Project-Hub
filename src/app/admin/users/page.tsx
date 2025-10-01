@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, User, ShieldCheck } from 'lucide-react';
-import { getUsers, promoteToAdmin, isAdmin } from '@/lib/firebase-services';
+import { getUsers, promoteToAdmin } from '@/lib/firebase-services';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -14,26 +14,17 @@ import { useToast } from '@/hooks/use-toast';
 export default function AdminUsersPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [adminStatus, setAdminStatus] = useState<Record<string, boolean>>({});
     const { toast } = useToast();
 
-    const fetchUsersAndAdmins = async () => {
+    const fetchUsers = async () => {
         setIsLoading(true);
         const fetchedUsers = await getUsers();
-        const adminChecks = await Promise.all(fetchedUsers.map(user => isAdmin(user.uid)));
-        
-        const adminStatusMap: Record<string, boolean> = {};
-        fetchedUsers.forEach((user, index) => {
-            adminStatusMap[user.uid] = adminChecks[index];
-        });
-
         setUsers(fetchedUsers);
-        setAdminStatus(adminStatusMap);
         setIsLoading(false);
     };
     
     useEffect(() => {
-        fetchUsersAndAdmins();
+        fetchUsers();
     }, []);
 
     const getInitials = (name?: string | null) => {
@@ -44,7 +35,8 @@ export default function AdminUsersPage() {
     const handlePromote = async (uid: string) => {
         try {
             await promoteToAdmin(uid);
-            setAdminStatus(prev => ({...prev, [uid]: true}));
+            // Re-fetch users to update the list with the new admin status
+            fetchUsers();
             toast({title: "User Promoted", description: "The user has been granted admin privileges."});
         } catch (error) {
             console.error("Failed to promote user:", error);
@@ -88,17 +80,17 @@ export default function AdminUsersPage() {
                                     </TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>
-                                        {user.createdAt ? format(user.createdAt.toDate(), 'PPP') : 'N/A'}
+                                        {user.createdAt?.toDate ? format(user.createdAt.toDate(), 'PPP') : 'N/A'}
                                     </TableCell>
                                     <TableCell>
-                                        {adminStatus[user.uid] ? (
+                                        {user.isAdmin ? (
                                             <span className="flex items-center gap-1 font-semibold text-primary"><ShieldCheck size={16}/> Admin</span>
                                         ) : (
                                             'User'
                                         )}
                                     </TableCell>
                                      <TableCell>
-                                        {!adminStatus[user.uid] && (
+                                        {!user.isAdmin && (
                                             <Button size="sm" onClick={() => handlePromote(user.uid)}>
                                                 Promote to Admin
                                             </Button>
