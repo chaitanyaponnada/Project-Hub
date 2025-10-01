@@ -32,6 +32,7 @@ import { ProjectCard } from "@/components/project-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 
 const formSchema = z.object({
@@ -91,6 +92,38 @@ const NodeGarden = () => {
             </svg>
         </div>
     );
+};
+
+const HeroBackground = () => {
+  const { theme } = useTheme();
+  const [videoSrc, setVideoSrc] = useState('');
+
+  useEffect(() => {
+    // Set video source based on theme, but only on the client
+    setVideoSrc(
+      theme === 'dark'
+        ? 'https://res.cloudinary.com/dagqmrniu/video/upload/v1759294420/12_lhizfb.mp4'
+        : 'https://res.cloudinary.com/dagqmrniu/video/upload/v1759294376/2_lksdur.mp4'
+    );
+  }, [theme]);
+
+  return (
+    <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+      {videoSrc && (
+          <video
+          key={videoSrc}
+          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto object-cover transform -translate-x-1/2 -translate-y-1/2"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+      )}
+      <div className="absolute inset-0 bg-black/30"></div>
+    </div>
+  );
 };
 
 
@@ -155,20 +188,21 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         {/* Hero Section */}
-        <section id="home" className="relative py-24 md:py-32 text-center">
-          <div className="container mx-auto px-4 relative">
+        <section id="home" className="relative py-24 md:py-32 text-center overflow-hidden">
+          <HeroBackground />
+          <div className="container mx-auto px-4 relative text-white">
             <div className="max-w-4xl mx-auto">
-              <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-primary mb-4 min-h-[90px] md:min-h-[128px]">
+              <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px]">
                 {typedTitle}<span className="animate-ping">|</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
+              <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
                 Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
               </p>
               <div className="flex justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
                   <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
                 </Button>
-                <Button asChild size="lg" variant="outline">
+                <Button asChild size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-primary">
                   <Link href="/about">Learn More</Link>
                 </Button>
               </div>
@@ -399,3 +433,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

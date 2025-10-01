@@ -37,14 +37,19 @@ export function Header() {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useAuth();
+  
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      // Make header opaque only after scrolling past the hero section on the homepage
+      const threshold = isHomePage ? window.innerHeight * 0.8 : 10;
+      setIsScrolled(window.scrollY > threshold);
     };
     window.addEventListener('scroll', handleScroll);
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   if (pathname.startsWith('/admin')) {
     return null;
@@ -60,16 +65,25 @@ export function Header() {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 
+  const headerClasses = cn(
+    "sticky top-0 z-50 w-full border-b transition-colors duration-300",
+    isScrolled ? "bg-background/80 backdrop-blur-xl border-border" : "bg-transparent border-transparent",
+    !isScrolled && isHomePage && "text-white"
+  );
+
+  const navLinkClasses = (href: string) => cn(
+    "transition-colors",
+    isScrolled || !isHomePage ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white",
+    pathname === href && (isScrolled || !isHomePage ? "text-primary font-semibold" : "text-white font-semibold")
+  );
+
   const NavLinks = ({ className }: { className?: string }) => (
     <nav className={cn("flex items-center gap-6 text-sm font-medium", className)}>
       {navLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className={cn(
-            "text-foreground/80 hover:text-foreground transition-colors",
-             pathname === link.href && "text-primary font-semibold"
-          )}
+          className={navLinkClasses(link.href)}
           onClick={() => setMenuOpen(false)}
         >
           {link.label}
@@ -79,14 +93,11 @@ export function Header() {
   );
 
   return (
-    <header className={cn(
-        "sticky top-0 z-50 w-full border-b transition-colors duration-300",
-        isScrolled ? "bg-background/80 backdrop-blur-xl" : "bg-transparent border-transparent"
-    )}>
+    <header className={headerClasses}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <Code className="h-7 w-7 text-primary" />
-          <span className="font-headline text-xl font-bold text-primary">Project Hub</span>
+          <Code className={cn("h-7 w-7", isScrolled || !isHomePage ? "text-primary" : "text-white")} />
+          <span className={cn("font-headline text-xl font-bold", isScrolled || !isHomePage ? "text-primary" : "text-white")}>Project Hub</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
@@ -138,7 +149,12 @@ export function Header() {
                 </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button variant="outline" size="sm" asChild className="hidden sm:flex">
+            <Button 
+                variant={isScrolled || !isHomePage ? "outline" : "outline"}
+                size="sm" 
+                asChild 
+                className={cn("hidden sm:flex", !isScrolled && isHomePage && "border-white/50 text-white hover:bg-white hover:text-primary")}
+            >
                <Link href="/login">
                   <User className="mr-2 h-4 w-4" />
                   Login
@@ -166,7 +182,21 @@ export function Header() {
                     </Button>
                 </div>
                 <div className="flex-1 mt-6">
-                  <NavLinks className="flex-col items-start gap-4 text-lg" />
+                  <nav className="flex flex-col items-start gap-4 text-lg">
+                      {navLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={cn(
+                            "text-foreground/80 hover:text-foreground transition-colors",
+                            pathname === link.href && "text-primary font-semibold"
+                          )}
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </nav>
                 </div>
                 {user ? (
                    <Button variant="outline" onClick={() => { handleSignOut(); setMenuOpen(false); }}>
@@ -189,3 +219,5 @@ export function Header() {
     </header>
   );
 }
+
+    
