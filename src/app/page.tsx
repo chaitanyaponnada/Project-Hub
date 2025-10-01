@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -43,8 +44,10 @@ const formSchema = z.object({
 
 const useTypewriter = (text: string, speed = 50) => {
     const [displayText, setDisplayText] = useState('');
+    const [isTyping, setIsTyping] = useState(true);
   
     useEffect(() => {
+      setIsTyping(true);
       let i = 0;
       const typingInterval = setInterval(() => {
         if (i < text.length) {
@@ -52,6 +55,7 @@ const useTypewriter = (text: string, speed = 50) => {
           i++;
         } else {
           clearInterval(typingInterval);
+          setIsTyping(false);
         }
       }, speed);
   
@@ -60,7 +64,7 @@ const useTypewriter = (text: string, speed = 50) => {
       };
     }, [text, speed]);
   
-    return displayText;
+    return {displayText, isTyping};
 };
 
 const NodeGarden = () => {
@@ -133,7 +137,7 @@ export default function Home() {
   const { toast } = useToast();
   const { addInquiry } = useInquiry();
   const [isLoading, setIsLoading] = useState(false);
-  const typedTitle = useTypewriter("Project Hub", 100);
+  const {displayText: typedTitle, isTyping} = useTypewriter("Project Hub", 100);
 
   const plugin = useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
@@ -193,7 +197,7 @@ export default function Home() {
           <div className="container mx-auto px-4 relative">
             <div className="max-w-4xl mx-auto">
               <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px]">
-                {typedTitle}<span className="animate-ping">|</span>
+                {typedTitle}{isTyping && <span className="animate-ping">|</span>}
               </h1>
               <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
                 Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
