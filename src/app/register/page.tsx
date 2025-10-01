@@ -29,7 +29,7 @@ import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
 import { addUserToUsersCollection, addAdminToAdminsCollection } from "@/lib/firebase-services";
@@ -62,6 +62,24 @@ export default function RegisterPage() {
       terms: false,
     },
   });
+
+  useEffect(() => {
+    if (activeTab === 'admin') {
+      form.reset({
+        name: "Admin User",
+        email: "admin@example.com",
+        password: "password123",
+        terms: true,
+      });
+    } else {
+      form.reset({
+        name: "",
+        email: "",
+        password: "",
+        terms: false,
+      });
+    }
+  }, [activeTab, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
