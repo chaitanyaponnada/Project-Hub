@@ -23,11 +23,11 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
             alt={project.title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            data-ai-hint={project.imageHints[0]}
+            // data-ai-hint={project.imageHints[0]} // imageHints are deprecated
           />
         </div>
         {project.tags && project.tags.length > 0 && (
-          <div className="absolute top-2 left-2 flex gap-1">
+          <div className="absolute top-2 left-2 flex gap-1 z-10">
             {project.tags.map(tag => (
               <Badge key={tag} variant="destructive" className="text-xs shadow-md">{tag}</Badge>
             ))}

@@ -24,6 +24,14 @@ export const categories = [
   "Game Development",
 ];
 
+export const defaultTags = [
+    "Selling Fast",
+    "Most Purchased",
+    "High-Level Project",
+    "Beginner Friendly",
+    "New!"
+]
+
 // 3 sample projects as requested
 export const projects: Project[] = [
   {
@@ -37,7 +45,7 @@ export const projects: Project[] = [
     downloadUrl: "#", // Placeholder
     imageHints: [],
     includedFiles: [],
-    tags: ["AI"],
+    tags: ["AI", "New!"],
   },
   {
     id: "2",
@@ -50,7 +58,7 @@ export const projects: Project[] = [
     downloadUrl: "#", // Placeholder
     imageHints: [],
     includedFiles: [],
-    tags: ["Fitness"],
+    tags: ["Fitness", "Selling Fast"],
   },
   {
     id: "3",
@@ -63,7 +71,7 @@ export const projects: Project[] = [
     downloadUrl: "#", // Placeholder
     imageHints: [],
     includedFiles: [],
-    tags: ["API"],
+    tags: ["API", "High-Level Project"],
   }
 ];
 

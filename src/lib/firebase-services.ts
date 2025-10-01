@@ -82,45 +82,15 @@ export const getUserById = async (id: string): Promise<any | null> => {
     }
 };
 
-
 /**
- * Uploads files to Firebase Storage and returns their download URLs.
- * @param path The storage path (e.g., 'project-images').
- * @param files The files to upload.
+ * Adds a new project to Firestore.
+ * @param projectData The complete project data, including URLs.
  */
-const uploadFiles = async (path: string, files: FileList): Promise<string[]> => {
-    const urls: string[] = [];
-    for (const file of Array.from(files)) {
-        const fileRef = ref(storage, `${path}/${Date.now()}-${file.name}`);
-        await uploadBytes(fileRef, file);
-        const url = await getDownloadURL(fileRef);
-        urls.push(url);
-    }
-    return urls;
-};
-
-/**
- * Adds a new project to Firestore, including uploading images and project file.
- * @param projectData The core project data.
- * @param imageFiles The project's images.
- * @param projectFile The project's downloadable zip file.
- */
-export const addProject = async (projectData: Omit<Project, 'id' | 'imageUrls' | 'downloadUrl' | 'createdAt'>, imageFiles: FileList, projectFile: File) => {
-    // 1. Upload Images
-    const imageUrls = await uploadFiles('project-images', imageFiles);
-    
-    // 2. Upload Project File
-    const projectFileRef = ref(storage, `project-files/${Date.now()}-${projectFile.name}`);
-    await uploadBytes(projectFileRef, projectFile);
-    const downloadUrl = await getDownloadURL(projectFileRef);
-
-    // 3. Add Project to Firestore
+export const addProject = async (projectData: Omit<Project, 'id' | 'createdAt'>) => {
     const projectRef = doc(collection(db, 'projects'));
     await setDoc(projectRef, {
         ...projectData,
         id: projectRef.id,
-        imageUrls,
-        downloadUrl,
         createdAt: serverTimestamp()
     });
 };
@@ -129,58 +99,23 @@ export const addProject = async (projectData: Omit<Project, 'id' | 'imageUrls' |
 * Updates an existing project in Firestore.
 * @param projectId The ID of the project to update.
 * @param projectData The new data for the project.
-* @param newImageFiles Optional new images to upload.
-* @param newProjectFile Optional new project file to upload.
 */
 export const updateProject = async (
     projectId: string,
-    projectData: Partial<Omit<Project, 'id' | 'createdAt'>>,
-    newImageFiles?: FileList | null,
-    newProjectFile?: File
+    projectData: Partial<Omit<Project, 'id' | 'createdAt'>>
 ) => {
     const projectRef = doc(db, 'projects', projectId);
     const updateData: any = { ...projectData, lastUpdatedAt: serverTimestamp() };
-
-    if (newImageFiles && newImageFiles.length > 0) {
-        const newImageUrls = await uploadFiles('project-images', newImageFiles);
-        const existingDoc = await getDoc(projectRef);
-        const existingUrls = existingDoc.data()?.imageUrls || [];
-        updateData.imageUrls = [...existingUrls, ...newImageUrls];
-    }
-    
-    if (newProjectFile) {
-        const projectFileRef = ref(storage, `project-files/${Date.now()}-${newProjectFile.name}`);
-        await uploadBytes(projectFileRef, newProjectFile);
-        updateData.downloadUrl = await getDownloadURL(projectFileRef);
-    }
-    
     await updateDoc(projectRef, updateData);
 };
 
 
 /**
- * Deletes a project from Firestore and its associated files from Storage.
+ * Deletes a project from Firestore. Note: This version does not delete files from storage
+ * as we are now using external URLs. You may need to manage those files manually.
  * @param projectId The ID of the project to delete.
- * @param imageUrls Array of image URLs to delete from Storage.
- * @param downloadUrl The download URL of the project file to delete.
  */
-export const deleteProject = async (projectId: string, imageUrls: string[], downloadUrl: string) => {
-    const deleteFileFromUrl = async (url: string) => {
-        try {
-            const fileRef = ref(storage, url);
-            await deleteObject(fileRef);
-        } catch (error: any) {
-            if (error.code !== 'storage/object-not-found') {
-                console.error("Error deleting file from storage:", error);
-            }
-        }
-    };
-    
-    const imagePromises = imageUrls.map(url => deleteFileFromUrl(url));
-    const filePromise = deleteFileFromUrl(downloadUrl);
-    
-    await Promise.all([...imagePromises, filePromise]);
-
+export const deleteProject = async (projectId: string) => {
     await deleteDoc(doc(db, 'projects', projectId));
 };
 

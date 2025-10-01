@@ -8,10 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2, Trash2 } from 'lucide-react';
 import type { Project } from '@/lib/placeholder-data';
+import { categories, defaultTags } from '@/lib/placeholder-data';
 import { addProject, updateProject } from '@/lib/firebase-services';
 import { useState } from 'react';
 
@@ -24,6 +26,8 @@ const formSchema = z.object({
   technologies: z.array(z.object({ value: z.string().min(1, "Technology cannot be empty.") })).min(1, "At least one technology is required."),
   includedFiles: z.array(z.object({ value: z.string().min(1, "File name cannot be empty.") })).min(1, "At least one included file is required."),
   tags: z.array(z.object({ value: z.string().min(1, "Tag cannot be empty.") })).optional(),
+  imageUrls: z.array(z.object({ value: z.string().url("Must be a valid URL.") })).min(1, "At least one image URL is required."),
+  downloadUrl: z.string().url("Must be a valid URL for the project file."),
 });
 
 type ProjectFormValues = z.infer<typeof formSchema>;
@@ -36,14 +40,13 @@ export function ProjectForm({ project }: ProjectFormProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
-  const [projectFile, setProjectFile] = useState<FileList | null>(null);
 
   const defaultValues = project ? {
       ...project,
       technologies: project.technologies.map(value => ({ value })),
       includedFiles: project.includedFiles.map(value => ({ value })),
       tags: project.tags ? project.tags.map(value => ({ value })) : [],
+      imageUrls: project.imageUrls.map(value => ({ value })),
   } : {
     title: '',
     description: '',
@@ -53,6 +56,8 @@ export function ProjectForm({ project }: ProjectFormProps) {
     technologies: [{ value: '' }],
     includedFiles: [{value: ''}],
     tags: [],
+    imageUrls: [{ value: '' }],
+    downloadUrl: '',
   }
 
   const form = useForm<ProjectFormValues>({
@@ -63,21 +68,11 @@ export function ProjectForm({ project }: ProjectFormProps) {
   const { fields: techFields, append: appendTech, remove: removeTech } = useFieldArray({ control: form.control, name: "technologies" });
   const { fields: fileFields, append: appendFile, remove: removeFile } = useFieldArray({ control: form.control, name: "includedFiles" });
   const { fields: tagFields, append: appendTag, remove: removeTag } = useFieldArray({ control: form.control, name: "tags" });
+  const { fields: imageUrlFields, append: appendImageUrl, remove: removeImageUrl } = useFieldArray({ control: form.control, name: "imageUrls" });
+
 
   const onSubmit = async (data: ProjectFormValues) => {
     setIsLoading(true);
-
-    if (!project && (!imageFiles || imageFiles.length === 0)) {
-        toast({ title: 'Error', description: 'Please upload at least one project image.', variant: 'destructive' });
-        setIsLoading(false);
-        return;
-    }
-
-    if (!project && !projectFile) {
-        toast({ title: 'Error', description: 'Please upload the project zip file.', variant: 'destructive' });
-        setIsLoading(false);
-        return;
-    }
 
     try {
       const projectData = {
@@ -85,13 +80,15 @@ export function ProjectForm({ project }: ProjectFormProps) {
         technologies: data.technologies.map(t => t.value),
         includedFiles: data.includedFiles.map(f => f.value),
         tags: data.tags ? data.tags.map(t => t.value) : [],
+        imageUrls: data.imageUrls.map(i => i.value),
+        imageHints: [], // imageHints are deprecated as we use URLs now
       };
 
       if (project) {
-        await updateProject(project.id, projectData, imageFiles, projectFile ? projectFile[0] : undefined);
+        await updateProject(project.id, projectData);
         toast({ title: 'Success', description: 'Project updated successfully.' });
       } else {
-        await addProject(projectData, imageFiles!, projectFile![0]);
+        await addProject(projectData);
         toast({ title: 'Success', description: 'Project added successfully.' });
       }
       router.push('/admin/projects');
@@ -196,38 +193,46 @@ export function ProjectForm({ project }: ProjectFormProps) {
                     />
                 </div>
                  <FormField
-                      control={form.control}
-                      name="category"
-                      render={({ field }) => (
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Category</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Web Development" {...field} />
-                          </FormControl>
-                          <FormMessage />
+                        <FormLabel>Category</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {categories.map((cat) => (
+                                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
                         </FormItem>
-                      )}
+                    )}
                     />
+                <FormField
+                  control={form.control}
+                  name="downloadUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project File URL (e.g., Google Drive, Dropbox link)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://example.com/download.zip" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
             <div className="space-y-6">
                  {renderFieldArray(techFields, appendTech, removeTech, 'technologies', 'Technologies')}
                  {renderFieldArray(fileFields, appendFile, removeFile, 'includedFiles', 'Included Files')}
                  {renderFieldArray(tagFields, appendTag, removeTag, 'tags', 'Tags')}
-                 
-                <FormItem>
-                    <FormLabel>Project Images</FormLabel>
-                    <FormControl>
-                        <Input type="file" multiple onChange={e => setImageFiles(e.target.files)} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                <FormItem>
-                    <FormLabel>Project File (ZIP)</FormLabel>
-                    <FormControl>
-                        <Input type="file" accept=".zip" onChange={e => setProjectFile(e.target.files)} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
+                 {renderFieldArray(imageUrlFields, appendImageUrl, removeImageUrl, 'imageUrls', 'Image URLs')}
             </div>
         </div>
 

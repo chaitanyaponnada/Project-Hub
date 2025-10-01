@@ -53,7 +53,7 @@ export default function AdminProjectsPage() {
 
       setIsDeleting(true);
       try {
-        await deleteProject(projectToDelete.id, projectToDelete.imageUrls, projectToDelete.downloadUrl);
+        await deleteProject(projectToDelete.id);
         setProjects(projects.filter(p => p.id !== projectToDelete.id));
         toast({ title: "Project Deleted", description: `"${projectToDelete.title}" has been deleted.` });
       } catch (error) {
