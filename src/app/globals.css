@@ -36,34 +36,34 @@
   }
 
   .dark {
-    --background: 222 47% 5%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 5%;
-    --popover-foreground: 210 40% 98%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
     --primary: 213.9 98.2% 61.2%;
     --primary-foreground: 210 20% 9%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 213.9 98.2% 61.2%;
-    --accent-foreground: 210 20% 9%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
     --ring: 213.9 98.2% 61.2%;
 
-    --sidebar-background: 222 47% 3%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 210 40% 98%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 210 40% 98% / 0.1;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 210 40% 98% / 0.1;
-    --sidebar-ring: 215 20.2% 65.1%;
+    --sidebar-background: 240 10% 3.9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 240 10% 3.9%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 213.9 98.2% 61.2%;
   }
 }
 
@@ -91,7 +91,7 @@
   }
 
   .dark .animated-background {
-      background: linear-gradient(-45deg, hsl(222, 47%, 5%), hsl(222, 47%, 8%), hsl(214, 98%, 30%), hsl(214, 98%, 15%));
+      background: linear-gradient(-45deg, hsl(0, 0%, 4%), hsl(0, 0%, 10%), hsl(0, 0%, 4%), hsl(0, 0%, 10%));
       background-size: 400% 400%;
 	    animation: gradient 15s ease infinite;
   }
