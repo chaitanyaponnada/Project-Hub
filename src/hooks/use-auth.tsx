@@ -22,30 +22,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
   
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
-      if (currentUser) {
-        // This block runs when a user is signed in.
-        setUser(currentUser);
-        await addUserToFirestore(currentUser); // Ensure user exists in Firestore
-        const adminStatus = await isAdmin(currentUser.uid);
-        setIsUserAdmin(adminStatus);
-      } else {
-        // This block runs when no user is signed in.
-        setUser(null);
-        setIsUserAdmin(false);
-      }
-      setLoading(false);
-    });
-
-    // Handle the redirect result from Google Sign-In
+    // First, handle the redirect result from Google Sign-In
     getRedirectResult(auth)
       .then(async (result) => {
         if (result && result.user) {
-          // This means a user just signed in/up via Google redirect.
-          // The onAuthStateChanged listener above will handle setting the user state.
-          // We just show a toast here for user feedback.
+          // User signed in via redirect.
           toast({ title: "Signed in with Google successfully!" });
+          // Ensure user is in Firestore. onAuthStateChanged will handle the rest.
+          await addUserToFirestore(result.user);
         }
       })
       .catch((error) => {
@@ -58,10 +42,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             variant: "destructive",
           });
         }
-      });
+      })
+      .finally(() => {
+         // Now, set up the onAuthStateChanged listener to handle all session states.
+         // This runs after the redirect has been processed.
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+          setLoading(true);
+          if (currentUser) {
+            setUser(currentUser);
+            const adminStatus = await isAdmin(currentUser.uid);
+            setIsUserAdmin(adminStatus);
+          } else {
+            setUser(null);
+            setIsUserAdmin(false);
+          }
+          setLoading(false);
+        });
 
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+      });
   }, [toast]);
 
   return (
