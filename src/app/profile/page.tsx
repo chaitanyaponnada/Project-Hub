@@ -4,7 +4,7 @@
 
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Package, MessageSquare } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,14 +20,16 @@ export default function ProfilePage() {
     const router = useRouter();
     const { purchasedItems } = useCart();
     const { inquiries } = useInquiry();
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
+        setIsClient(true);
         if (!loading && !user) {
             router.push('/login?redirect=/profile');
         }
     }, [user, loading, router]);
 
-    if (loading || !user) {
+    if (!isClient || loading || !user) {
         return (
             <div className="flex items-center justify-center h-[50vh]">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
