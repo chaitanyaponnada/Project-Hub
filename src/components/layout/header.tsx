@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Code, ShoppingCart, User, Menu, X, LogOut, CircleUser } from "lucide-react";
+import { Code, ShoppingCart, User, Menu, X, LogOut, CircleUser, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
@@ -24,7 +24,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useTheme } from "next-themes";
 
 
-const navLinks = [
+const baseNavLinks = [
   { href: "/#home", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
@@ -41,6 +41,10 @@ export function Header() {
   const { theme } = useTheme();
   
   const isHomePage = pathname === '/';
+
+  const navLinks = user 
+    ? [...baseNavLinks, { href: "/profile", label: "Purchased Projects" }]
+    : baseNavLinks;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,9 +83,10 @@ export function Header() {
         <Link
           key={link.href}
           href={link.href}
-          className={cn(navLinkColorClass, pathname === link.href && activeNavLinkColorClass)}
+          className={cn(navLinkColorClass, pathname === link.href && activeNavLinkColorClass, link.label === "Purchased Projects" && "hidden lg:flex items-center")}
           onClick={() => setMenuOpen(false)}
         >
+          {link.label === "Purchased Projects" && <Package className="mr-2 h-4 w-4" />}
           {link.label}
         </Link>
       ))}
@@ -189,6 +194,7 @@ export function Header() {
                           )}
                           onClick={() => setMenuOpen(false)}
                         >
+                           {link.label === "Purchased Projects" && <Package className="mr-2 h-4 w-4 inline-block" />}
                           {link.label}
                         </Link>
                       ))}
