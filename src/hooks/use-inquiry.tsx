@@ -1,14 +1,16 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { getInquiries } from '@/lib/firebase-services';
+import { useAuth } from './use-auth';
 
 export interface Inquiry {
   id: string;
   name: string;
   email: string;
   message: string;
-  date: string;
+  receivedAt: string; 
 }
 
 interface InquiryContextType {
@@ -20,6 +22,21 @@ const InquiryContext = createContext<InquiryContextType | undefined>(undefined);
 
 export const InquiryProvider = ({ children }: { children: ReactNode }) => {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchInquiries = async () => {
+      if (user) {
+        // In a real app, you'd probably filter inquiries by the current user
+        // For now, we'll fetch all as a demonstration for the admin panel
+        const fetchedInquiries = await getInquiries();
+        const userInquiries = fetchedInquiries.filter(inq => inq.email === user.email);
+        setInquiries(userInquiries);
+      }
+    };
+    fetchInquiries();
+  }, [user]);
+
 
   const addInquiry = (inquiry: Inquiry) => {
     setInquiries(prevInquiries => [...prevInquiries, inquiry]);

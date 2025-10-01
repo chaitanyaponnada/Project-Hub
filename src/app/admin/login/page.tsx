@@ -58,9 +58,8 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "").split(',');
-  const adminPasswords = (process.env.NEXT_PUBLIC_ADMIN_PASSWORDS || "").split(',');
-
+  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "").split(',').map(e => e.trim());
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -74,10 +73,9 @@ export default function AdminLoginPage() {
     
     // Simulate a brief delay for a better user experience
     await new Promise(resolve => setTimeout(resolve, 500));
-
-    const adminEmailIndex = adminEmails.findIndex(email => email.trim() === values.email.trim());
-
-    if (adminEmailIndex !== -1 && adminPasswords[adminEmailIndex] && adminPasswords[adminEmailIndex].trim() === values.password) {
+    
+    // This is a simplified auth check. In a real app, you'd use Firebase Auth with custom claims.
+    if (adminEmails.includes(values.email) && values.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
       toast({ title: "Admin login successful!" });
       router.push("/admin");
     } else {

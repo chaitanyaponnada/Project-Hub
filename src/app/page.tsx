@@ -26,7 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { useInquiry } from "@/hooks/use-inquiry";
+import { addInquiryToFirestore } from "@/lib/firebase-services";
 import { useState, useEffect, useRef } from "react";
 import { Footer } from "@/components/layout/footer";
 import { ProjectCard } from "@/components/project-card";
@@ -137,7 +137,6 @@ export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  const { addInquiry } = useInquiry();
   const [isLoading, setIsLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
@@ -185,21 +184,25 @@ export default function Home() {
 
   async function onContactSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    addInquiry({
-      ...values,
-      date: new Date().toISOString(),
-      id: Math.random().toString(36).substring(7)
-    });
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you shortly.",
-    });
-    form.reset({
-        ...form.getValues(),
-        message: ''
-    });
-    setIsLoading(false);
+    try {
+      await addInquiryToFirestore(values);
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you shortly.",
+      });
+      form.reset({
+          ...form.getValues(),
+          message: ''
+      });
+    } catch(e) {
+       toast({
+        title: "Error Sending Message",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (

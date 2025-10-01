@@ -1,5 +1,7 @@
 
 
+"use client";
+
 import {
   Table,
   TableBody,
@@ -9,10 +11,34 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { inquiries } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
+import { getInquiries } from "@/lib/firebase-services";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import type { Inquiry } from "@/hooks/use-inquiry";
 
 export default function AdminInquiriesPage() {
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInquiries = async () => {
+      setIsLoading(true);
+      const fetchedInquiries = await getInquiries();
+      setInquiries(fetchedInquiries);
+      setIsLoading(false);
+    };
+    fetchInquiries();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 animate-fade-in">
       <div className="mb-6 animate-fade-in-down">
@@ -49,6 +75,11 @@ export default function AdminInquiriesPage() {
               ))}
             </TableBody>
           </Table>
+           {inquiries.length === 0 && (
+            <div className="text-center p-8 text-muted-foreground">
+              No inquiries found.
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

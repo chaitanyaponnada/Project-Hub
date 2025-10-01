@@ -105,7 +105,7 @@ export default function ProfilePage() {
                                             {inquiries.map(inquiry => (
                                                 <Card key={inquiry.id} className="p-4">
                                                     <div className="flex justify-between items-start mb-2">
-                                                        <h3 className="font-semibold">Inquiry from {new Date(inquiry.date).toLocaleDateString()}</h3>
+                                                        <h3 className="font-semibold">Inquiry from {new Date(inquiry.receivedAt).toLocaleDateString()}</h3>
                                                         <Badge variant="outline">Submitted</Badge>
                                                     </div>
                                                     <p className="text-muted-foreground italic">"{inquiry.message}"</p>
