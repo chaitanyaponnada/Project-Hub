@@ -118,14 +118,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const buyNow = (project: Project, redirectUrl: string) => {
-    const existingItem = cartItems.find(item => item.id === project.id);
-    let newCartItems = [...cartItems];
-    if (!existingItem) {
-      newCartItems = [{ ...project, quantity: 1 }];
-    } else {
-      // If item is already in cart, move to checkout with just that item.
-      newCartItems = [existingItem];
-    }
+    const newCartItems = [{ ...project, quantity: 1 }];
     setCartItems(newCartItems);
     updateFirestoreCart(newCartItems);
     router.push(redirectUrl);
