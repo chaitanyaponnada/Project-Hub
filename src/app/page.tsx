@@ -32,6 +32,7 @@ import { Footer } from "@/components/layout/footer";
 import { ProjectCard } from "@/components/project-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { cn } from "@/lib/utils";
 
 
 const formSchema = z.object({
@@ -61,6 +62,38 @@ const useTypewriter = (text: string, speed = 50) => {
   
     return displayText;
 };
+
+const NodeGarden = () => {
+    return (
+        <div className="relative h-full w-full flex items-center justify-center bg-transparent overflow-hidden">
+            <div className="absolute inset-0 z-0">
+                {Array.from({ length: 50 }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="node"
+                        style={{
+                            '--size': `${Math.random() * 5 + 2}px`,
+                            '--x': `${Math.random() * 100}%`,
+                            '--y': `${Math.random() * 100}%`,
+                            '--duration': `${Math.random() * 10 + 10}s`,
+                            '--delay': `${Math.random() * -10}s`,
+                        } as React.CSSProperties}
+                    />
+                ))}
+            </div>
+            <svg className="absolute inset-0 w-full h-full z-10" style={{ pointerEvents: 'none' }}>
+                <defs>
+                    <radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                        <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 0.3 }} />
+                        <stop offset="100%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 0 }} />
+                    </radialGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#glow)" />
+            </svg>
+        </div>
+    );
+};
+
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -123,7 +156,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         {/* Hero Section */}
-        <section id="home" className="relative py-24 md:py-32 text-center bg-gradient-to-b from-background to-background/80">
+        <section id="home" className="relative py-24 md:py-32 text-center">
           <div className="container mx-auto px-4 relative">
             <div className="max-w-4xl mx-auto">
               <h1 className="font-headline text-5xl md:text-7xl font-bold text-primary mb-4 min-h-[84px] md:min-h-[112px]">
@@ -194,7 +227,7 @@ export default function Home() {
               </header>
               
                <div className="relative w-full max-w-4xl mx-auto">
-                 <div className="absolute inset-y-0 -inset-x-4 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
+                 <div className="absolute inset-y-0 -inset-x-8 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
                  <Carousel 
                     opts={{
                         align: "start",
@@ -248,18 +281,8 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="animate-fade-in-left">
-                  <Card className="overflow-hidden shadow-lg">
-                    <div className="relative aspect-[4/3]">
-                      <Image
-                        src="https://picsum.photos/seed/about1/800/600"
-                        alt="Team working on a project"
-                        fill
-                        className="object-cover"
-                        data-ai-hint="team collaboration"
-                      />
-                    </div>
-                  </Card>
+                <div className="animate-fade-in-left aspect-[4/3]">
+                  <NodeGarden />
                 </div>
               </div>
             </div>
@@ -275,8 +298,8 @@ export default function Home() {
             <div className="max-w-3xl mx-auto">
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="font-semibold text-lg hover:no-underline text-left">{faq.question}</AccordionTrigger>
+                  <AccordionItem key={index} value={`item-${index}`} className="font-semibold text-lg hover:no-underline text-left">
+                    <AccordionTrigger>{faq.question}</AccordionTrigger>
                     <AccordionContent className="text-muted-foreground text-base">
                       {faq.answer}
                     </AccordionContent>
@@ -374,3 +397,4 @@ export default function Home() {
     </div>
   );
 }
+

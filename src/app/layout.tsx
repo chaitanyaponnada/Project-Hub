@@ -38,18 +38,18 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <div className="flex min-h-screen flex-col">
-            <AuthProvider>
-              <InquiryProvider>
-                <CartProvider>
-                  <Header />
-                  <main className="flex-1">{children}</main>
-                  <Toaster />
-                  <ThemeToggle />
-                </CartProvider>
-              </InquiryProvider>
-            </AuthProvider>
-          </div>
+            <div id="root-container" className="flex min-h-screen flex-col">
+                <AuthProvider>
+                  <InquiryProvider>
+                    <CartProvider>
+                      <Header />
+                      <main className="flex-1">{children}</main>
+                      <Toaster />
+                      <ThemeToggle />
+                    </CartProvider>
+                  </InquiryProvider>
+                </AuthProvider>
+            </div>
         </ThemeProvider>
       </body>
     </html>

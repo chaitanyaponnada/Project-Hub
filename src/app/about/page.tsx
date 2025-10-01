@@ -3,12 +3,9 @@
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, Target, Code, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { Users, Target, Code } from 'lucide-react';
 
 export default function AboutPage() {
-  const router = useRouter();
 
   return (
     <div className="bg-background animate-fade-in">
