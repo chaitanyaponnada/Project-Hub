@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -7,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Code, Feather, Zap, Users, Target, Search, Loader2, Send, Lightbulb } from "lucide-react";
 import Image from "next/image";
-import { projects, categories, faqs } from "@/lib/placeholder-data";
+import { categories, faqs } from "@/lib/placeholder-data";
+import type { Project } from "@/lib/placeholder-data";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -34,6 +34,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
+import { getProjects } from "@/lib/firebase-services";
 
 
 const formSchema = z.object({
@@ -138,11 +139,23 @@ export default function Home() {
   const { toast } = useToast();
   const { addInquiry } = useInquiry();
   const [isLoading, setIsLoading] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
   const {displayText: typedTitle, isTyping} = useTypewriter("Project Hub", 100);
 
   const plugin = useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+        setProjectsLoading(true);
+        const fetchedProjects = await getProjects();
+        setProjects(fetchedProjects);
+        setProjectsLoading(false);
+    };
+    fetchProjects();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -276,30 +289,36 @@ export default function Home() {
                 </p>
               </header>
               
-               <div className="relative w-full max-w-4xl mx-auto">
-                 <Carousel 
-                    opts={{
-                        align: "start",
-                        loop: true,
-                    }}
-                    plugins={[plugin.current]}
-                    onMouseEnter={() => plugin.current.stop()}
-                    onMouseLeave={() => plugin.current.reset()}
-                    className="w-full"
-                >
-                    <CarouselContent className="-ml-1">
-                        {projects.slice(0, 5).map((project, i) => (
-                        <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
-                            <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                                <ProjectCard project={project} isBlurred={!user && !loading} />
-                            </div>
-                        </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="left-[-50px] z-20" />
-                    <CarouselNext className="right-[-50px] z-20" />
-                </Carousel>
-              </div>
+              {projectsLoading ? (
+                <div className="flex justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : (
+                <div className="relative w-full max-w-4xl mx-auto">
+                  <Carousel 
+                      opts={{
+                          align: "start",
+                          loop: true,
+                      }}
+                      plugins={[plugin.current]}
+                      onMouseEnter={() => plugin.current.stop()}
+                      onMouseLeave={() => plugin.current.reset()}
+                      className="w-full"
+                  >
+                      <CarouselContent className="-ml-1">
+                          {projects.slice(0, 5).map((project, i) => (
+                          <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
+                              <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                                  <ProjectCard project={project} isBlurred={!user && !loading} />
+                              </div>
+                          </CarouselItem>
+                          ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-[-50px] z-20" />
+                      <CarouselNext className="right-[-50px] z-20" />
+                  </Carousel>
+                </div>
+              )}
               
               <div className="text-center mt-12 animate-fade-in-up">
                 <Button asChild size="lg" variant="outline">
@@ -453,10 +472,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
-
-    
-

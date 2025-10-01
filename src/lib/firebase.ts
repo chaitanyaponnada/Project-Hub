@@ -1,6 +1,8 @@
 
 import { initializeApp, getApps, getApp, FirebaseOptions } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const getFirebaseApp = () => {
   if (typeof window === 'undefined') {
@@ -30,3 +32,5 @@ const getFirebaseApp = () => {
 // Initialize Firebase
 const app = getFirebaseApp();
 export const auth = app ? getAuth(app) : ({} as any);
+export const db = app ? getFirestore(app) : ({} as any);
+export const storage = app ? getStorage(app) : ({} as any);

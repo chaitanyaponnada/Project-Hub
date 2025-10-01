@@ -1,10 +1,8 @@
 
-
 "use client";
 
 import { notFound, useRouter } from "next/navigation";
 import Image from "next/image";
-import { projects } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +11,8 @@ import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Za
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { getProjectById } from "@/lib/firebase-services";
+import type { Project } from "@/lib/placeholder-data";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [isClient, setIsClient] = useState(false);
@@ -22,18 +22,29 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
     setIsClient(true);
   }, []);
 
-  const project = useMemo(() => {
-    return projects.find((p) => p.id === params.id) || null;
-  }, [params.id]);
+  const [project, setProject] = useState<Project | null>(null);
+  const [loadingProject, setLoadingProject] = useState(true);
   
   const { addToCart, buyNow, cartItems, purchasedItems } = useCart();
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       router.push('/login?redirect=/projects/' + params.id);
     }
-  }, [user, loading, router, params.id]);
+  }, [user, authLoading, router, params.id]);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      setLoadingProject(true);
+      const fetchedProject = await getProjectById(params.id);
+      if (fetchedProject) {
+        setProject(fetchedProject);
+      }
+      setLoadingProject(false);
+    };
+    fetchProject();
+  }, [params.id]);
 
   const handleBuyNow = () => {
     if(project) {
@@ -44,16 +55,16 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
   const isPurchased = useMemo(() => purchasedItems.some(item => item.id === project?.id), [purchasedItems, project]);
 
-  if (!project) {
-    notFound();
-  }
-
-  if (loading || !user || !isClient) {
+  if (loadingProject || authLoading || !user || !isClient) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
+  }
+
+  if (!project) {
+    notFound();
   }
 
   return (

@@ -2,14 +2,36 @@
 "use client";
 
 import { ProjectForm } from "@/components/admin/project-form";
-import { projects } from "@/lib/placeholder-data";
+import { getProjectById } from "@/lib/firebase-services";
+import type { Project } from "@/lib/placeholder-data";
 import { notFound, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function EditProjectPage({ params }: { params: { id: string } }) {
-  const project = projects.find(p => p.id === params.id);
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      const fetchedProject = await getProjectById(params.id);
+      if (fetchedProject) {
+        setProject(fetchedProject);
+      }
+      setLoading(false);
+    };
+    fetchProject();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (!project) {
     return notFound();

@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Project } from "@/lib/placeholder-data";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { addProject, updateProject, uploadFile } from "@/lib/firebase-services";
 
 const projectFormSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
@@ -34,7 +35,7 @@ const projectFormSchema = z.object({
   imageUrls: z.string().min(1, "At least one image URL is required."),
   imageHints: z.string().min(1, "At least one image hint is required."),
   includedFiles: z.string().min(10, "Please list the files included in the download."),
-  projectFile: z.instanceof(FileList).optional(),
+  projectFile: z.custom<FileList>().optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -68,45 +69,59 @@ export function ProjectForm({ project }: ProjectFormProps) {
 
   async function onSubmit(data: ProjectFormValues) {
     setIsLoading(true);
-    console.log(data);
 
-    // In a real app, you would handle file upload here to a cloud storage
-    // and get a downloadable URL.
-    if (!isEditMode && (!data.projectFile || data.projectFile.length === 0)) {
-        form.setError("projectFile", { message: "Project file is required for new projects." });
-        setIsLoading(false);
-        return;
+    try {
+      let downloadUrl = project?.downloadUrl || "";
+      if (data.projectFile && data.projectFile.length > 0) {
+        const file = data.projectFile[0];
+        const filePath = `projects/${Date.now()}_${file.name}`;
+        downloadUrl = await uploadFile(file, filePath);
+      }
+
+      if (!isEditMode && !downloadUrl) {
+          form.setError("projectFile", { message: "Project file is required for new projects." });
+          setIsLoading(false);
+          return;
+      }
+
+      const projectData: Omit<Project, 'id'> = {
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        technologies: data.technologies.split(',').map(t => t.trim()),
+        price: data.price,
+        originalPrice: data.originalPrice,
+        tags: data.tags?.split(',').map(t => t.trim()).filter(Boolean) || [],
+        imageUrls: data.imageUrls.split(',').map(url => url.trim()),
+        imageHints: data.imageHints.split(',').map(hint => hint.trim()),
+        includedFiles: data.includedFiles.split('\n'),
+        downloadUrl: downloadUrl,
+      };
+
+      if (isEditMode && project.id) {
+        await updateProject(project.id, projectData);
+      } else {
+        await addProject(projectData);
+      }
+
+      toast({
+        title: isEditMode ? "Project Updated!" : "Project Submitted!",
+        description: `The project "${data.title}" has been ${isEditMode ? 'updated' : 'saved'}.`,
+      });
+
+      router.push('/admin/projects');
+      router.refresh();
+
+    } catch (error) {
+      console.error("Failed to save project:", error);
+      toast({
+        title: "Save Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    // Simulate API call for file upload and data saving
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // In a real app, you'd get the new project's ID and URL from the backend.
-    // For now, we simulate this.
-    const newProject = {
-      ...data,
-      id: isEditMode ? project.id : Date.now().toString(),
-      imageUrls: data.imageUrls.split(',').map(url => url.trim()),
-      imageHints: data.imageHints.split(',').map(hint => hint.trim()),
-      downloadUrl: project?.downloadUrl || '/sample-project.zip', // Placeholder URL
-      technologies: data.technologies.split(',').map(t => t.trim()),
-      tags: data.tags?.split(',').map(t => t.trim()) || [],
-      includedFiles: data.includedFiles.split('\n'),
-    };
-
-    console.log("Saving project:", newProject);
-
-    toast({
-      title: isEditMode ? "Project Updated!" : "Project Submitted!",
-      description: `The project "${data.title}" has been ${isEditMode ? 'updated' : 'saved'}.`,
-    });
-    
-    setIsLoading(false);
-    
-    // This navigation simulates a successful form submission. In a real app,
-    // you would likely invalidate a cache or refetch data.
-    router.push('/admin/projects');
-    router.refresh(); 
   }
 
   return (
@@ -294,7 +309,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
                 <FormField
                   control={form.control}
                   name="projectFile"
-                  render={({ field: { onChange, ...fieldProps } }) => (
+                  render={({ field: { onChange, value, ...fieldProps } }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2">
                             <Paperclip className="w-4 h-4" /> Project Download File
@@ -304,6 +319,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
                           type="file" 
                           accept=".zip,.rar,.tar"
                           onChange={(e) => onChange(e.target.files)}
+                          {...fieldProps}
                         />
                       </FormControl>
                       <FormDescription>

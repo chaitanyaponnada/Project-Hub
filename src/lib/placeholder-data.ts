@@ -23,86 +23,10 @@ export const categories = [
   "Game Development",
 ];
 
-export const projects: Project[] = [
-  {
-    id: "1",
-    title: "E-commerce Platform for Artisans",
-    description: "A full-featured e-commerce website built with the MERN stack, allowing local artisans to sell their handmade goods. Includes user authentication, product management, a shopping cart, and Stripe integration for payments.",
-    category: "Web Development",
-    technologies: ["React", "Node.js", "Express", "MongoDB", "Stripe"],
-    price: 150,
-    originalPrice: 200,
-    tags: ["Best Seller"],
-    imageUrls: ["https://picsum.photos/seed/proj1/600/400", "https://picsum.photos/seed/proj1-2/600/400"],
-    imageHints: ["code abstract", "online store"],
-    includedFiles: ["Full Source Code (ZIP)", "Deployment Guide (PDF)", "API Documentation"],
-    downloadUrl: "/sample-project.zip",
-  },
-  {
-    id: "2",
-    title: "Fitness Tracker Mobile App",
-    description: "A cross-platform mobile application developed with React Native that allows users to track their workouts, set fitness goals, and view their progress over time. Integrates with device sensors to monitor activity.",
-    category: "Mobile App Development",
-    technologies: ["React Native", "Firebase", "Redux"],
-    price: 120,
-    tags: ["Buying Fast"],
-    imageUrls: ["https://picsum.photos/seed/proj5/600/400", "https://picsum.photos/seed/proj5-2/600/400"],
-    imageHints: ["app mockup", "fitness tracker"],
-    includedFiles: ["React Native Source Code", "Firebase Setup Guide", "UI Component Library"],
-    downloadUrl: "/sample-project.zip",
-  },
-  {
-    id: "3",
-    title: "Real-time Object Detection System",
-    description: "A machine learning project that uses Python, TensorFlow, and OpenCV to detect and classify objects in a live video stream. Trained on the COCO dataset, it can identify a wide range of common objects with high accuracy.",
-    category: "Machine Learning",
-    technologies: ["Python", "TensorFlow", "OpenCV", "Jupyter"],
-    price: 200,
-    imageUrls: ["https://picsum.photos/seed/proj2/600/400", "https://picsum.photos/seed/proj2-2/600/400"],
-    imageHints: ["circuit board", "object detection"],
-    includedFiles: ["Python Scripts", "Jupyter Notebooks", "Trained Model File (.h5)"],
-    downloadUrl: "/sample-project.zip",
-  },
-  {
-    id: "4",
-    title: "Autonomous Maze-Solving Robot",
-    description: "A robotics project featuring a robot built with Arduino and various sensors. It uses a pathfinding algorithm like A* to navigate and solve complex mazes autonomously.",
-    category: "Robotics",
-    technologies: ["Arduino", "C++", "A* Algorithm"],
-    price: 180,
-    originalPrice: 220,
-    tags: ["New"],
-    imageUrls: ["https://picsum.photos/seed/proj3/600/400", "https://picsum.photos/seed/proj3-2/600/400"],
-    imageHints: ["robot arm", "maze"],
-    includedFiles: ["Arduino Code (.ino)", "Circuit Diagrams", "3D Printable Parts (.stl)"],
-    downloadUrl: "/sample-project.zip",
-  },
-  {
-    id: "5",
-    title: "Interactive Data Visualization Dashboard",
-    description: "A web-based dashboard created with D3.js and React that provides interactive visualizations for large datasets. Users can filter, sort, and explore data through dynamic charts and graphs.",
-    category: "Data Science",
-    technologies: ["React", "D3.js", "Next.js"],
-    price: 130,
-    imageUrls: ["https://picsum.photos/seed/proj4/600/400", "https://picsum.photos/seed/proj4-2/600/400"],
-    imageHints: ["data visualization", "dashboard"],
-    includedFiles: ["React/Next.js Source Code", "Sample Datasets (CSV)", "User Manual"],
-    downloadUrl: "/sample-project.zip",
-  },
-  {
-    id: "6",
-    title: "3D Platformer Game",
-    description: "A 3D platformer game built with the Unity engine. Features multiple levels, character controls, physics-based puzzles, and enemy AI. All assets are custom-made or licensed for use.",
-    category: "Game Development",
-    technologies: ["Unity", "C#", "Blender"],
-    price: 160,
-    tags: ["Best Seller"],
-    imageUrls: ["https://picsum.photos/seed/proj6/600/400", "https://picsum.photos/seed/proj6-2/600/400"],
-    imageHints: ["3d render", "game world"],
-    includedFiles: ["Unity Project Folder", "Game Design Document (GDD)", "Original 3D Models (.blend)"],
-    downloadUrl: "/sample-project.zip",
-  }
-];
+// This is now legacy data and will not be used by the app.
+// It is kept here for reference or fallback if needed.
+export const projects: Project[] = [];
+
 
 export const users = [
   { id: '1', name: 'Alice Johnson', email: 'alice@example.com', joined: '2023-01-15', orders: 2, totalSpent: 270 },

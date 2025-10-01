@@ -1,9 +1,8 @@
 
-
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -30,18 +29,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
-import { MoreHorizontal, PlusCircle, Edit, Trash2, Search } from "lucide-react";
-import { projects as initialProjects } from "@/lib/placeholder-data";
+import { MoreHorizontal, PlusCircle, Edit, Trash2, Search, Loader2 } from "lucide-react";
 import type { Project } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { getProjects, deleteProject } from "@/lib/firebase-services";
 
 export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setIsLoading(true);
+      const fetchedProjects = await getProjects();
+      setProjects(fetchedProjects);
+      setIsLoading(false);
+    };
+    fetchProjects();
+  }, []);
 
   const filteredProjects = useMemo(() => {
     if (!searchTerm) return projects;
@@ -50,14 +60,34 @@ export default function AdminProjectsPage() {
     );
   }, [projects, searchTerm]);
 
-  const handleDeleteProject = (projectId: string) => {
-    setProjects((prevProjects) => prevProjects.filter((p) => p.id !== projectId));
-    toast({
-      title: "Project Deleted",
-      description: `The project "${projectToDelete?.title}" has been successfully deleted.`,
-    });
-    setProjectToDelete(null);
+  const handleDeleteProject = async (projectId: string) => {
+    if (!projectToDelete) return;
+
+    try {
+      await deleteProject(projectId);
+      setProjects((prevProjects) => prevProjects.filter((p) => p.id !== projectId));
+      toast({
+        title: "Project Deleted",
+        description: `The project "${projectToDelete?.title}" has been successfully deleted.`,
+      });
+    } catch (error) {
+       toast({
+        title: "Error Deleting Project",
+        description: "An error occurred while deleting the project.",
+        variant: "destructive",
+      });
+    } finally {
+      setProjectToDelete(null);
+    }
   };
+  
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 animate-fade-in">

@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
@@ -7,20 +6,33 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ProjectCard } from "@/components/project-card"
-import { projects, categories } from "@/lib/placeholder-data"
-import { Search } from "lucide-react"
+import { categories } from "@/lib/placeholder-data"
+import { Search, Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth";
 import type { Project } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
+import { getProjects } from "@/lib/firebase-services";
 
 function ProjectsContent() {
   const { user, loading } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [category, setCategory] = useState(searchParams.get('category') || 'all');
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setIsLoading(true);
+      const fetchedProjects = await getProjects();
+      setProjects(fetchedProjects);
+      setIsLoading(false);
+    };
+    fetchProjects();
+  }, []);
 
   useEffect(() => {
     let results = projects;
@@ -39,21 +51,29 @@ function ProjectsContent() {
     setSearchTerm(currentSearch);
     setCategory(currentCategory);
 
-  }, [searchParams]);
+  }, [searchParams, projects]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const query = formData.get('search') as string;
-    const currentCategory = category === 'all' ? '' : `category=${category}`;
-    router.push(`/projects?q=${query}&${currentCategory}`);
+    const currentCategoryQuery = category === 'all' ? '' : `category=${category}`;
+    router.push(`/projects?q=${query}&${currentCategoryQuery}`);
   };
 
   const handleCategoryChange = (value: string) => {
-    const currentSearch = searchTerm ? `q=${searchTerm}` : '';
-    const newCategory = value === 'all' ? '' : `category=${value}`;
-    router.push(`/projects?${currentSearch}&${newCategory}`);
+    const currentSearchQuery = searchTerm ? `q=${searchTerm}` : '';
+    const newCategoryQuery = value === 'all' ? '' : `category=${value}`;
+    router.push(`/projects?${currentSearchQuery}&${newCategoryQuery}`);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -96,11 +116,11 @@ function ProjectsContent() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project, i) => (
           <div key={project.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-            <ProjectCard project={project} isBlurred={!user && !loading} />
+            <ProjectCard project={project} isBlurred={!user && loading} />
           </div>
         ))}
       </div>
-      {filteredProjects.length === 0 && (
+      {filteredProjects.length === 0 && !isLoading && (
         <p className="text-center text-muted-foreground mt-12 animate-fade-in">No projects found matching your criteria.</p>
       )}
     </div>
@@ -110,7 +130,11 @@ function ProjectsContent() {
 
 export default function ProjectsPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+        <div className="flex items-center justify-center h-[80vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+    }>
       <ProjectsContent />
     </Suspense>
   )
