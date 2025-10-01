@@ -73,15 +73,25 @@ const useTypewriter = (text: string, speed = 50) => {
 const HeroBackground = () => {
   const { theme } = useTheme();
   const [videoSrc, setVideoSrc] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Set video source based on theme, but only on the client
-    setVideoSrc(
-      theme === 'dark'
-        ? 'https://res.cloudinary.com/dagqmrniu/video/upload/v1759294420/12_lhizfb.mp4'
-        : 'https://res.cloudinary.com/dagqmrniu/video/upload/v1759294376/2_lksdur.mp4'
-    );
-  }, [theme]);
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      setVideoSrc(
+        theme === 'dark'
+          ? 'https://res.cloudinary.com/dagqmrniu/video/upload/v1759294420/12_lhizfb.mp4'
+          : 'https://res.cloudinary.com/dagqmrniu/video/upload/v1759294376/2_lksdur.mp4'
+      );
+    }
+  }, [theme, isClient]);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
@@ -445,3 +455,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
