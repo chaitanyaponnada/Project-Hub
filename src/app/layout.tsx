@@ -38,8 +38,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <div className="coding-canvas" />
-          <div className="relative z-0 flex min-h-screen flex-col">
+          <div className="flex min-h-screen flex-col">
             <AuthProvider>
               <InquiryProvider>
                 <CartProvider>
