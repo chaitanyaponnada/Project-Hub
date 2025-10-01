@@ -69,7 +69,7 @@ export default function RegisterPage() {
 
       if(updatedUser) {
         await addUserToUsersCollection(updatedUser);
-        toast({ title: "Account created successfully!" });
+        toast({ title: "Account created successfully!", description: "You will be redirected to the login page." });
         router.push("/login");
       }
 

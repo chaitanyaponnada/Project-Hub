@@ -26,17 +26,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { NodeGarden } from "@/components/node-garden";
 import { getUserById } from "@/lib/firebase-services";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
+
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
+        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.222,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C44.57,34.933,48,29.898,48,24C48,22.659,47.862,21.35,47.611,20.083z" />
+    </svg>
+);
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,6 +55,7 @@ export default function LoginPage() {
   const redirectUrl = searchParams.get('redirect') || '/';
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -124,7 +136,25 @@ export default function LoginPage() {
     } finally {
         setIsResetting(false);
     }
-}
+  }
+
+  async function handleGoogleSignIn() {
+    setIsGoogleLoading(true);
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithRedirect(auth, provider);
+      // The redirect will cause the page to reload. The result is handled in the useAuth hook.
+    } catch (error: any) {
+      console.error("Google Sign-In error:", error);
+      toast({
+        title: "Google Sign-In Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsGoogleLoading(false);
+    }
+  }
+
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
@@ -148,6 +178,21 @@ export default function LoginPage() {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleLogin)}>
                 <CardContent className="space-y-4 pt-4">
+                    <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn} disabled={isGoogleLoading || isLoading}>
+                        {isGoogleLoading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <GoogleIcon className="mr-2 h-4 w-4" />
+                        )}
+                        Sign in with Google
+                    </Button>
+
+                    <div className="flex items-center space-x-2">
+                        <Separator className="flex-1" />
+                        <span className="text-xs text-muted-foreground">OR</span>
+                        <Separator className="flex-1" />
+                    </div>
+
                     <FormField
                         control={form.control}
                         name="email"
@@ -223,7 +268,7 @@ export default function LoginPage() {
                     />
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Sign In
                     </Button>
