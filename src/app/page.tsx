@@ -190,7 +190,7 @@ export default function Home() {
         {/* Hero Section */}
         <section id="home" className="relative py-24 md:py-32 text-center overflow-hidden">
           <HeroBackground />
-          <div className="container mx-auto px-4 relative text-white">
+          <div className="container mx-auto px-4 relative">
             <div className="max-w-4xl mx-auto">
               <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px]">
                 {typedTitle}<span className="animate-ping">|</span>
@@ -199,7 +199,7 @@ export default function Home() {
                 Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
               </p>
               <div className="flex justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                   <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-primary">
@@ -281,8 +281,8 @@ export default function Home() {
                           </CarouselItem>
                           ))}
                       </CarouselContent>
-                      <CarouselPrevious className="left-4 z-20" />
-                      <CarouselNext className="right-4 z-20" />
+                      <CarouselPrevious className="left-[-50px] z-20" />
+                      <CarouselNext className="right-[-50px] z-20" />
                   </Carousel>
                 </div>
                 
@@ -434,4 +434,5 @@ export default function Home() {
   );
 }
 
+    
     

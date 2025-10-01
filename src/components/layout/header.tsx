@@ -42,14 +42,12 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Make header opaque only after scrolling past the hero section on the homepage
-      const threshold = isHomePage ? window.innerHeight * 0.8 : 10;
-      setIsScrolled(window.scrollY > threshold);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    handleScroll(); // Check on initial load
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHomePage]);
+  }, []);
 
   if (pathname.startsWith('/admin')) {
     return null;
@@ -67,15 +65,13 @@ export function Header() {
 
   const headerClasses = cn(
     "sticky top-0 z-50 w-full border-b transition-colors duration-300",
-    isScrolled ? "bg-background/80 backdrop-blur-xl border-border" : "bg-transparent border-transparent",
-    !isScrolled && isHomePage && "text-white"
+    isScrolled || !isHomePage ? "bg-background/80 backdrop-blur-xl border-border" : "bg-transparent border-transparent"
   );
+  
+  const contentColorClass = isScrolled || !isHomePage ? "text-primary" : "text-white";
+  const navLinkColorClass = isScrolled || !isHomePage ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white";
+  const activeNavLinkColorClass = isScrolled || !isHomePage ? "text-primary font-semibold" : "text-white font-semibold";
 
-  const navLinkClasses = (href: string) => cn(
-    "transition-colors",
-    isScrolled || !isHomePage ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white",
-    pathname === href && (isScrolled || !isHomePage ? "text-primary font-semibold" : "text-white font-semibold")
-  );
 
   const NavLinks = ({ className }: { className?: string }) => (
     <nav className={cn("flex items-center gap-6 text-sm font-medium", className)}>
@@ -83,7 +79,7 @@ export function Header() {
         <Link
           key={link.href}
           href={link.href}
-          className={navLinkClasses(link.href)}
+          className={cn(navLinkColorClass, pathname === link.href && activeNavLinkColorClass)}
           onClick={() => setMenuOpen(false)}
         >
           {link.label}
@@ -96,8 +92,8 @@ export function Header() {
     <header className={headerClasses}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <Code className={cn("h-7 w-7", isScrolled || !isHomePage ? "text-primary" : "text-white")} />
-          <span className={cn("font-headline text-xl font-bold", isScrolled || !isHomePage ? "text-primary" : "text-white")}>Project Hub</span>
+          <Code className={cn("h-7 w-7", contentColorClass)} />
+          <span className={cn("font-headline text-xl font-bold", contentColorClass)}>Project Hub</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
@@ -105,7 +101,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="relative" asChild>
+          <Button variant="ghost" size="icon" className={cn("relative", navLinkColorClass)} asChild>
             <Link href="/cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
@@ -150,10 +146,10 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <Button 
-                variant={isScrolled || !isHomePage ? "outline" : "outline"}
+                variant={"outline"}
                 size="sm" 
                 asChild 
-                className={cn("hidden sm:flex", !isScrolled && isHomePage && "border-white/50 text-white hover:bg-white hover:text-primary")}
+                className={cn("hidden sm:flex", !isScrolled && isHomePage && "border-white/50 text-white bg-transparent hover:bg-white hover:text-primary")}
             >
                <Link href="/login">
                   <User className="mr-2 h-4 w-4" />
@@ -164,7 +160,7 @@ export function Header() {
 
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon" className={cn("md:hidden", navLinkColorClass)}>
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Open menu</span>
               </Button>
@@ -220,4 +216,5 @@ export function Header() {
   );
 }
 
+    
     
