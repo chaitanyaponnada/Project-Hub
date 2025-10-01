@@ -197,10 +197,10 @@ export default function Home() {
           <HeroBackground />
           <div className="container mx-auto px-4 relative z-20">
             <div className="max-w-4xl mx-auto">
-              <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px]">
+              <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px]" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.5)'}}>
                 {typedTitle}{isTyping && <span className="animate-ping">|</span>}
               </h1>
-              <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
+              <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s', textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
                 Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
               </p>
               <div className="flex justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
@@ -450,5 +450,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
