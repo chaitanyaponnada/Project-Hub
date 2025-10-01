@@ -29,8 +29,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          'font-body antialiased',
-          'flex min-h-screen flex-col'
+          'font-body antialiased'
         )}
       >
         <ThemeProvider
@@ -39,16 +38,19 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <AuthProvider>
-            <InquiryProvider>
-              <CartProvider>
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Toaster />
-                <ThemeToggle />
-              </CartProvider>
-            </InquiryProvider>
-          </AuthProvider>
+          <div className="animated-background"></div>
+          <div className="relative z-10 flex min-h-screen flex-col bg-background/60 text-foreground">
+            <AuthProvider>
+              <InquiryProvider>
+                <CartProvider>
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Toaster />
+                  <ThemeToggle />
+                </CartProvider>
+              </InquiryProvider>
+            </AuthProvider>
+          </div>
         </ThemeProvider>
       </body>
     </html>
