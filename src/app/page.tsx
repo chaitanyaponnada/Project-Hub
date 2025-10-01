@@ -195,7 +195,7 @@ export default function Home() {
         {/* Hero Section */}
         <section id="home" className="relative py-24 md:py-32 text-center overflow-hidden">
           <HeroBackground />
-          <div className="container mx-auto px-4 relative">
+          <div className="container mx-auto px-4 relative z-20">
             <div className="max-w-4xl mx-auto">
               <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px]">
                 {typedTitle}{isTyping && <span className="animate-ping">|</span>}
@@ -217,7 +217,7 @@ export default function Home() {
 
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
-          <div className="container mx-auto px-4 relative z-20">
+           <div className="container mx-auto px-4 relative z-20">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
@@ -358,7 +358,7 @@ export default function Home() {
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
               <p className="text-lg text-muted-foreground mt-2">
-                If you have a desired idea, or if you need any help, feel free to contact us.
+                <span className="text-highlight">If you have a desired idea</span>, or if you need any help, feel free to contact us.
               </p>
             </div>
             <div className="max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>

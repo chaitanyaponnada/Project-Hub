@@ -121,6 +121,22 @@
     bottom: 0;
     background: linear-gradient(to top, hsl(var(--background)), transparent);
   }
+  .text-highlight {
+    position: relative;
+    display: inline-block;
+  }
+  .text-highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0.1em;
+    background-color: hsl(var(--destructive));
+    transform-origin: left;
+    animation: highlight-animation 1s ease-out forwards;
+    animation-delay: 0.5s; /* Delay the animation slightly */
+  }
 
 
   @keyframes move {
@@ -131,6 +147,15 @@
     to {
       transform: translate(50vw, 50vh) scale(1.5);
       opacity: 0.3;
+    }
+  }
+
+  @keyframes highlight-animation {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
     }
   }
 
