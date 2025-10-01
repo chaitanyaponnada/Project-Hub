@@ -15,6 +15,7 @@ function CheckoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const stripeStatus = searchParams.get('status');
+    const gpaySessionId = searchParams.get('gpay_session_id');
 
     // Listener for Stripe redirect
     useEffect(() => {
@@ -22,6 +23,14 @@ function CheckoutContent() {
             clearCart();
         }
     }, [stripeStatus, clearCart, cartItems.length]);
+    
+    // Listener for Google Pay
+    useEffect(() => {
+        if (gpaySessionId && cartItems.length > 0) {
+            clearCart();
+            // You might want to do more here like verifying the payment status from your backend
+        }
+    }, [gpaySessionId, clearCart, cartItems.length]);
 
 
     if (loading || !user) {
@@ -32,7 +41,7 @@ function CheckoutContent() {
         );
     }
     
-    if (stripeStatus === 'success') {
+    if (stripeStatus === 'success' || gpaySessionId) {
          return (
             <div className="container mx-auto px-4 py-20 flex items-center justify-center">
               <Card className="max-w-md w-full text-center p-8">

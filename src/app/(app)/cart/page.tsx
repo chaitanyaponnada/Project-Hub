@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 export default function CartPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, checkoutWithStripe, isCheckingOut } = useCart();
+  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, checkoutWithStripe, isCheckingOut, googlePayButton } = useCart();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -102,6 +102,7 @@ export default function CartPage() {
                                 {isCheckingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 Checkout
                             </Button>
+                            {googlePayButton && <div id="google-pay-button-container" className="w-full"></div>}
                         </div>
                     </div>
                 </CardContent>

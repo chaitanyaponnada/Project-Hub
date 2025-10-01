@@ -5,7 +5,7 @@ import type { Project } from '@/lib/placeholder-data';
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
-import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { createStripeCheckoutSession } from '@/lib/firebase-services';
@@ -26,6 +26,7 @@ interface CartContextType {
   isCheckingOut: boolean;
   cartCount: number;
   totalPrice: number;
+  googlePayButton: React.ReactNode | null;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -38,8 +39,105 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
+  const [googlePayButton, setGooglePayButton] = useState<React.ReactNode | null>(null);
 
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
+  
+  useEffect(() => {
+    if (!user || cartItems.length === 0) {
+      setGooglePayButton(null);
+      return;
+    };
+    
+    const onGooglePayPayment = async (paymentData: any) => {
+        try {
+            const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+
+            // This is the document that the Firebase Extension will be listening to
+            const paymentRef = await addDoc(collection(db, `customers/${user.uid}/payments`), {
+                paymentToken: paymentToken
+            });
+
+            // Redirect to a success page, passing the payment session ID.
+            // You can use this ID to listen for the payment result from the extension.
+            router.push(`/checkout?gpay_session_id=${paymentRef.id}`);
+
+        } catch (error) {
+            console.error('Google Pay processing error:', error);
+            toast({
+                title: 'Payment Error',
+                description: 'There was an issue processing your Google Pay payment.',
+                variant: 'destructive',
+            });
+        }
+    };
+
+    const paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+    const button = paymentsClient.createButton({
+      onClick: () => {
+        const paymentDataRequest = {
+            apiVersion: 2,
+            apiVersionMinor: 0,
+            allowedPaymentMethods: [
+                {
+                    type: 'CARD',
+                    parameters: {
+                        allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                        allowedCardNetworks: ['MASTERCARD', 'VISA'],
+                    },
+                    tokenizationSpecification: {
+                        type: 'PAYMENT_GATEWAY',
+                        parameters: {
+                           // IMPORTANT: Replace with your actual gateway and gatewayMerchantId
+                           gateway: 'braintree', // or 'adyen', 'checkout.com', 'cybersource', 'square'
+                           gatewayMerchantId: 'YOUR_BRAINTREE_MERCHANT_ID', // Replace with ID from your chosen PSP
+                        },
+                    },
+                },
+            ],
+            merchantInfo: {
+                // IMPORTANT: Replace with your Google Pay Merchant ID
+                merchantId: '12345678901234567890',
+                merchantName: 'Project Hub',
+            },
+            transactionInfo: {
+                totalPriceStatus: 'FINAL',
+                totalPrice: String(totalPrice.toFixed(2)),
+                currencyCode: 'INR',
+                countryCode: 'IN',
+            },
+        };
+        paymentsClient.loadPaymentData(paymentDataRequest).then(onGooglePayPayment).catch(function(err){
+            console.error("Error loading payment data: ", err)
+        });
+      },
+      allowedPaymentMethods: [{
+          type: "CARD",
+          parameters: {
+            allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+            allowedCardNetworks: ["AMEX", "VISA", "MASTERCARD"]
+          },
+          tokenizationSpecification: {
+            type: 'PAYMENT_GATEWAY',
+            parameters: {
+               gateway: 'braintree',
+               gatewayMerchantId: 'YOUR_BRAINTREE_MERCHANT_ID',
+            },
+          }
+      }],
+      buttonColor: "black",
+      buttonType: "pay",
+      buttonSizeMode: 'fill',
+    });
+    
+    const container = document.getElementById('google-pay-button-container');
+    if (container) {
+        container.innerHTML = '';
+        container.appendChild(button);
+    }
+  
+  }, [user, cartItems, totalPrice, toast, router]);
+
 
   // Fetch cart and purchased items from Firestore on user change
   useEffect(() => {
@@ -184,7 +282,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithStripe, isCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithStripe, isCheckingOut, googlePayButton }}>
       {children}
     </CartContext.Provider>
   );
