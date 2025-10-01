@@ -28,7 +28,7 @@ export function Footer() {
     }
   };
   
-  if (pathname.startsWith('/admin') || pathname.startsWith('/checkout') || pathname === '/login' || pathname === '/register' || pathname === '/profile') {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/checkout') || pathname === '/login' || pathname === '/register' || pathname === '/profile' || (pathname.startsWith('/projects/') && pathname.length > '/projects/'.length)) {
       return null;
   }
 
