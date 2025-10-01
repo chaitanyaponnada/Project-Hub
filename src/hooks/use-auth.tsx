@@ -4,7 +4,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, User, getRedirectResult } from 'firebase/auth';
-import { addUserToFirestore } from '@/lib/firebase-services';
+import { addUserToUsersCollection } from '@/lib/firebase-services';
 import { useToast } from './use-toast';
 
 interface AuthContextType {
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // User signed in via redirect.
           toast({ title: "Signed in with Google successfully!" });
           // Ensure user is in Firestore. onAuthStateChanged will handle the rest.
-          await addUserToFirestore(result.user);
+          await addUserToUsersCollection(result.user);
         }
       })
       .catch((error) => {

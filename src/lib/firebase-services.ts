@@ -1,5 +1,4 @@
 
-
 import { db, auth, storage } from './firebase';
 import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
@@ -8,7 +7,67 @@ import type { Project } from './placeholder-data';
 
 
 /**
+ * Adds a new user to the `users` collection in Firestore.
+ * @param user The user object from Firebase Auth.
+ */
+export const addUserToUsersCollection = async (user: User) => {
+    if (!user) return;
+    const userRef = doc(db, 'users', user.uid);
+    await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        createdAt: serverTimestamp(),
+    });
+};
+
+
+/**
+ * Adds a new admin user to the `admins` collection in Firestore.
+ * @param user The user object from Firebase Auth.
+ */
+export const addAdminToAdminsCollection = async (user: User) => {
+    if (!user) return;
+    const adminRef = doc(db, 'admins', user.uid);
+    await setDoc(adminRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        createdAt: serverTimestamp(),
+    });
+};
+
+
+/**
+ * Checks if a user's email exists in the `users` collection.
+ * @param email The user's email.
+ */
+export const checkUserExists = async (email: string): Promise<boolean> => {
+    if (!email) return false;
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+
+/**
+ * Checks if an admin's email exists in the `admins` collection.
+ * @param email The admin's email.
+ */
+export const checkAdminExists = async (email: string): Promise<boolean> => {
+    if (!email) return false;
+    const adminsRef = collection(db, 'admins');
+    const q = query(adminsRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+
+/**
  * Checks if a user is an admin by looking for their UID in the 'admins' collection.
+ * This function can be used for securing backend operations or UI elements.
  * @param uid The user's ID.
  */
 export const isAdmin = async (uid: string): Promise<boolean> => {
@@ -22,68 +81,6 @@ export const isAdmin = async (uid: string): Promise<boolean> => {
     }
 };
 
-/**
- * Promotes a user to an admin by adding their UID to the 'admins' collection.
- * @param uid The user's ID to be promoted.
- */
-export const promoteToAdmin = async (uid: string) => {
-    if (!uid) return;
-    const adminRef = doc(db, 'admins', uid);
-    await setDoc(adminRef, { admin: true, promotedAt: serverTimestamp() });
-};
-
-/**
- * Adds a new admin user to the `admins` collection in Firestore.
- * This is used for the separate admin registration flow.
- * @param user The user object from Firebase Auth.
- */
-export const addAdminToFirestore = async (user: User) => {
-    if (!user) return;
-    const adminRef = doc(db, 'admins', user.uid);
-    await setDoc(adminRef, {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        createdAt: serverTimestamp(),
-    });
-};
-
-
-/**
- * Adds or updates a user in the `users` collection in Firestore.
- * If the user doesn't exist, it creates a new document.
- * If the user exists, it updates their last sign-in time.
- * On first registration, checks if the user is the designated first admin.
- * @param user The user object from Firebase Auth.
- */
-export const addUserToFirestore = async (user: User) => {
-    if (!user) return;
-    const userRef = doc(db, 'users', user.uid);
-    const userDoc = await getDoc(userRef);
-
-    if (!userDoc.exists()) {
-        // Create user record in 'users' collection
-        await setDoc(userRef, {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-            createdAt: serverTimestamp(),
-            lastSignInTime: serverTimestamp(),
-        });
-        
-        // Securely designate the first administrator on their first sign-up.
-        if (user.email === 'chaitanyaponnada657@gmail.com') {
-            await promoteToAdmin(user.uid);
-        }
-
-    } else {
-        // Update last sign-in time for existing users
-         await updateDoc(userRef, {
-            lastSignInTime: serverTimestamp(),
-        });
-    }
-};
 
 /**
  * Uploads files to Firebase Storage and returns their download URLs.
@@ -144,9 +141,6 @@ export const updateProject = async (
     const updateData: any = { ...projectData, lastUpdatedAt: serverTimestamp() };
 
     if (newImageFiles && newImageFiles.length > 0) {
-        // In a real scenario, you might want to delete old images first.
-        // For simplicity, we'll just add new ones. A more robust solution
-        // would manage image references carefully.
         const newImageUrls = await uploadFiles('project-images', newImageFiles);
         const existingDoc = await getDoc(projectRef);
         const existingUrls = existingDoc.data()?.imageUrls || [];
@@ -154,7 +148,6 @@ export const updateProject = async (
     }
     
     if (newProjectFile) {
-        // Similar to images, you might want to delete the old file.
         const projectFileRef = ref(storage, `project-files/${Date.now()}-${newProjectFile.name}`);
         await uploadBytes(projectFileRef, newProjectFile);
         updateData.downloadUrl = await getDownloadURL(projectFileRef);
@@ -171,13 +164,11 @@ export const updateProject = async (
  * @param downloadUrl The download URL of the project file to delete.
  */
 export const deleteProject = async (projectId: string, imageUrls: string[], downloadUrl: string) => {
-    // Delete files from Storage
     const deleteFileFromUrl = async (url: string) => {
         try {
             const fileRef = ref(storage, url);
             await deleteObject(fileRef);
         } catch (error: any) {
-            // It's okay if the file doesn't exist (e.g., URL is malformed or file already deleted)
             if (error.code !== 'storage/object-not-found') {
                 console.error("Error deleting file from storage:", error);
             }
@@ -189,7 +180,6 @@ export const deleteProject = async (projectId: string, imageUrls: string[], down
     
     await Promise.all([...imagePromises, filePromise]);
 
-    // Delete project document from Firestore
     await deleteDoc(doc(db, 'projects', projectId));
 };
 
@@ -206,7 +196,6 @@ export const getProjects = async (): Promise<Project[]> => {
         return { 
             ...data,
             id: doc.id,
-            // Firestore timestamps need to be converted
             createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate().toISOString() : data.createdAt
         } as Project;
     });
@@ -272,3 +261,5 @@ export const getInquiries = async () => {
 export const deleteInquiry = async (inquiryId: string) => {
     await deleteDoc(doc(db, 'inquiries', inquiryId));
 };
+
+    

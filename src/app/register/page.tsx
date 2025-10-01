@@ -32,7 +32,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
-import { addUserToFirestore } from "@/lib/firebase-services";
+import { addUserToUsersCollection, addAdminToAdminsCollection } from "@/lib/firebase-services";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -49,6 +51,7 @@ export default function RegisterPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState("user");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -66,21 +69,28 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(userCredential.user, { displayName: values.name });
       
-      // We need to reload the user to get the updated displayName
-      await userCredential.user.reload();
-      const updatedUser = auth.currentUser;
+      const updatedUser = userCredential.user;
 
       if(updatedUser) {
-        // This function now only adds to the 'users' collection
-        await addUserToFirestore(updatedUser);
+        if (activeTab === 'admin') {
+           await addAdminToAdminsCollection(updatedUser);
+           router.push("/admin");
+           toast({ title: "Admin account created successfully!" });
+        } else {
+           await addUserToUsersCollection(updatedUser);
+           router.push("/");
+           toast({ title: "User account created successfully!" });
+        }
       }
 
-      router.push("/");
-      toast({ title: "Account created successfully!" });
     } catch (error: any) {
+       let friendlyMessage = "An unexpected error occurred. Please try again.";
+        if (error.code === 'auth/email-already-in-use') {
+            friendlyMessage = "This email is already registered. Please try logging in.";
+        }
       toast({
         title: "Registration Failed",
-        description: error.message,
+        description: friendlyMessage,
         variant: "destructive",
       });
     } finally {
@@ -88,18 +98,8 @@ export default function RegisterPage() {
     }
   }
 
-  return (
-    <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-      <NodeGarden />
-      <Card className="w-full max-w-sm animate-fade-in-up z-10">
-        <CardHeader className="text-center">
-          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
-            <Code className="h-8 w-8 text-primary" />
-          </Link>
-          <CardTitle className="font-headline text-2xl">Create a User Account</CardTitle>
-          <CardDescription>Enter your details to get started.</CardDescription>
-        </CardHeader>
-        <Form {...form}>
+  const SignupForm = () => (
+     <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardContent className="space-y-4">
               <FormField
@@ -179,7 +179,7 @@ export default function RegisterPage() {
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Account
+                Create {activeTab === 'user' ? 'User' : 'Admin'} Account
               </Button>
               
               <div className="text-center text-sm">
@@ -191,6 +191,32 @@ export default function RegisterPage() {
             </CardFooter>
           </form>
         </Form>
+  )
+
+  return (
+    <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
+      <NodeGarden />
+      <Card className="w-full max-w-sm animate-fade-in-up z-10">
+        <CardHeader className="text-center">
+          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
+            <Code className="h-8 w-8 text-primary" />
+          </Link>
+          <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
+          <CardDescription>Enter your details to get started.</CardDescription>
+        </CardHeader>
+        
+        <Tabs defaultValue="user" onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="user">User</TabsTrigger>
+                <TabsTrigger value="admin">Admin</TabsTrigger>
+            </TabsList>
+            <TabsContent value="user">
+                <SignupForm />
+            </TabsContent>
+            <TabsContent value="admin">
+                <SignupForm />
+            </TabsContent>
+        </Tabs>
       </Card>
     </div>
   );
