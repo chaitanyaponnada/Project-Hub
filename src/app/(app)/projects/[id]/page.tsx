@@ -1,7 +1,7 @@
 
 "use client";
 
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,10 +14,11 @@ import { useAuth } from "@/hooks/use-auth";
 import { getProjectById } from "@/lib/firebase-services";
 import type { Project } from "@/lib/placeholder-data";
 
-export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
+export default function ProjectDetailsPage() {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-  const { id } = params;
+  const params = useParams();
+  const id = params.id as string;
   
   useEffect(() => {
     setIsClient(true);
