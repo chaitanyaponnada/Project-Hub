@@ -22,7 +22,7 @@ const formSchema = z.object({
   description: z.string().min(20, 'Description must be at least 20 characters.'),
   category: z.string().min(2, 'Category is required.'),
   price: z.coerce.number().min(0, 'Price must be a positive number.'),
-  originalPrice: z.coerce.number().optional(),
+  originalPrice: z.coerce.number().optional().or(z.literal('')),
   technologies: z.array(z.object({ value: z.string().min(1, "Technology cannot be empty.") })).min(1, "At least one technology is required."),
   includedFiles: z.array(z.object({ value: z.string().min(1, "File name cannot be empty.") })).min(1, "At least one included file is required."),
   tags: z.array(z.object({ value: z.string().min(1, "Tag cannot be empty.") })).optional(),
@@ -47,12 +47,13 @@ export function ProjectForm({ project }: ProjectFormProps) {
       includedFiles: project.includedFiles.map(value => ({ value })),
       tags: project.tags ? project.tags.map(value => ({ value })) : [],
       imageUrls: project.imageUrls.map(value => ({ value })),
+      originalPrice: project.originalPrice || '',
   } : {
     title: '',
     description: '',
     category: '',
     price: 0,
-    originalPrice: undefined,
+    originalPrice: '',
     technologies: [{ value: '' }],
     includedFiles: [{value: ''}],
     tags: [],
@@ -82,6 +83,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
         tags: data.tags ? data.tags.map(t => t.value) : [],
         imageUrls: data.imageUrls.map(i => i.value),
         imageHints: [], // imageHints are deprecated as we use URLs now
+        originalPrice: data.originalPrice || null,
       };
 
       if (project) {
