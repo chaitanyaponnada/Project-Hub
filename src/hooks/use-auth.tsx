@@ -22,29 +22,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Handle redirect result from Google sign-in
-    const handleRedirect = async () => {
-        try {
-            const result = await getRedirectResult(auth);
-            if (result && result.user) {
-                await addUserToFirestore(result.user);
-                setUser(result.user);
-                toast({ title: "Signed in with Google successfully!" });
-                // Redirect to home page after successful sign-in
-                window.history.replaceState({}, document.title, "/");
-            }
-        } catch (error: any) {
-            console.error("Google sign-in redirect error:", error);
-            toast({
-                title: "Google Sign-in Failed",
-                description: error.message,
-                variant: "destructive",
-            });
-        }
-    };
-    
-    handleRedirect();
-
+    // This is the primary observer for auth state changes.
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if(user) {
@@ -56,8 +34,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     });
 
+    // Separate logic to handle the redirect result from Google sign-in.
+    const handleRedirect = async () => {
+        try {
+            const result = await getRedirectResult(auth);
+            if (result && result.user) {
+                // This means the user has just signed in/up via Google redirect.
+                await addUserToFirestore(result.user);
+                toast({ title: "Signed in with Google successfully!" });
+                
+                // Clean up the URL to remove any Firebase redirect parameters.
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        } catch (error: any) {
+            // Don't show an error if there's no redirect result, it's expected on normal page loads.
+            if (error.code !== 'auth/no-redirect-operation') {
+                console.error("Google sign-in redirect error:", error);
+                toast({
+                    title: "Google Sign-in Failed",
+                    description: error.message,
+                    variant: "destructive",
+                });
+            }
+        }
+    };
+    
+    // We only want to handle the redirect result after the initial auth state is determined.
+    if (!loading) {
+        handleRedirect();
+    }
+
     return () => unsubscribe();
-  }, [toast]);
+  // We add `loading` as a dependency to ensure handleRedirect runs after the initial loading is complete.
+  }, [toast, loading]);
 
   return (
     <AuthContext.Provider value={{ user, loading, isAdmin: isUserAdmin }}>
@@ -67,5 +76,3 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
-    
