@@ -22,7 +22,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Code, Loader2, Eye, EyeOff } from "lucide-react";
@@ -30,21 +29,16 @@ import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
-import { addUserToFirestore } from "@/lib/firebase-services";
+import { addAdminToFirestore } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.string().email(),
+  email: z.string().email("Please enter a valid email address."),
   password: z.string().min(6, "Password must be at least 6 characters."),
-  terms: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the terms and conditions." }),
-  }),
 });
 
-
-export default function RegisterPage() {
+export default function AdminRegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +50,6 @@ export default function RegisterPage() {
       name: "",
       email: "",
       password: "",
-      terms: false,
     },
   });
 
@@ -66,17 +59,16 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(userCredential.user, { displayName: values.name });
       
-      // We need to reload the user to get the updated displayName
-      await userCredential.user.reload();
       const updatedUser = auth.currentUser;
 
       if(updatedUser) {
-        // This function now only adds to the 'users' collection
-        await addUserToFirestore(updatedUser);
+        // This function adds the user to the 'admins' collection
+        await addAdminToFirestore(updatedUser);
       }
 
-      router.push("/");
-      toast({ title: "Account created successfully!" });
+      router.push("/login");
+      toast({ title: "Admin account created successfully! Please log in." });
+
     } catch (error: any) {
       toast({
         title: "Registration Failed",
@@ -96,8 +88,8 @@ export default function RegisterPage() {
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
             <Code className="h-8 w-8 text-primary" />
           </Link>
-          <CardTitle className="font-headline text-2xl">Create a User Account</CardTitle>
-          <CardDescription>Enter your details to get started.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Create Admin Account</CardTitle>
+          <CardDescription>This will create an account with administrator privileges.</CardDescription>
         </CardHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -109,7 +101,7 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your Name" {...field} />
+                      <Input placeholder="Admin Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,7 +114,7 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="m@example.com" {...field} />
+                      <Input type="email" placeholder="admin@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -152,34 +144,11 @@ export default function RegisterPage() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="terms"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Accept terms and conditions
-                      </FormLabel>
-                      <FormDescription>
-                        You agree to our <Link href="/terms-of-service" className="underline hover:text-primary">Terms of Service</Link> and <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link>.
-                      </FormDescription>
-                       <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Account
+                Create Admin Account
               </Button>
               
               <div className="text-center text-sm">

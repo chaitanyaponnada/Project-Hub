@@ -7,13 +7,18 @@ import type { Project } from './placeholder-data';
 
 
 /**
- * Checks if a user is an admin.
+ * Checks if a user is an admin by looking for their UID in the 'admins' collection.
  * @param uid The user's ID.
  */
 export const isAdmin = async (uid: string): Promise<boolean> => {
     if (!uid) return false;
-    const adminDoc = await getDoc(doc(db, 'admins', uid));
-    return adminDoc.exists();
+    try {
+        const adminDoc = await getDoc(doc(db, 'admins', uid));
+        return adminDoc.exists();
+    } catch (error) {
+        console.error("Error checking admin status:", error);
+        return false;
+    }
 };
 
 /**
@@ -24,6 +29,22 @@ export const promoteToAdmin = async (uid: string) => {
     if (!uid) return;
     const adminRef = doc(db, 'admins', uid);
     await setDoc(adminRef, { admin: true, promotedAt: serverTimestamp() });
+};
+
+/**
+ * Adds a new admin user to the `admins` collection in Firestore.
+ * This is used for the separate admin registration flow.
+ * @param user The user object from Firebase Auth.
+ */
+export const addAdminToFirestore = async (user: User) => {
+    if (!user) return;
+    const adminRef = doc(db, 'admins', user.uid);
+    await setDoc(adminRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        createdAt: serverTimestamp(),
+    });
 };
 
 
@@ -39,7 +60,7 @@ export const addUserToFirestore = async (user: User) => {
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
-        // Create user record
+        // Create user record in 'users' collection
         await setDoc(userRef, {
             uid: user.uid,
             email: user.email,
@@ -48,12 +69,6 @@ export const addUserToFirestore = async (user: User) => {
             createdAt: serverTimestamp(),
             lastSignInTime: serverTimestamp(),
         });
-        // --- ONE-TIME ADMIN BOOTSTRAP ---
-        // This will create the first admin user automatically upon registration.
-        if (user.email === 'chaitanyaponnada657@gmail.com') {
-            await promoteToAdmin(user.uid);
-        }
-        // ------------------------------------
     } else {
         // Update last sign-in time
          await updateDoc(userRef, {
@@ -210,7 +225,7 @@ export const getProjectById = async (id: string): Promise<Project | null> => {
 };
 
 /**
- * Fetches all users from Firestore.
+ * Fetches all users from the 'users' collection in Firestore.
  */
 export const getUsers = async () => {
     const usersCol = collection(db, 'users');
@@ -249,3 +264,5 @@ export const getInquiries = async () => {
 export const deleteInquiry = async (inquiryId: string) => {
     await deleteDoc(doc(db, 'inquiries', inquiryId));
 };
+
+    
