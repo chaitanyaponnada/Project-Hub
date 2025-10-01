@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Code, Feather, Zap, Users, Target, Search, Loader2, Send } from "lucide-react";
+import { ArrowRight, Code, Feather, Zap, Users, Target, Search, Loader2, Send, Lightbulb } from "lucide-react";
 import Image from "next/image";
 import { projects, categories, faqs } from "@/lib/placeholder-data";
 import { Input } from "@/components/ui/input";
@@ -222,7 +222,7 @@ export default function Home() {
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
             </div>
-            <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
               <div className="p-2 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
@@ -248,6 +248,15 @@ export default function Home() {
                   </div>
                   <h3 className="font-headline text-xl font-bold mb-2">Showcase Your Skills</h3>
                   <p className="text-muted-foreground">Build a standout portfolio that impresses recruiters and showcases your talent.</p>
+                </Card>
+              </div>
+              <div className="p-2 animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+                <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
+                  <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
+                    <Lightbulb className="h-8 w-8" />
+                  </div>
+                  <h3 className="font-headline text-xl font-bold mb-2">Implement Your Idea</h3>
+                  <p className="text-muted-foreground">Your vision, created and delivered by our expert team.</p>
                 </Card>
               </div>
             </div>
