@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
@@ -131,7 +132,7 @@ function ProjectsContent() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project, i) => (
           <div key={project.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-            <ProjectCard project={project} isBlurred={!user && loading} />
+            <ProjectCard project={project} isBlurred={!user && !loading} />
           </div>
         ))}
       </div>

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Project } from "@/lib/placeholder-data";
 import { ArrowRight, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface ProjectCardProps {
   project: Project;
@@ -14,16 +15,22 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
+  const [imageUrl, setImageUrl] = useState(project.imageUrls?.[0] || `https://placehold.co/600x400?text=${encodeURIComponent(project.title)}`);
+
+  const handleImageError = () => {
+      setImageUrl(`https://placehold.co/600x400?text=${encodeURIComponent(project.title)}`);
+  };
+
   const cardContent = (
     <>
       <CardHeader className="p-0 relative">
         <div className="aspect-[3/2] relative w-full overflow-hidden rounded-t-lg">
           <Image
-            src={project.imageUrls[0]}
+            src={imageUrl}
             alt={project.title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            // data-ai-hint={project.imageHints[0]} // imageHints are deprecated
+            onError={handleImageError}
           />
         </div>
         {project.tags && project.tags.length > 0 && (
