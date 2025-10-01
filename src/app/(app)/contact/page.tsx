@@ -31,6 +31,7 @@ import { addInquiry } from "@/lib/firebase-services";
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
+  phone: z.string().optional(),
   message: z.string().min(10, "Message must be at least 10 characters.").max(1000, "Message must not exceed 1000 characters."),
 });
 
@@ -44,6 +45,7 @@ export default function ContactPage() {
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       message: "",
     },
   });
@@ -53,6 +55,7 @@ export default function ContactPage() {
         form.reset({
             name: user.displayName || '',
             email: user.email || '',
+            phone: user.phoneNumber || '',
             message: ''
         })
     }
@@ -102,27 +105,42 @@ export default function ContactPage() {
                 <CardContent>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                            <FormField
+                            <div className="grid sm:grid-cols-2 gap-6">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Your Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="John Doe" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Email Address</FormLabel>
+                                            <FormControl>
+                                                <Input type="email" placeholder="you@example.com" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Your Name</FormLabel>
+                                        <FormLabel>Phone Number (Optional)</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="John Doe" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Email Address</FormLabel>
-                                        <FormControl>
-                                            <Input type="email" placeholder="you@example.com" {...field} />
+                                            <Input type="tel" placeholder="+1 (555) 123-4567" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

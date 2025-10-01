@@ -172,7 +172,7 @@ export const getUsers = async () => {
  * @param inquiryData The inquiry data.
  * @param userId Optional user ID if the user is logged in.
  */
-export const addInquiry = async (inquiryData: { name: string, email: string, message: string }, userId?: string) => {
+export const addInquiry = async (inquiryData: { name: string, email: string, phone?: string, message: string }, userId?: string) => {
     const inquiryRef = doc(collection(db, 'inquiries'));
     await setDoc(inquiryRef, {
         ...inquiryData,

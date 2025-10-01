@@ -101,7 +101,7 @@ export default function AdminInquiriesPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>From</TableHead>
-                                <TableHead>Email</TableHead>
+                                <TableHead>Contact</TableHead>
                                 <TableHead>Message</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Received</TableHead>
@@ -112,7 +112,12 @@ export default function AdminInquiriesPage() {
                             {inquiries.map(inquiry => (
                                 <TableRow key={inquiry.id}>
                                     <TableCell className="font-medium">{inquiry.name}</TableCell>
-                                    <TableCell>{inquiry.email}</TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col">
+                                            <span>{inquiry.email}</span>
+                                            {inquiry.phone && <span className="text-muted-foreground">{inquiry.phone}</span>}
+                                        </div>
+                                    </TableCell>
                                     <TableCell className="max-w-sm whitespace-pre-wrap">{inquiry.message}</TableCell>
                                     <TableCell>
                                         {inquiry.reply ? (
