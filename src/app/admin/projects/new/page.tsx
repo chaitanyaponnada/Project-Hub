@@ -13,16 +13,16 @@ export default function NewProjectPage() {
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="max-w-3xl mx-auto">
         <header className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="font-headline text-3xl font-bold">Add New Project</h1>
-            <p className="text-muted-foreground">
-              Fill in the details below. Use the AI tools to generate a title and description.
-            </p>
-          </div>
-          <Button variant="outline" onClick={() => router.back()}>
+           <Button variant="outline" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
+          <div className="text-right">
+            <h1 className="font-headline text-3xl font-bold">Add New Project</h1>
+            <p className="text-muted-foreground">
+              Fill in the details below.
+            </p>
+          </div>
         </header>
         <ProjectForm />
       </div>

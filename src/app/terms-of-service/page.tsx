@@ -12,9 +12,9 @@ export default function TermsOfServicePage() {
     <div className="bg-background animate-fade-in">
       <section className="py-24 md:py-32 bg-muted/30 relative">
          <div className="absolute top-8 left-8">
-          <Button variant="outline" onClick={() => router.back()}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+          <Button variant="outline" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4" />
+            <span className="sr-only">Back</span>
           </Button>
         </div>
         <div className="container mx-auto px-4 text-center">

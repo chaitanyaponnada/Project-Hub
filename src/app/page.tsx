@@ -194,7 +194,7 @@ export default function Home() {
               </header>
               
                <div className="relative w-full max-w-4xl mx-auto">
-                 <div className="absolute inset-0 -inset-x-4 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background opacity-80" />
+                 <div className="absolute inset-y-0 -inset-x-4 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
                  <Carousel 
                     opts={{
                         align: "start",
@@ -205,17 +205,17 @@ export default function Home() {
                     onMouseLeave={() => plugin.current.reset()}
                     className="w-full"
                 >
-                    <CarouselContent>
+                    <CarouselContent className="-ml-1">
                         {projects.slice(0, 5).map((project, i) => (
-                        <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
+                        <CarouselItem key={project.id} className="pl-1 md:basis-1/2 lg:basis-1/3">
                             <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
                                 <ProjectCard project={project} isBlurred={!user && !loading} />
                             </div>
                         </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="-left-4 z-20" />
-                    <CarouselNext className="-right-4 z-20" />
+                    <CarouselPrevious className="left-4 z-20" />
+                    <CarouselNext className="right-4 z-20" />
                 </Carousel>
               </div>
               
