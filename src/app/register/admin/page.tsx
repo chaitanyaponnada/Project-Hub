@@ -32,15 +32,11 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
-import { addUserToFirestore, addAdminToFirestore } from "@/lib/firebase-services";
-
-const ALLOWED_ADMIN_EMAIL = "chaitanyaponnada657@gmail.com";
+import { addAdminToFirestore } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.string().email().refine(email => email === ALLOWED_ADMIN_EMAIL, {
-    message: "This email is not authorized for admin registration.",
-  }),
+  email: z.string().email("Please enter a valid email address."),
   password: z.string().min(6, "Password must be at least 6 characters."),
   terms: z.literal(true, {
     errorMap: () => ({ message: "You must accept the terms and conditions." }),
