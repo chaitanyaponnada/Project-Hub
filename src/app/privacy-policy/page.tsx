@@ -4,9 +4,15 @@
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function PrivacyPolicyPage() {
   const router = useRouter();
+  const [lastUpdated, setLastUpdated] = useState('');
+
+  useEffect(() => {
+    setLastUpdated(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  }, []);
 
   return (
     <div className="bg-background animate-fade-in">
@@ -27,7 +33,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="py-20">
         <div className="container mx-auto px-4 max-w-4xl prose prose-lg dark:prose-invert">
-          <p><em>Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</em></p>
+          {lastUpdated && <p><em>Last updated: {lastUpdated}</em></p>}
           
           <h2>1. Introduction</h2>
           <p>Project Hub ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services (collectively, the "Service").</p>
