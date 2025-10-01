@@ -33,6 +33,7 @@ import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { addUserToFirestore } from "@/lib/firebase-services";
+import { NodeGarden } from "@/components/node-garden";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -43,25 +44,6 @@ const formSchema = z.object({
   }),
 });
 
-const NodeGarden = () => {
-    return (
-        <div className="absolute inset-0 z-0">
-            {Array.from({ length: 50 }).map((_, i) => (
-                <div
-                    key={i}
-                    className="node"
-                    style={{
-                        '--size': `${Math.random() * 5 + 2}px`,
-                        '--x': `${Math.random() * 100}%`,
-                        '--y': `${Math.random() * 100}%`,
-                        '--duration': `${Math.random() * 10 + 10}s`,
-                        '--delay': `${Math.random() * -10}s`,
-                    } as React.CSSProperties}
-                />
-            ))}
-        </div>
-    );
-};
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -85,6 +67,7 @@ export default function RegisterPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(userCredential.user, { displayName: values.name });
+      await userCredential.user.reload(); // Ensure profile is updated before adding to Firestore
       await addUserToFirestore(userCredential.user);
       router.push("/");
       toast({ title: "Account created successfully!" });
@@ -244,5 +227,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-    

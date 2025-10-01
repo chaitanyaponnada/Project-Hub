@@ -32,31 +32,12 @@ import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { addUserToFirestore } from "@/lib/firebase-services";
+import { NodeGarden } from "@/components/node-garden";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
-
-const NodeGarden = () => {
-    return (
-        <div className="absolute inset-0 z-0">
-            {Array.from({ length: 50 }).map((_, i) => (
-                <div
-                    key={i}
-                    className="node"
-                    style={{
-                        '--size': `${Math.random() * 5 + 2}px`,
-                        '--x': `${Math.random() * 100}%`,
-                        '--y': `${Math.random() * 100}%`,
-                        '--duration': `${Math.random() * 10 + 10}s`,
-                        '--delay': `${Math.random() * -10}s`,
-                    } as React.CSSProperties}
-                />
-            ))}
-        </div>
-    );
-};
 
 
 export default function LoginPage() {
@@ -291,6 +272,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-    
-    

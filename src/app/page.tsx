@@ -35,6 +35,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { getProjects } from "@/lib/firebase-services";
+import { NodeGarden } from "@/components/node-garden";
 
 
 const formSchema = z.object({
@@ -67,37 +68,6 @@ const useTypewriter = (text: string, speed = 50) => {
     }, [text, speed]);
   
     return {displayText, isTyping};
-};
-
-const NodeGarden = () => {
-    return (
-        <div className="relative h-full w-full flex items-center justify-center bg-transparent overflow-hidden">
-            <div className="absolute inset-0 z-0">
-                {Array.from({ length: 50 }).map((_, i) => (
-                    <div
-                        key={i}
-                        className="node"
-                        style={{
-                            '--size': `${Math.random() * 5 + 2}px`,
-                            '--x': `${Math.random() * 100}%`,
-                            '--y': `${Math.random() * 100}%`,
-                            '--duration': `${Math.random() * 10 + 10}s`,
-                            '--delay': `${Math.random() * -10}s`,
-                        } as React.CSSProperties}
-                    />
-                ))}
-            </div>
-            <svg className="absolute inset-0 w-full h-full z-10" style={{ pointerEvents: 'none' }}>
-                <defs>
-                    <radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                        <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 0.3 }} />
-                        <stop offset="100%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 0 }} />
-                    </radialGradient>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#glow)" />
-            </svg>
-        </div>
-    );
 };
 
 const HeroBackground = () => {
