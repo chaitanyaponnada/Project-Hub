@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -37,6 +36,27 @@ const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
+
+const NodeGarden = () => {
+    return (
+        <div className="absolute inset-0 z-0">
+            {Array.from({ length: 50 }).map((_, i) => (
+                <div
+                    key={i}
+                    className="node"
+                    style={{
+                        '--size': `${Math.random() * 5 + 2}px`,
+                        '--x': `${Math.random() * 100}%`,
+                        '--y': `${Math.random() * 100}%`,
+                        '--duration': `${Math.random() * 10 + 10}s`,
+                        '--delay': `${Math.random() * -10}s`,
+                    } as React.CSSProperties}
+                />
+            ))}
+        </div>
+    );
+};
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -121,8 +141,9 @@ export default function LoginPage() {
 }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
-      <Card className="w-full max-w-sm animate-fade-in-up">
+    <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
+        <NodeGarden />
+      <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link
             href="/"
@@ -224,7 +245,7 @@ export default function LoginPage() {
               
               <div className="relative w-full">
                 <Separator className="shrink-0" />
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-xs text-muted-foreground">OR</span>
+                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">OR</span>
               </div>
 
               <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>

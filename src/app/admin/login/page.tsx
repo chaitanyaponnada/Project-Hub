@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -32,6 +31,26 @@ const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, "Password is required."),
 });
+
+const NodeGarden = () => {
+    return (
+        <div className="absolute inset-0 z-0">
+            {Array.from({ length: 50 }).map((_, i) => (
+                <div
+                    key={i}
+                    className="node"
+                    style={{
+                        '--size': `${Math.random() * 5 + 2}px`,
+                        '--x': `${Math.random() * 100}%`,
+                        '--y': `${Math.random() * 100}%`,
+                        '--duration': `${Math.random() * 10 + 10}s`,
+                        '--delay': `${Math.random() * -10}s`,
+                    } as React.CSSProperties}
+                />
+            ))}
+        </div>
+    );
+};
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -73,8 +92,9 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
-      <Card className="w-full max-w-sm animate-fade-in-up">
+    <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
+        <NodeGarden />
+      <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link
             href="/"
