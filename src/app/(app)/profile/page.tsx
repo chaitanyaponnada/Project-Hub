@@ -13,6 +13,7 @@ import Image from "next/image";
 import { getInquiriesByUserId } from "@/lib/firebase-services";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { format } from 'date-fns';
+import { Badge } from "@/components/ui/badge";
 
 export default function ProfilePage() {
     const { user, loading } = useAuth();
@@ -120,23 +121,18 @@ export default function ProfilePage() {
                                                     Asked on {inquiry.receivedAt?.toDate ? format(inquiry.receivedAt.toDate(), 'PPP') : 'N/A'}
                                                 </p>
                                             </div>
+                                            {inquiry.repliedAt ? (
+                                                <Badge variant="secondary" className="text-green-600 border-green-600">Replied</Badge>
+                                            ) : (
+                                                <Badge variant="outline">Pending</Badge>
+                                            )}
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
-                                            <p className="text-muted-foreground whitespace-pre-wrap mb-6">{inquiry.message}</p>
-                                            {inquiry.reply ? (
-                                                <Card className="bg-muted/50">
-                                                    <CardHeader className="pt-4">
-                                                        <CardTitle className="text-base font-headline">Admin Reply</CardTitle>
-                                                         <p className="text-xs text-muted-foreground">
-                                                            Replied on {inquiry.repliedAt?.toDate ? format(inquiry.repliedAt.toDate(), 'PPP') : 'N/A'}
-                                                        </p>
-                                                    </CardHeader>
-                                                    <CardContent className="pt-2">
-                                                        <p className="whitespace-pre-wrap">{inquiry.reply}</p>
-                                                    </CardContent>
-                                                </Card>
-                                            ) : (
-                                                <p className="text-center text-muted-foreground py-4">No reply yet. We'll get back to you soon.</p>
+                                            <p className="text-muted-foreground whitespace-pre-wrap mb-4">{inquiry.message}</p>
+                                            {inquiry.repliedAt && (
+                                                <div className="text-center text-sm text-muted-foreground p-4 bg-muted/50 rounded-md">
+                                                    A reply was sent on {format(inquiry.repliedAt.toDate(), 'PPP')}. Please check your email.
+                                                </div>
                                             )}
                                         </AccordionContent>
                                     </AccordionItem>

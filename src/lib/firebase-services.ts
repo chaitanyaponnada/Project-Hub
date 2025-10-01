@@ -179,7 +179,6 @@ export const addInquiry = async (inquiryData: { name: string, email: string, pho
         userId: userId || null,
         receivedAt: serverTimestamp(),
         id: inquiryRef.id,
-        reply: null,
         repliedAt: null,
     });
 };
@@ -214,14 +213,12 @@ export const getInquiriesByUserId = async (userId: string) => {
 };
 
 /**
- * Adds or updates a reply for an inquiry.
+ * Marks an inquiry as replied.
  * @param inquiryId The ID of the inquiry to reply to.
- * @param replyText The text of the reply.
  */
-export const replyToInquiry = async (inquiryId: string, replyText: string) => {
+export const replyToInquiry = async (inquiryId: string) => {
     const inquiryRef = doc(db, 'inquiries', inquiryId);
     await updateDoc(inquiryRef, {
-        reply: replyText,
         repliedAt: serverTimestamp(),
     });
 };

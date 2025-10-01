@@ -20,17 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 
 export default function AdminInquiriesPage() {
     const [inquiries, setInquiries] = useState<any[]>([]);
@@ -39,7 +29,6 @@ export default function AdminInquiriesPage() {
     const [inquiryToReply, setInquiryToReply] = useState<any | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isReplying, setIsReplying] = useState(false);
-    const [replyText, setReplyText] = useState('');
     const { toast } = useToast();
     
     const fetchInquiries = async () => {
@@ -68,19 +57,18 @@ export default function AdminInquiriesPage() {
         }
     }
     
-    const handleReply = async () => {
-        if (!inquiryToReply || !replyText) return;
+    const handleMarkAsReplied = async () => {
+        if (!inquiryToReply) return;
         setIsReplying(true);
         try {
-            await replyToInquiry(inquiryToReply.id, replyText);
+            await replyToInquiry(inquiryToReply.id);
             fetchInquiries(); // Re-fetch to show the updated reply status
-            toast({title: "Reply sent."});
-            setInquiryToReply(null); // Close dialog on success
+            toast({title: "Inquiry marked as replied."});
         } catch(error) {
-            toast({title: "Error sending reply.", variant: "destructive"})
+            toast({title: "Error updating inquiry.", variant: "destructive"})
         } finally {
             setIsReplying(false);
-            setReplyText('');
+            setInquiryToReply(null); // Close dialog on success
         }
     }
 
@@ -89,7 +77,7 @@ export default function AdminInquiriesPage() {
         <Card>
             <CardHeader>
                 <CardTitle>Inquiries</CardTitle>
-                <CardDescription>Messages from the contact form.</CardDescription>
+                <CardDescription>Messages from the contact form. Reply to users via their email and mark as replied here.</CardDescription>
             </CardHeader>
             <CardContent>
                 {isLoading ? (
@@ -114,27 +102,25 @@ export default function AdminInquiriesPage() {
                                     <TableCell className="font-medium">{inquiry.name}</TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span>{inquiry.email}</span>
+                                            <a href={`mailto:${inquiry.email}`} className="text-primary underline">{inquiry.email}</a>
                                             {inquiry.phone && <span className="text-muted-foreground">{inquiry.phone}</span>}
                                         </div>
                                     </TableCell>
                                     <TableCell className="max-w-sm whitespace-pre-wrap">{inquiry.message}</TableCell>
                                     <TableCell>
-                                        {inquiry.reply ? (
-                                            <span className="text-green-600 font-medium">Replied</span>
+                                        {inquiry.repliedAt ? (
+                                            <Badge variant="secondary" className="text-green-600 border-green-600">Replied</Badge>
                                         ) : (
-                                            <span className="text-yellow-600 font-medium">Pending</span>
+                                            <Badge variant="outline">Pending</Badge>
                                         )}
                                     </TableCell>
                                     <TableCell>{inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP p') : 'N/A'}</TableCell>
                                     <TableCell className="space-x-1">
-                                        <Dialog onOpenChange={(open) => { if(!open) setInquiryToReply(null); }}>
-                                            <DialogTrigger asChild>
-                                                <Button variant="ghost" size="icon" onClick={() => { setInquiryToReply(inquiry); setReplyText(inquiry.reply || ''); }}>
-                                                    <Reply className="h-4 w-4"/>
-                                                </Button>
-                                            </DialogTrigger>
-                                        </Dialog>
+                                        <AlertDialogTrigger asChild>
+                                             <Button variant="ghost" size="icon" onClick={() => setInquiryToReply(inquiry)} disabled={!!inquiry.repliedAt}>
+                                                <Reply className="h-4 w-4"/>
+                                            </Button>
+                                        </AlertDialogTrigger>
                                         <AlertDialogTrigger asChild>
                                             <Button variant="ghost" size="icon" onClick={() => setInquiryToDelete(inquiry)}>
                                                 <Trash2 className="h-4 w-4 text-destructive"/>
@@ -155,31 +141,23 @@ export default function AdminInquiriesPage() {
         </Card>
         
         {/* Reply Dialog */}
-        <Dialog open={!!inquiryToReply} onOpenChange={(open) => { if(!open) setInquiryToReply(null); }}>
-             <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Reply to {inquiryToReply?.name}</DialogTitle>
-                    <DialogDescription>Your reply will be visible to the user on their profile page.</DialogDescription>
-                </DialogHeader>
-                <div className="py-4">
-                    <p className="text-sm font-semibold mb-2">Original Message:</p>
-                    <blockquote className="border-l-2 pl-4 text-sm text-muted-foreground mb-4 whitespace-pre-wrap">{inquiryToReply?.message}</blockquote>
-                    <Textarea
-                        placeholder="Type your reply here..."
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        rows={6}
-                    />
-                </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setInquiryToReply(null)} disabled={isReplying}>Cancel</Button>
-                    <Button onClick={handleReply} disabled={isReplying || !replyText}>
+        <AlertDialog open={!!inquiryToReply} onOpenChange={() => setInquiryToReply(null)}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Mark as Replied?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This will mark the inquiry from "{inquiryToReply?.name}" as replied. Make sure you have responded to their email before confirming. This action cannot be undone.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel disabled={isReplying}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleMarkAsReplied} disabled={isReplying}>
                         {isReplying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Send Reply
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                        Mark as Replied
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
 
         {/* Delete Dialog */}
         <AlertDialog open={!!inquiryToDelete} onOpenChange={() => setInquiryToDelete(null)}>
