@@ -1,0 +1,121 @@
+
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Loader2, Trash2 } from 'lucide-react';
+import { getInquiries, deleteInquiry } from '@/lib/firebase-services';
+import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
+export default function AdminInquiriesPage() {
+    const [inquiries, setInquiries] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [inquiryToDelete, setInquiryToDelete] = useState<any | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const { toast } = useToast();
+    
+    useEffect(() => {
+        const fetchInquiries = async () => {
+            setIsLoading(true);
+            const fetchedInquiries = await getInquiries();
+            setInquiries(fetchedInquiries);
+            setIsLoading(false);
+        };
+        fetchInquiries();
+    }, []);
+
+    const handleDelete = async () => {
+        if (!inquiryToDelete) return;
+        setIsDeleting(true);
+        try {
+            await deleteInquiry(inquiryToDelete.id);
+            setInquiries(inquiries.filter(i => i.id !== inquiryToDelete.id));
+            toast({title: "Inquiry deleted."});
+        } catch (error) {
+            toast({title: "Error deleting inquiry.", variant: "destructive"})
+        } finally {
+            setIsDeleting(false);
+            setInquiryToDelete(null);
+        }
+    }
+
+    return (
+        <>
+        <Card>
+            <CardHeader>
+                <CardTitle>Inquiries</CardTitle>
+                <CardDescription>Messages from the contact form.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    </div>
+                ) : (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>From</TableHead>
+                                <TableHead>Email</TableHead>
+                                <TableHead>Message</TableHead>
+                                <TableHead>Received</TableHead>
+                                <TableHead>Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {inquiries.map(inquiry => (
+                                <TableRow key={inquiry.id}>
+                                    <TableCell className="font-medium">{inquiry.name}</TableCell>
+                                    <TableCell>{inquiry.email}</TableCell>
+                                    <TableCell className="max-w-sm whitespace-pre-wrap">{inquiry.message}</TableCell>
+                                    <TableCell>{inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP p') : 'N/A'}</TableCell>
+                                    <TableCell>
+                                        <Button variant="ghost" size="icon" onClick={() => setInquiryToDelete(inquiry)}>
+                                            <Trash2 className="h-4 w-4 text-destructive"/>
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                )}
+                 {inquiries.length === 0 && !isLoading && (
+                    <div className="text-center py-12">
+                        <p className="text-muted-foreground">No inquiries found.</p>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+        <AlertDialog open={!!inquiryToDelete} onOpenChange={() => setInquiryToDelete(null)}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    This will permanently delete the inquiry from "{inquiryToDelete?.name}".
+                </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                    {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Delete
+                </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+        </>
+    )
+}

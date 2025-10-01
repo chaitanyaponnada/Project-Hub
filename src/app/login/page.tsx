@@ -29,9 +29,10 @@ import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { NodeGarden } from "@/components/node-garden";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isAdmin } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -57,16 +58,42 @@ export default function LoginPage() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const adminForm = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "chaitanyaponnada657@gmail.com",
+      password: "admin@super",
+    },
+  });
+
+
+  async function handleLogin(values: z.infer<typeof formSchema>, forAdmin: boolean) {
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
         auth,
         values.email,
         values.password
       );
-      router.push(redirectUrl);
-      toast({ title: "Login successful!" });
+
+      if (forAdmin) {
+        const userIsAdmin = await isAdmin(userCredential.user.uid);
+        if (userIsAdmin) {
+          router.push('/admin');
+          toast({ title: "Admin login successful!" });
+        } else {
+          await auth.signOut();
+          toast({
+            title: "Authorization Failed",
+            description: "You are not authorized to access the admin panel.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        router.push(redirectUrl);
+        toast({ title: "Login successful!" });
+      }
+
     } catch (error: any) {
       toast({
         title: "Login Failed",
@@ -92,7 +119,6 @@ export default function LoginPage() {
         });
         setResetEmail("");
     } catch (error: any) {
-        // We generally don't want to reveal if an email exists or not, but for debugging, you might log this.
         console.error("Password reset error:", error);
          toast({
             title: "Password Reset Email Sent",
@@ -103,29 +129,12 @@ export default function LoginPage() {
     }
 }
 
-  return (
-    <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-        <NodeGarden />
-      <Card className="w-full max-w-sm animate-fade-in-up z-10">
-        <CardHeader className="text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center gap-2 mb-4"
-          >
-            <Code className="h-8 w-8 text-primary" />
-          </Link>
-          <CardTitle className="font-headline text-2xl">
-            Welcome Back
-          </CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account.
-          </CardDescription>
-        </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+  const renderLoginForm = (loginProvider: any, isAdminForm: boolean) => (
+      <Form {...loginProvider}>
+          <form onSubmit={loginProvider.handleSubmit((values) => handleLogin(values, isAdminForm))}>
             <CardContent className="space-y-4">
               <FormField
-                control={form.control}
+                control={loginProvider.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
@@ -142,7 +151,7 @@ export default function LoginPage() {
                 )}
               />
               <FormField
-                control={form.control}
+                control={loginProvider.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
@@ -218,6 +227,38 @@ export default function LoginPage() {
             </CardFooter>
           </form>
         </Form>
+  )
+
+  return (
+    <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
+      <NodeGarden />
+      <Card className="w-full max-w-sm animate-fade-in-up z-10">
+        <CardHeader className="text-center pb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center gap-2 mb-4"
+          >
+            <Code className="h-8 w-8 text-primary" />
+          </Link>
+          <CardTitle className="font-headline text-2xl">
+            Welcome Back
+          </CardTitle>
+          <CardDescription>
+            Sign in to continue.
+          </CardDescription>
+        </CardHeader>
+        <Tabs defaultValue="user" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="user">User</TabsTrigger>
+                <TabsTrigger value="admin">Admin</TabsTrigger>
+            </TabsList>
+            <TabsContent value="user">
+                {renderLoginForm(form, false)}
+            </TabsContent>
+            <TabsContent value="admin">
+                {renderLoginForm(adminForm, true)}
+            </TabsContent>
+        </Tabs>
       </Card>
     </div>
   );

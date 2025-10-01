@@ -9,39 +9,38 @@ service cloud.firestore {
       return exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Projects: Publicly readable, only admins can write
+    // Projects: Publicly readable, only writable by admins
     match /projects/{projectId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Users: Users can create their own doc, and only update/delete their own. Admins can do anything.
+    // Users: Can only be created during signup. Users can read/update their own data. Admins can read/write any user data.
     match /users/{userId} {
-      allow read, update, delete: if request.auth.uid == userId || isAdmin();
-      allow create: if request.auth.uid == userId;
+      allow read, update: if request.auth.uid == userId || isAdmin();
+      allow create: if request.auth.uid != null;
+      allow delete: if isAdmin();
     }
     
-    // Inquiries: Anyone can create, only admins can read/delete
+    // Carts & Purchases: Users can only access their own cart and purchase history. Admins have full access.
+    match /carts/{userId} {
+        allow read, write: if request.auth.uid == userId || isAdmin();
+    }
+    match /purchases/{userId} {
+        allow read, write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // Inquiries: Allow anyone to create (for the contact form), but only admins to read/delete.
     match /inquiries/{inquiryId} {
       allow create: if true;
       allow read, delete: if isAdmin();
     }
 
-    // Carts: Users can only read/write their own cart. Admins can read them.
-    match /carts/{userId} {
-      allow read, write: if request.auth.uid == userId;
-      allow get: if request.auth.uid == userId || isAdmin();
-    }
-    
-    // Purchases: Users can only read/write their own purchase history. Admins can read them.
-    match /purchases/{userId} {
-       allow read, write: if request.auth.uid == userId;
-       allow get: if request.auth.uid == userId || isAdmin();
-    }
-
-    // Admins: Only other admins can read/write the admins list
+    // Admins: Only readable by other admins to check roles. Not publicly writable.
     match /admins/{adminId} {
-      allow read, write: if isAdmin();
+        allow read: if isAdmin();
+        // Writes should be done server-side or via the Firebase Console for security
+        allow write: if false; 
     }
   }
 }
