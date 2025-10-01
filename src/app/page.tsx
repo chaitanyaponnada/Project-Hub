@@ -203,6 +203,9 @@ export default function Home() {
               <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
                 Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
               </p>
+               <p className="text-md md:text-lg text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
+                Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-full h-8 w-8 leading-8 text-center mx-2 font-bold">Or</span> get your idea developed by us.
+              </p>
               <div className="flex justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                   <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
@@ -456,3 +459,4 @@ export default function Home() {
     
 
     
+
