@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -159,11 +158,11 @@ export default function Home() {
         <section id="home" className="relative py-24 md:py-32 text-center">
           <div className="container mx-auto px-4 relative">
             <div className="max-w-4xl mx-auto">
-              <h1 className="font-headline text-5xl md:text-7xl font-bold text-primary mb-4 min-h-[84px] md:min-h-[112px]">
+              <h1 className="font-headline text-6xl md:text-8xl font-bold text-primary mb-4 min-h-[90px] md:min-h-[128px]">
                 {typedTitle}<span className="animate-ping">|</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
-                complete your final year project now
+                Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now.
               </p>
               <div className="flex justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
@@ -227,7 +226,7 @@ export default function Home() {
               </header>
               
                <div className="relative w-full max-w-4xl mx-auto">
-                 <div className="absolute inset-y-0 -inset-x-8 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
+                 <div className="absolute inset-y-0 -inset-x-2 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background opacity-30" />
                  <Carousel 
                     opts={{
                         align: "start",
@@ -240,7 +239,7 @@ export default function Home() {
                 >
                     <CarouselContent className="-ml-1">
                         {projects.slice(0, 5).map((project, i) => (
-                        <CarouselItem key={project.id} className="pl-1 md:basis-1/2 lg:basis-1/3">
+                        <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
                             <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
                                 <ProjectCard project={project} isBlurred={!user && !loading} />
                             </div>
