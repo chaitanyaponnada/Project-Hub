@@ -32,11 +32,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
-import { addUserToFirestore } from "@/lib/firebase-services";
+import { addUserToFirestore, addAdminToFirestore } from "@/lib/firebase-services";
+
+const ALLOWED_ADMIN_EMAIL = "chaitanyaponnada657@gmail.com";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.string().email(),
+  email: z.string().email().refine(email => email === ALLOWED_ADMIN_EMAIL, {
+    message: "This email is not authorized for admin registration.",
+  }),
   password: z.string().min(6, "Password must be at least 6 characters."),
   terms: z.literal(true, {
     errorMap: () => ({ message: "You must accept the terms and conditions." }),
@@ -44,7 +48,7 @@ const formSchema = z.object({
 });
 
 
-export default function RegisterPage() {
+export default function RegisterAdminPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -66,16 +70,16 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(userCredential.user, { displayName: values.name });
       
-      // We need to reload the user to get the updated displayName
       await userCredential.user.reload();
       const updatedUser = auth.currentUser;
 
       if(updatedUser) {
         await addUserToFirestore(updatedUser);
+        await addAdminToFirestore(updatedUser.uid);
       }
 
-      router.push("/");
-      toast({ title: "Account created successfully!" });
+      router.push("/admin");
+      toast({ title: "Admin account created successfully!" });
     } catch (error: any) {
       toast({
         title: "Registration Failed",
@@ -95,8 +99,8 @@ export default function RegisterPage() {
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
             <Code className="h-8 w-8 text-primary" />
           </Link>
-          <CardTitle className="font-headline text-2xl">Create a User Account</CardTitle>
-          <CardDescription>Enter your details to get started.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Create an Admin Account</CardTitle>
+          <CardDescription>Enter your details to create an admin account.</CardDescription>
         </CardHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -119,9 +123,9 @@ export default function RegisterPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Admin Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="m@example.com" {...field} />
+                      <Input type="email" placeholder="admin@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -178,7 +182,7 @@ export default function RegisterPage() {
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Account
+                Create Admin Account
               </Button>
               
               <div className="text-center text-sm">

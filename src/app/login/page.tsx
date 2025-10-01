@@ -61,8 +61,8 @@ export default function LoginPage() {
   const adminForm = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "chaitanyaponnada657@gmail.com",
-      password: "admin@super",
+      email: "",
+      password: "",
     },
   });
 
@@ -216,12 +216,12 @@ export default function LoginPage() {
               </Button>
               
               <div className="text-center text-sm">
-                Don't have an account?{" "}
+                {isAdminForm ? "Need an admin account?" : "Don't have an account?"}{" "}
                 <Link
-                  href="/register"
+                  href={isAdminForm ? "/register/admin" : "/register"}
                   className="underline text-primary hover:text-primary/80"
                 >
-                  Sign up
+                  {isAdminForm ? "Create Admin Account" : "Sign up"}
                 </Link>
               </div>
             </CardFooter>

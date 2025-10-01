@@ -17,6 +17,16 @@ export const isAdmin = async (uid: string): Promise<boolean> => {
 };
 
 /**
+ * Adds a new admin UID to the `admins` collection.
+ * @param uid The user's ID to be added as an admin.
+ */
+export const addAdminToFirestore = async (uid: string) => {
+    if (!uid) return;
+    const adminRef = doc(db, 'admins', uid);
+    await setDoc(adminRef, { admin: true, createdAt: serverTimestamp() });
+}
+
+/**
  * Adds or updates a user in the `users` collection in Firestore.
  * If the user doesn't exist, it creates a new document.
  * If the user exists, it updates their last sign-in time.
