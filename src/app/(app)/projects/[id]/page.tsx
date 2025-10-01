@@ -180,7 +180,7 @@ export default function ProjectDetailsPage() {
                                 </>
                             )}
                         </Button>
-                        <Button size="lg" onClick={() => buyNow(project, '/checkout')}>
+                        <Button size="lg" onClick={() => buyNow(project)}>
                              <Bolt className="mr-2 h-5 w-5"/>
                              Buy Now
                         </Button>

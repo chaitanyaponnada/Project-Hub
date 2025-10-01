@@ -17,7 +17,7 @@ interface CartContextType {
   cartItems: CartItem[];
   purchasedItems: CartItem[];
   addToCart: (project: Project) => void;
-  buyNow: (project: Project, redirectUrl: string) => void;
+  buyNow: (project: Project) => void;
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
@@ -117,11 +117,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     toast({ title: 'Added to Cart', description: `${project.title} has been added to your cart.` });
   };
 
-  const buyNow = (project: Project, redirectUrl: string) => {
+  const buyNow = (project: Project) => {
+    if (!user) {
+      router.push('/login?redirect=/projects/' + project.id);
+      return;
+    }
     const newCartItems = [{ ...project, quantity: 1 }];
     setCartItems(newCartItems);
     updateFirestoreCart(newCartItems);
-    router.push(redirectUrl);
+    router.push('/checkout');
   };
 
   const removeFromCart = (projectId: string) => {

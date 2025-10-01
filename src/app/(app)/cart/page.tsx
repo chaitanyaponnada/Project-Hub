@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -14,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 export default function CartPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, buyNow } = useCart();
+  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart } = useCart();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -49,7 +50,7 @@ export default function CartPage() {
   }
 
   const handleCheckout = () => {
-      buyNow(cartItems[0], '/checkout');
+      router.push('/checkout');
   }
 
   return (
