@@ -170,7 +170,7 @@ export default function Home() {
   async function onContactSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      await addInquiry(values);
+      await addInquiry(values, user?.uid);
       toast({
         title: "Message Sent!",
         description: "Thank you for contacting us. We'll get back to you shortly.",
