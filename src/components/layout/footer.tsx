@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 export function Footer() {
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useState<number | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -45,7 +45,7 @@ export function Footer() {
               Your central marketplace for high-quality projects.
             </p>
              <p className="text-xs text-muted-foreground mt-4">
-              © {year} Project Hub. All rights reserved.
+              {year && <>© {year} Project Hub. All rights reserved.</>}
             </p>
           </div>
           <div className="col-span-1">
