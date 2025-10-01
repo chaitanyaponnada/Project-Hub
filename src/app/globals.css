@@ -95,7 +95,7 @@
     overflow: hidden;
   }
 
-  .dark .coding-canvas::before {
+  .coding-canvas::before {
     content: "const project = 'amazing';\n\nfunction getStarted() {\n  console.log('Welcome to Project Hub!');\n}\n\n// UI Components\nimport { Button } from '@shadcn/ui';\n\n// API Routes\napp.get('/api/projects', (req, res) => {\n  res.json(projects);\n});\n\nclass DataVisualizer {\n  constructor(data) {\n    this.data = data;\n  }\n\n  renderChart() {\n    // ...\n  }\n}\n\n// React Hooks\nconst [user, setUser] = useState(null);\n\n// Styles\n.header {\n  font-size: 2rem;\n  color: var(--primary);\n}\n\n// More code\nconst API_KEY = '...';\n\n// And more\nconst a = 1;\nconst b = 2;\n\n// Functions\nfunction sum(a, b) {\n  return a + b;\n}\n\n// Database connection\nconst db = new Database();\n\n// Machine Learning model\nconst model = new Model();";
     position: absolute;
     top: 0;
@@ -104,10 +104,14 @@
     height: auto;
     font-family: 'Space Grotesk', monospace;
     font-size: 14px;
-    color: hsla(var(--foreground), 0.05);
+    color: hsla(var(--foreground), 0.1);
     white-space: pre;
     animation: scrollCode 60s linear infinite;
     will-change: transform;
+  }
+
+  .dark .coding-canvas::before {
+    color: hsla(var(--foreground), 0.05);
   }
 }
 
