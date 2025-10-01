@@ -28,7 +28,7 @@ export function Footer() {
     }
   };
   
-  if(pathname.startsWith('/admin') || pathname.startsWith('/checkout') || pathname === '/login' || pathname === '/register') {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/checkout') || pathname === '/login' || pathname === '/register') {
       return null;
   }
 
