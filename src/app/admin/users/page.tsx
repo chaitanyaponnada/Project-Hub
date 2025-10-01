@@ -1,4 +1,7 @@
 
+
+"use client";
+
 import {
   Table,
   TableBody,
@@ -8,10 +11,43 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { users } from "@/lib/placeholder-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUsers } from "@/lib/firebase-services";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+
+type AppUser = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  joined: string;
+  orders: number;
+  totalSpent: number;
+  photoURL: string | null;
+}
 
 export default function AdminUsersPage() {
+  const [users, setUsers] = useState<AppUser[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      const fetchedUsers = await getUsers();
+      setUsers(fetchedUsers);
+      setIsLoading(false);
+    };
+    fetchUsers();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 animate-fade-in">
       <div className="mb-6 animate-fade-in-down">
@@ -36,8 +72,8 @@ export default function AdminUsersPage() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={`https://i.pravatar.cc/40?u=${user.id}`} />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={user.photoURL ?? undefined} />
+                        <AvatarFallback>{user.name ? user.name.charAt(0) : 'U'}</AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">{user.name}</p>
@@ -52,6 +88,11 @@ export default function AdminUsersPage() {
               ))}
             </TableBody>
           </Table>
+            {users.length === 0 && (
+            <div className="text-center p-8 text-muted-foreground">
+              No users found.
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

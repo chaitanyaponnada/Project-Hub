@@ -42,7 +42,10 @@ export const getProjectById = async (id: string): Promise<Project | null> => {
 // Function to add a new project
 export const addProject = async (projectData: Omit<Project, 'id'>) => {
   const projectsCol = collection(db, 'projects');
-  await addDoc(projectsCol, projectData);
+  await addDoc(projectsCol, {
+      ...projectData,
+      createdAt: Timestamp.now()
+  });
 };
 
 // Function to update an existing project
@@ -111,9 +114,46 @@ export const addUserToFirestore = async (user: User) => {
             displayName: user.displayName,
             photoURL: user.photoURL,
             createdAt: Timestamp.now(),
+            orders: 0,
+            totalSpent: 0,
         });
     }
 };
+
+type AppUser = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  joined: string;
+  orders: number;
+  totalSpent: number;
+  photoURL: string | null;
+}
+
+export const getUsers = async (): Promise<AppUser[]> => {
+    try {
+        const usersCol = collection(db, 'users');
+        const q = query(usersCol, orderBy("createdAt", "desc"));
+        const userSnapshot = await getDocs(q);
+        const userList = userSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                name: data.displayName,
+                email: data.email,
+                joined: (data.createdAt as Timestamp).toDate().toLocaleDateString(),
+                orders: data.orders || 0,
+                totalSpent: data.totalSpent || 0,
+                photoURL: data.photoURL,
+            } as AppUser;
+        });
+        return userList;
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return [];
+    }
+}
+
 
 // -------- Admin Auth API --------
 export const verifyAdminCredentials = async (email: string, password: string): Promise<boolean> => {
@@ -133,4 +173,3 @@ export const verifyAdminCredentials = async (email: string, password: string): P
         return false;
     }
 };
-    
