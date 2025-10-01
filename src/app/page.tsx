@@ -89,24 +89,26 @@ const HeroBackground = () => {
     }
   }, [theme, isClient]);
 
-  if (!isClient) {
-    return null;
+  if (!isClient || !videoSrc) {
+    return (
+        <div className="absolute top-0 left-0 w-full h-full bg-background z-0">
+             <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
+        </div>
+    );
   }
 
   return (
     <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-      {videoSrc && (
-          <video
-          key={videoSrc}
-          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto object-cover transform -translate-x-1/2 -translate-y-1/2"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-      )}
+      <video
+        key={videoSrc}
+        className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto object-cover transform -translate-x-1/2 -translate-y-1/2"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src={videoSrc} type="video/mp4" />
+      </video>
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   );
@@ -455,5 +457,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
