@@ -37,8 +37,8 @@
   }
 
   .dark {
-    --background: 0 0% 2%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
     --card: 0 0% 2%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 2%;
@@ -99,6 +99,29 @@
     animation: move var(--duration) var(--delay) infinite alternate ease-in-out;
     opacity: 0;
   }
+  
+  .section-gradient {
+    position: relative;
+  }
+  .section-gradient::before,
+  .section-gradient::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 150px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .section-gradient::before {
+    top: 0;
+    background: linear-gradient(to bottom, hsl(var(--background)), transparent);
+  }
+  .section-gradient::after {
+    bottom: 0;
+    background: linear-gradient(to top, hsl(var(--background)), transparent);
+  }
+
 
   @keyframes move {
     from {
@@ -124,7 +147,3 @@
 		background-position: 0% 50%;
 	}
 }
-
-
-
-

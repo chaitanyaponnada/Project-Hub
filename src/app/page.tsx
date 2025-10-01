@@ -215,7 +215,7 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 bg-muted/30">
+        <section className="py-20 bg-muted/30 section-gradient">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
@@ -256,7 +256,7 @@ export default function Home() {
         {/* Projects Section */}
         <div className="relative">
           <div className="absolute inset-0 pointer-events-none z-10 bg-[linear-gradient(to_right,hsl(var(--background)),transparent_25%,transparent_75%,hsl(var(--background)))]" />
-          <section id="projects" className="py-20">
+          <section id="projects" className="py-20 section-gradient">
               <div className="container mx-auto px-4 relative z-20">
                 <header className="mb-12 text-center animate-fade-in-up">
                   <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
@@ -303,7 +303,7 @@ export default function Home() {
 
 
         {/* About Section */}
-        <section id="about" className="py-20 bg-muted/30">
+        <section id="about" className="py-20 bg-muted/30 section-gradient">
             <div className="container mx-auto px-4">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div className="animate-fade-in-right">
@@ -333,7 +333,7 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="py-20">
+        <section id="faq" className="py-20 section-gradient">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
@@ -355,7 +355,7 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 bg-muted/30">
+        <section id="contact" className="py-20 bg-muted/30 section-gradient">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
