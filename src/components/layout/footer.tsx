@@ -50,7 +50,7 @@ export function Footer() {
           </div>
           <div className="col-span-1">
             <h4 className="font-headline font-semibold text-primary mb-4">Navigate</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-sm">
               <li><Link href="#home" onClick={handleScroll} className="hover:text-primary transition-colors">Home</Link></li>
               <li><Link href="/about" className="hover:text-primary transition-colors">About</Link></li>
               <li><Link href="/projects" className="hover:text-primary transition-colors">Projects</Link></li>
@@ -60,7 +60,7 @@ export function Footer() {
           </div>
           <div className="col-span-1">
             <h4 className="font-headline font-semibold text-primary mb-4">Legal</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-sm">
               <li><Link href="/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
                <li><Link href="/admin/login" className="hover:text-primary transition-colors">Admin Login</Link></li>
