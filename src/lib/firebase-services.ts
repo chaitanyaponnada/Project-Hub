@@ -60,10 +60,11 @@ export const deleteProject = async (id: string) => {
 // --------- Inquiries API ---------
 export const addInquiryToFirestore = async (inquiryData: Omit<Inquiry, 'id' | 'receivedAt'>) => {
   const inquiriesCol = collection(db, 'inquiries');
-  await addDoc(inquiriesCol, {
+  const docRef = await addDoc(inquiriesCol, {
     ...inquiryData,
     receivedAt: Timestamp.now(),
   });
+  return docRef.id;
 };
 
 export const getInquiries = async (): Promise<Inquiry[]> => {
@@ -99,6 +100,7 @@ export const uploadFile = async (file: File, path: string): Promise<string> => {
 
 // --------- User API ---------
 export const addUserToFirestore = async (user: User) => {
+    if (!user) return;
     const userRef = doc(db, 'users', user.uid);
     const userDoc = await getDoc(userRef);
 
@@ -122,7 +124,7 @@ export const verifyAdminCredentials = async (email: string, password: string): P
         if (user) {
             const adminDocRef = doc(db, 'admins', user.uid);
             const adminDoc = await getDoc(adminDocRef);
-            return adminDoc.exists() && adminDoc.data().isAdmin === true;
+            return adminDoc.exists();
         }
         return false;
     } catch (error) {
@@ -131,5 +133,4 @@ export const verifyAdminCredentials = async (email: string, password: string): P
         return false;
     }
 };
-
     

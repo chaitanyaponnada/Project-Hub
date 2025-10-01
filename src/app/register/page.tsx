@@ -84,11 +84,8 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      if (userCredential.user) {
-        await updateProfile(userCredential.user, { displayName: values.name });
-        await userCredential.user.reload();
-        await addUserToFirestore(userCredential.user);
-      }
+      await updateProfile(userCredential.user, { displayName: values.name });
+      await addUserToFirestore(userCredential.user);
       router.push("/");
       toast({ title: "Account created successfully!" });
     } catch (error: any) {
@@ -104,8 +101,8 @@ export default function RegisterPage() {
 
   async function handleGoogleSignIn() {
     setIsGoogleLoading(true);
+    const provider = new GoogleAuthProvider();
     try {
-      const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       await addUserToFirestore(result.user);
       router.push("/");
