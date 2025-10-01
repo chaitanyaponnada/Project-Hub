@@ -20,19 +20,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const { toast } = useToast();
-  // State to prevent multiple processing of the same redirect
-  const [isRedirectProcessing, setIsRedirectProcessing] = useState(true);
-
+  
   useEffect(() => {
-    // This runs once on app load to handle the redirect from Google Sign-In
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setLoading(true);
+      if (currentUser) {
+        // This block runs when a user is signed in.
+        setUser(currentUser);
+        await addUserToFirestore(currentUser); // Ensure user exists in Firestore
+        const adminStatus = await isAdmin(currentUser.uid);
+        setIsUserAdmin(adminStatus);
+      } else {
+        // This block runs when no user is signed in.
+        setUser(null);
+        setIsUserAdmin(false);
+      }
+      setLoading(false);
+    });
+
+    // Handle the redirect result from Google Sign-In
     getRedirectResult(auth)
       .then(async (result) => {
         if (result && result.user) {
-          await addUserToFirestore(result.user);
+          // This means a user just signed in/up via Google redirect.
+          // The onAuthStateChanged listener above will handle setting the user state.
+          // We just show a toast here for user feedback.
           toast({ title: "Signed in with Google successfully!" });
         }
       })
       .catch((error) => {
+        // Avoid showing an error on normal page loads where there is no redirect.
         if (error.code !== 'auth/no-redirect-operation') {
           console.error("Google sign-in redirect error:", error);
           toast({
@@ -41,32 +58,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             variant: "destructive",
           });
         }
-      })
-      .finally(() => {
-        setIsRedirectProcessing(false);
       });
-      
-    // This is the primary listener for auth state changes (login, logout)
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        const adminStatus = await isAdmin(currentUser.uid);
-        setIsUserAdmin(adminStatus);
-      } else {
-        setIsUserAdmin(false);
-      }
-      setLoading(false);
-    });
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [toast]);
 
-  // The loading state should consider both the redirect processing and the auth state listener
-  const finalLoading = loading || isRedirectProcessing;
-
   return (
-    <AuthContext.Provider value={{ user, loading: finalLoading, isAdmin: isUserAdmin }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin: isUserAdmin }}>
       {children}
     </AuthContext.Provider>
   );
