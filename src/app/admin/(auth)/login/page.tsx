@@ -29,7 +29,6 @@ import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { isAdmin } from "@/lib/firebase-services";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 
 const formSchema = z.object({
@@ -55,25 +54,15 @@ export default function AdminLoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
+      await signInWithEmailAndPassword(
         auth,
         values.email,
         values.password
       );
       
-      const userIsAdmin = await isAdmin(userCredential.user.uid);
-
-      if (userIsAdmin) {
-        router.push("/admin");
-        toast({ title: "Admin login successful!" });
-      } else {
-        await auth.signOut();
-        toast({
-          title: "Login Failed",
-          description: "You are not authorized to access this page.",
-          variant: "destructive",
-        });
-      }
+      router.push("/admin");
+      toast({ title: "Admin login successful!" });
+      
     } catch (error: any) {
       toast({
         title: "Login Failed",
