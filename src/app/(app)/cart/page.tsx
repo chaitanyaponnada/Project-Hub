@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 export default function CartPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, checkoutWithStripe, isCheckingOut, googlePayButton } = useCart();
+  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, checkoutWithStripe, isCheckingOut } = useCart();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -97,13 +97,10 @@ export default function CartPage() {
                             <p>Total</p>
                             <p>Rs. {totalPrice.toFixed(2)}</p>
                         </div>
-                        <div className="flex flex-col gap-2">
-                             <Button className="w-full" size="lg" onClick={() => checkoutWithStripe()} disabled={isCheckingOut}>
-                                {isCheckingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Checkout
-                            </Button>
-                            {googlePayButton && <div id="google-pay-button-container" className="w-full"></div>}
-                        </div>
+                        <Button className="w-full" size="lg" onClick={checkoutWithStripe} disabled={isCheckingOut}>
+                            {isCheckingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Proceed to Checkout
+                        </Button>
                     </div>
                 </CardContent>
             </Card>
