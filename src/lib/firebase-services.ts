@@ -7,8 +7,9 @@ import type { Project } from './placeholder-data';
 
 
 /**
- * Adds a new user to the `users` collection in Firestore.
- * If the user already exists, it does nothing.
+ * Adds or updates a user in the `users` collection in Firestore.
+ * If the user doesn't exist, it creates a new document.
+ * If the user exists, it updates their last sign-in time.
  * @param user The user object from Firebase Auth.
  */
 export const addUserToFirestore = async (user: User) => {
@@ -17,6 +18,7 @@ export const addUserToFirestore = async (user: User) => {
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
+        // Create user record
         await setDoc(userRef, {
             uid: user.uid,
             email: user.email,
@@ -26,6 +28,7 @@ export const addUserToFirestore = async (user: User) => {
             lastSignInTime: serverTimestamp(),
         });
     } else {
+        // Update last sign-in time
          await updateDoc(userRef, {
             lastSignInTime: serverTimestamp(),
         });
@@ -38,6 +41,7 @@ export const addUserToFirestore = async (user: User) => {
  * @returns True if the user is an admin, false otherwise.
  */
 export const isAdmin = async (uid: string): Promise<boolean> => {
+    if (!uid) return false;
     const adminDocRef = doc(db, 'admins', uid);
     const adminDoc = await getDoc(adminDocRef);
     return adminDoc.exists();
@@ -128,7 +132,6 @@ export const updateProject = async (
         const newImageUrls = await Promise.all(
             newImages.map((image, index) => uploadFile(image, `projects/${projectId}/image_${Date.now()}_${index}_${image.name}`))
         );
-        // Assuming you want to add to existing images
         const existingProject = await getProjectById(projectId);
         updateData.imageUrls = [...(existingProject?.imageUrls || []), ...newImageUrls];
     }
@@ -151,16 +154,30 @@ export const deleteProject = async (projectId: string) => {
     if (!project) throw new Error("Project not found");
 
     // Delete images from Storage
-    const imageDeletePromises = project.imageUrls.map(url => {
-        const imageRef = ref(storage, url);
-        return deleteObject(imageRef);
-    });
+    if(project.imageUrls && project.imageUrls.length > 0) {
+        const imageDeletePromises = project.imageUrls.map(url => {
+            try {
+                const imageRef = ref(storage, url);
+                return deleteObject(imageRef);
+            } catch (error) {
+                console.error(`Failed to delete image at ${url}`, error);
+                return Promise.resolve();
+            }
+        });
+        await Promise.all(imageDeletePromises);
+    }
+
 
     // Delete project file from Storage
-    const fileRef = ref(storage, project.downloadUrl);
-    const fileDeletePromise = deleteObject(fileRef);
+    if(project.downloadUrl){
+        try {
+            const fileRef = ref(storage, project.downloadUrl);
+            await deleteObject(fileRef);
+        } catch (error) {
+             console.error(`Failed to delete file at ${project.downloadUrl}`, error);
+        }
+    }
 
-    await Promise.all([...imageDeletePromises, fileDeletePromise]);
 
     // Delete project document from Firestore
     await deleteDoc(doc(db, 'projects', projectId));

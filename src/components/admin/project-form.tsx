@@ -29,7 +29,7 @@ const formSchema = z.object({
     includedFiles: z.array(z.object({ value: z.string().min(1, "File name cannot be empty.") })).min(1, "Please add at least one included file."),
     imageUrls: z.array(z.any()).optional(), // For displaying existing images
     images: z.any().optional(), // For new image uploads
-    projectFile: z.any().optional(),
+    projectFile: z.any().optional(), // Corresponds to downloadUrl/fileUrl
 });
 
 type ProjectFormValues = z.infer<typeof formSchema>;
@@ -53,6 +53,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         title: "",
         description: "",
         price: 0,
+        technologies: "",
         includedFiles: [{ value: "Full Source Code (ZIP)" }, { value: "Documentation (PDF)" }],
     };
 
@@ -216,7 +217,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                     <div className="md:col-span-1 space-y-8">
                          <Card>
                             <CardHeader>
-                                <CardTitle>Project File</CardTitle>
+                                <CardTitle>Project File (fileUrl)</CardTitle>
                             </CardHeader>
                              <CardContent>
                                 <FormField control={form.control} name="projectFile" render={({ field }) => (
