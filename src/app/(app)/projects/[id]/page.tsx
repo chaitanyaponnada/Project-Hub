@@ -1,3 +1,4 @@
+
 "use client";
 
 import { notFound, useRouter } from "next/navigation";
@@ -13,7 +14,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getProjectById } from "@/lib/firebase-services";
 import type { Project } from "@/lib/placeholder-data";
 
-export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
+export default function ProjectDetailsPage({ params: { id } }: { params: { id: string } }) {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
   
@@ -32,24 +33,24 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/login?redirect=/projects/' + params.id);
+      router.push('/login?redirect=/projects/' + id);
     }
-  }, [user, authLoading, router, params.id]);
+  }, [user, authLoading, router, id]);
 
   useEffect(() => {
     const fetchProject = async () => {
       setLoadingProject(true);
-      const foundProject = await getProjectById(params.id);
+      const foundProject = await getProjectById(id);
       if (foundProject) {
         setProject(foundProject);
       }
       setLoadingProject(false);
     };
 
-    if(params.id) {
+    if(id) {
         fetchProject();
     }
-  }, [params.id]);
+  }, [id]);
 
 
   if (loadingProject || authLoading || !isClient) {
