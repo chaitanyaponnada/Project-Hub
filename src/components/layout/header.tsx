@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
+import { useTheme } from "next-themes";
 
 
 const navLinks = [
@@ -37,6 +38,7 @@ export function Header() {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useAuth();
+  const { theme } = useTheme();
   
   const isHomePage = pathname === '/';
 
@@ -70,9 +72,9 @@ export function Header() {
     showTransparentHeader ? "bg-transparent border-transparent" : "bg-background/80 backdrop-blur-xl border-border"
   );
   
-  const contentColorClass = showTransparentHeader ? "text-white" : "text-primary";
-  const navLinkColorClass = showTransparentHeader ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground";
-  const activeNavLinkColorClass = showTransparentHeader ? "text-white font-semibold" : "text-primary font-semibold";
+  const contentColorClass = showTransparentHeader ? (theme === 'dark' ? "text-white" : "text-primary") : "text-primary";
+  const navLinkColorClass = showTransparentHeader ? (theme === 'dark' ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground") : "text-foreground/80 hover:text-foreground";
+  const activeNavLinkColorClass = showTransparentHeader ? (theme === 'dark' ? "text-white font-semibold" : "text-primary font-semibold") : "text-primary font-semibold";
 
 
   const NavLinks = ({ className }: { className?: string }) => (
@@ -151,7 +153,7 @@ export function Header() {
                 variant={"outline"}
                 size="sm" 
                 asChild 
-                className={cn("hidden sm:flex", showTransparentHeader && "border-white/50 text-white bg-transparent hover:bg-white hover:text-primary")}
+                className={cn("hidden sm:flex", showTransparentHeader && theme === 'dark' && "border-white/50 text-white bg-transparent hover:bg-white hover:text-primary")}
             >
                <Link href="/login">
                   <User className="mr-2 h-4 w-4" />
