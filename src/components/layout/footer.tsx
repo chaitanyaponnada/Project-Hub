@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -27,6 +26,10 @@ export function Footer() {
       router.push(`/#${targetId}`);
     }
   };
+  
+  if(pathname.startsWith('/admin') || pathname === '/login' || pathname === '/register') {
+      return null;
+  }
 
   return (
     <footer className="bg-muted text-muted-foreground mt-auto border-t section-gradient">

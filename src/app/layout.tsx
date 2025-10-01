@@ -1,13 +1,12 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { Header } from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/hooks/use-cart';
 import { AuthProvider } from '@/hooks/use-auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
   title: 'Project Hub',
@@ -40,10 +39,10 @@ export default function RootLayout({
             <div id="root-container" className="flex min-h-screen flex-col">
                 <AuthProvider>
                     <CartProvider>
-                      <Header />
-                      <main className="flex-1">{children}</main>
+                      {children}
                       <Toaster />
                       <ThemeToggle />
+                      <Footer />
                     </CartProvider>
                 </AuthProvider>
             </div>

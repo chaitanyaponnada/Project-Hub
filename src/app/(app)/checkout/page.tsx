@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -119,4 +118,3 @@ export default function CheckoutPage() {
         </Suspense>
     );
 }
-

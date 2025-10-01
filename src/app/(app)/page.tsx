@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect, useRef } from "react";
-import { Footer } from "@/components/layout/footer";
 import { ProjectCard } from "@/components/project-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
@@ -189,8 +187,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1">
+    <>
         {/* Hero Section */}
         <section id="home" className="relative py-24 md:py-32 text-center overflow-hidden">
           <HeroBackground />
@@ -452,9 +449,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-      </main>
-      <Footer />
-    </div>
+    </>
   );
 }
