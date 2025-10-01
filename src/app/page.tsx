@@ -216,50 +216,53 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="py-20">
-            <div className="container mx-auto px-4">
-              <header className="mb-12 text-center animate-fade-in-up">
-                <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
-                </p>
-              </header>
-              
-               <div className="relative w-full max-w-4xl mx-auto">
-                 <div className="absolute inset-y-0 -inset-x-2 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background opacity-30" />
-                 <Carousel 
-                    opts={{
-                        align: "start",
-                        loop: true,
-                    }}
-                    plugins={[plugin.current]}
-                    onMouseEnter={() => plugin.current.stop()}
-                    onMouseLeave={() => plugin.current.reset()}
-                    className="w-full"
-                >
-                    <CarouselContent className="-ml-1">
-                        {projects.slice(0, 5).map((project, i) => (
-                        <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
-                            <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                                <ProjectCard project={project} isBlurred={!user && !loading} />
-                            </div>
-                        </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="left-4 z-20" />
-                    <CarouselNext className="right-4 z-20" />
-                </Carousel>
+        <div className="relative">
+          <div className="absolute inset-0 pointer-events-none z-10 bg-[radial-gradient(ellipse_at_center,transparent_30%,hsl(var(--background))_90%)]" />
+          <section id="projects" className="py-20">
+              <div className="container mx-auto px-4 relative z-20">
+                <header className="mb-12 text-center animate-fade-in-up">
+                  <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
+                  </p>
+                </header>
+                
+                 <div className="relative w-full max-w-4xl mx-auto">
+                   <Carousel 
+                      opts={{
+                          align: "start",
+                          loop: true,
+                      }}
+                      plugins={[plugin.current]}
+                      onMouseEnter={() => plugin.current.stop()}
+                      onMouseLeave={() => plugin.current.reset()}
+                      className="w-full"
+                  >
+                      <CarouselContent className="-ml-1">
+                          {projects.slice(0, 5).map((project, i) => (
+                          <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
+                              <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                                  <ProjectCard project={project} isBlurred={!user && !loading} />
+                              </div>
+                          </CarouselItem>
+                          ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-4 z-20" />
+                      <CarouselNext className="right-4 z-20" />
+                  </Carousel>
+                </div>
+                
+                <div className="text-center mt-12 animate-fade-in-up">
+                  <Button asChild size="lg" variant="outline">
+                    <Link href="/projects">
+                      View All Projects <ArrowRight className="ml-2" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
-              
-              <div className="text-center mt-12 animate-fade-in-up">
-                <Button asChild size="lg" variant="outline">
-                  <Link href="/projects">
-                    View All Projects <ArrowRight className="ml-2" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-        </section>
+          </section>
+        </div>
+
 
         {/* About Section */}
         <section id="about" className="py-20 bg-muted/30">
