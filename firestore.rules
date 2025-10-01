@@ -3,45 +3,39 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Helper function to check for admin privileges.
-    function isAdmin(userId) {
-      return exists(/databases/$(database)/documents/users/$(userId)) &&
-             get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == true;
-    }
-
-    // Users can only be created by themselves.
-    // Any authenticated user can read the users list.
+    
+    // Users can be read by anyone, but only the user themselves can create their own document.
+    // Admin status can only be changed by an existing admin.
     match /users/{userId} {
       allow read: if request.auth != null;
-      allow create: if request.auth.uid == userId;
-      allow update: if isAdmin(request.auth.uid); // Admins can update user roles.
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
-
-    // Projects can be read by anyone, but only created, updated,
-    // or deleted by an administrator.
+    
+    // Projects can be read by anyone.
+    // Only admins can create, update, or delete projects.
     match /projects/{projectId} {
       allow read: if true;
-      allow write: if request.auth != null && isAdmin(request.auth.uid);
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
     
-    // Carts can only be accessed by the user who owns them.
+    // Carts can only be read and written by the owner.
     match /carts/{userId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
-    // Purchases can only be accessed by the user who owns them.
+
+    // Purchases can only be read by the owner.
     match /purchases/{userId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
+
     // Inquiries can be created by anyone.
-    // Users can read their own inquiries.
-    // Admins can read all inquiries and write (reply to) them.
+    // They can be read and updated (replied to) by admins.
+    // A user can read their own inquiries.
     match /inquiries/{inquiryId} {
-        allow create: if true;
-        allow read: if (request.auth != null && request.auth.uid == resource.data.userId) || (request.auth != null && isAdmin(request.auth.uid));
-        allow write: if request.auth != null && isAdmin(request.auth.uid);
+       allow create: if request.auth != null;
+       allow read, update, delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+       allow read: if request.auth != null && resource.data.userId == request.auth.uid;
     }
   }
 }
