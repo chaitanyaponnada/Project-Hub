@@ -74,7 +74,6 @@ export default function RegisterAdminPage() {
       const updatedUser = auth.currentUser;
 
       if(updatedUser) {
-        await addUserToFirestore(updatedUser);
         await addAdminToFirestore(updatedUser.uid);
       }
 
