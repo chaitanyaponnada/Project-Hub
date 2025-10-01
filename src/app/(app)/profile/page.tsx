@@ -4,7 +4,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2, Package, Download, MessageSquare, ChevronDown } from "lucide-react";
+import { Loader2, Package, Download, MessageSquare } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/hooks/use-cart";
@@ -13,7 +13,6 @@ import Image from "next/image";
 import { getInquiriesByUserId } from "@/lib/firebase-services";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { format } from 'date-fns';
-import { Badge } from "@/components/ui/badge";
 
 export default function ProfilePage() {
     const { user, loading } = useAuth();
@@ -121,19 +120,9 @@ export default function ProfilePage() {
                                                     Asked on {inquiry.receivedAt?.toDate ? format(inquiry.receivedAt.toDate(), 'PPP') : 'N/A'}
                                                 </p>
                                             </div>
-                                            {inquiry.repliedAt ? (
-                                                <Badge variant="secondary" className="text-green-600 border-green-600">Replied</Badge>
-                                            ) : (
-                                                <Badge variant="outline">Pending</Badge>
-                                            )}
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
-                                            <p className="text-muted-foreground whitespace-pre-wrap mb-4">{inquiry.message}</p>
-                                            {inquiry.repliedAt && (
-                                                <div className="text-center text-sm text-muted-foreground p-4 bg-muted/50 rounded-md">
-                                                    A reply was sent on {format(inquiry.repliedAt.toDate(), 'PPP')}. Please check your email.
-                                                </div>
-                                            )}
+                                            <p className="text-muted-foreground whitespace-pre-wrap">{inquiry.message}</p>
                                         </AccordionContent>
                                     </AccordionItem>
                                 </Card>

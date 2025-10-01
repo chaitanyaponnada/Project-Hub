@@ -167,7 +167,6 @@ export const addInquiry = async (inquiryData: { name: string, email: string, pho
         userId: userId || null,
         receivedAt: serverTimestamp(),
         id: inquiryRef.id,
-        repliedAt: null,
     });
 };
 
@@ -182,14 +181,6 @@ export const getInquiries = async () => {
 };
 
 /**
- * Deletes an inquiry from Firestore.
- * @param inquiryId The ID of the inquiry to delete.
- */
-export const deleteInquiry = async (inquiryId: string) => {
-    await deleteDoc(doc(db, 'inquiries', inquiryId));
-};
-
-/**
  * Fetches inquiries for a specific user.
  * @param userId The user's ID.
  */
@@ -198,17 +189,6 @@ export const getInquiriesByUserId = async (userId: string) => {
     const q = query(inquiriesCol, where("userId", "==", userId), orderBy("receivedAt", "desc"));
     const inquirySnapshot = await getDocs(q);
     return inquirySnapshot.docs.map(doc => doc.data());
-};
-
-/**
- * Marks an inquiry as replied.
- * @param inquiryId The ID of the inquiry to reply to.
- */
-export const replyToInquiry = async (inquiryId: string) => {
-    const inquiryRef = doc(db, 'inquiries', inquiryId);
-    await updateDoc(inquiryRef, {
-        repliedAt: serverTimestamp(),
-    });
 };
 
 /**
