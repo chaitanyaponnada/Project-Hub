@@ -1,6 +1,6 @@
 
 import { db, storage, auth } from './firebase';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, Timestamp, setDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, Timestamp, setDoc, orderBy } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { Project } from './placeholder-data';
 import type { Inquiry } from '@/hooks/use-inquiry';
@@ -69,7 +69,8 @@ export const addInquiryToFirestore = async (inquiryData: Omit<Inquiry, 'id' | 'r
 export const getInquiries = async (): Promise<Inquiry[]> => {
     try {
         const inquiriesCol = collection(db, 'inquiries');
-        const inquirySnapshot = await getDocs(inquiriesCol);
+        const q = query(inquiriesCol, orderBy("receivedAt", "desc"));
+        const inquirySnapshot = await getDocs(q);
         const inquiryList = inquirySnapshot.docs.map(doc => {
             const data = doc.data();
             return {
@@ -78,7 +79,7 @@ export const getInquiries = async (): Promise<Inquiry[]> => {
                 receivedAt: (data.receivedAt as Timestamp).toDate().toLocaleDateString(),
             } as Inquiry;
         });
-        return inquiryList.sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
+        return inquiryList;
     } catch (error) {
         console.error("Error fetching inquiries:", error);
         return [];
