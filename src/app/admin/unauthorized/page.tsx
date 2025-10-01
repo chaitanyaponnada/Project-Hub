@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 export default function UnauthorizedPage() {
     const router = useRouter();
   return (
-    <div className="container mx-auto px-4 py-20 flex items-center justify-center">
       <Card className="max-w-md w-full text-center p-8">
         <CardContent>
           <Ban className="mx-auto h-16 w-16 text-destructive mb-4" />
@@ -22,6 +21,5 @@ export default function UnauthorizedPage() {
           </Button>
         </CardContent>
       </Card>
-    </div>
   );
 }
