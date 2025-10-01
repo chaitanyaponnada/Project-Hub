@@ -29,10 +29,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 // This indicates a user just signed in via Google redirect.
                 await addUserToFirestore(result.user);
                 toast({ title: "Signed in with Google successfully!" });
-                // Clean up the URL.
+                // Clean up the URL to prevent re-processing on refresh.
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         } catch (error: any) {
+            // This error is expected if the user did not just sign in via redirect.
             if (error.code !== 'auth/no-redirect-operation') {
                 console.error("Google sign-in redirect error:", error);
                 toast({
@@ -44,21 +45,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
     
-    // We want to check for a redirect result as soon as the app loads.
-    processRedirectResult();
+    // We want to check for a redirect result as soon as the app loads,
+    // before the onAuthStateChanged listener runs.
+    processRedirectResult().then(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+          setUser(currentUser);
+          if (currentUser) {
+            const adminStatus = await isAdmin(currentUser.uid);
+            setIsUserAdmin(adminStatus);
+          } else {
+            setIsUserAdmin(false);
+          }
+          setLoading(false);
+        });
 
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        const adminStatus = await isAdmin(currentUser.uid);
-        setIsUserAdmin(adminStatus);
-      } else {
-        setIsUserAdmin(false);
-      }
-      setLoading(false);
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
     });
 
-    return () => unsubscribe();
   }, [toast]);
 
   return (
