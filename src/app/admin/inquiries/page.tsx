@@ -1,4 +1,5 @@
 
+
 import {
   Table,
   TableBody,
@@ -13,13 +14,13 @@ import { Badge } from "@/components/ui/badge";
 
 export default function AdminInquiriesPage() {
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <div className="mb-6">
+    <div className="p-4 sm:p-6 lg:p-8 animate-fade-in">
+      <div className="mb-6 animate-fade-in-down">
         <h1 className="font-headline text-3xl font-bold">User Inquiries</h1>
         <p className="text-muted-foreground">Messages submitted through the contact form.</p>
       </div>
 
-      <Card>
+      <Card className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <CardContent className="p-0">
           <Table>
             <TableHeader>

@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -59,8 +60,8 @@ export default function AdminProjectsPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <div className="flex justify-between items-center mb-6 gap-4">
+    <div className="p-4 sm:p-6 lg:p-8 animate-fade-in">
+      <div className="flex justify-between items-center mb-6 gap-4 animate-fade-in-down">
         <div>
           <h1 className="font-headline text-3xl font-bold">Projects</h1>
           <p className="text-muted-foreground">Manage all projects in the marketplace.</p>
@@ -73,7 +74,7 @@ export default function AdminProjectsPage() {
         </Button>
       </div>
 
-       <div className="mb-6">
+       <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -85,7 +86,7 @@ export default function AdminProjectsPage() {
           </div>
         </div>
 
-      <Card>
+      <Card className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <CardContent className="p-0">
           <Table>
             <TableHeader>

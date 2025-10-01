@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -76,16 +77,16 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-20">
+    <div className="container mx-auto px-4 py-12 md:py-20 animate-fade-in">
         <div className="max-w-2xl mx-auto">
-            <header className="text-center mb-12">
+            <header className="text-center mb-12 animate-fade-in-down">
                 <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">Contact Us</h1>
                 <p className="text-lg text-muted-foreground mt-2">
                     Have a question or feedback? Drop us a line!
                 </p>
             </header>
             
-            <Card>
+            <Card className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                 <CardHeader>
                     <CardTitle className="font-headline text-2xl">Send a Message</CardTitle>
                     <CardDescription>We typically respond within 24-48 hours.</CardDescription>

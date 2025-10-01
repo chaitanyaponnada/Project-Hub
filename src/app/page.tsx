@@ -180,7 +180,7 @@ export default function Home() {
         {/* Features Section */}
         <section className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
             </div>
@@ -219,7 +219,7 @@ export default function Home() {
         {/* Projects Section */}
         <section id="projects" className="py-20">
             <div className="container mx-auto px-4">
-              <header className="mb-12 text-center">
+              <header className="mb-12 text-center animate-fade-in-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
@@ -252,7 +252,7 @@ export default function Home() {
                 </Carousel>
               </div>
               
-              <div className="text-center mt-12">
+              <div className="text-center mt-12 animate-fade-in-up">
                 <Button asChild size="lg" variant="outline">
                   <Link href="/projects">
                     View All Projects <ArrowRight className="ml-2" />
@@ -291,11 +291,11 @@ export default function Home() {
         {/* FAQ Section */}
         <section id="faq" className="py-20">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
               <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
             </div>
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="font-semibold text-lg hover:no-underline text-left">
@@ -313,11 +313,11 @@ export default function Home() {
         {/* Contact Section */}
         <section id="contact" className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line! If you have a desired idea, or if you need any help, feel free to contact us.</p>
             </div>
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <Card>
                   <CardHeader>
                       <CardTitle className="font-headline text-2xl">Send a Message</CardTitle>
@@ -397,4 +397,3 @@ export default function Home() {
     </div>
   );
 }
-

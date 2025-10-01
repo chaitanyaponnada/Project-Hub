@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -14,13 +15,13 @@ const chartConfig = {
 
 export default function AdminDashboardPage() {
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
-      <header>
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 animate-fade-in">
+      <header className="animate-fade-in-down">
         <h1 className="font-headline text-3xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground">Welcome back, Admin!</p>
       </header>
       
-      <Card>
+      <Card className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <CardHeader>
           <CardTitle className="font-headline">Revenue Overview</CardTitle>
           <CardDescription>A summary of sales over the past year.</CardDescription>

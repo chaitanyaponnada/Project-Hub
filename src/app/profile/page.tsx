@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -40,9 +41,9 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-12 animate-fade-in">
             <div className="flex flex-col md:flex-row items-start gap-8 pt-12">
-                <Card className="w-full md:w-1/4 sticky top-24">
+                <Card className="w-full md:w-1/4 sticky top-24 animate-fade-in-right">
                     <CardContent className="p-6 text-center">
                         <Avatar className="h-24 w-24 mx-auto mb-4">
                             <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
@@ -53,7 +54,7 @@ export default function ProfilePage() {
                     </CardContent>
                 </Card>
 
-                <div className="flex-1">
+                <div className="flex-1 animate-fade-in-left" style={{ animationDelay: '0.2s' }}>
                     <Tabs defaultValue="projects" className="w-full">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="projects">

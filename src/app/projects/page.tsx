@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
@@ -55,8 +56,8 @@ function ProjectsContent() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 animate-fade-in">
-      <header className="mb-12 text-center">
+    <div className="container mx-auto px-4 py-8">
+      <header className="mb-12 text-center animate-fade-in-down">
         <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-2">
           Project Marketplace
         </h1>
@@ -65,7 +66,7 @@ function ProjectsContent() {
         </p>
       </header>
       
-      <form onSubmit={handleSearch} className="mb-8 flex flex-col md:flex-row gap-4">
+      <form onSubmit={handleSearch} className="mb-8 flex flex-col md:flex-row gap-4 animate-fade-in-up">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input 
@@ -100,7 +101,7 @@ function ProjectsContent() {
         ))}
       </div>
       {filteredProjects.length === 0 && (
-        <p className="text-center text-muted-foreground mt-12">No projects found matching your criteria.</p>
+        <p className="text-center text-muted-foreground mt-12 animate-fade-in">No projects found matching your criteria.</p>
       )}
     </div>
   );

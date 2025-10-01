@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { notFound, useRouter } from "next/navigation";
@@ -56,7 +57,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 animate-fade-in">
         <div className="mb-8">
           <Button variant="outline" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -64,7 +65,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
           </Button>
         </div>
       <div className="grid md:grid-cols-2 gap-12 items-start">
-        <div>
+        <div className="animate-fade-in-right">
            <div className="relative">
               <Carousel className="w-full">
                 <CarouselContent>
@@ -96,7 +97,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
               )}
            </div>
         </div>
-        <div>
+        <div className="animate-fade-in-left" style={{ animationDelay: '0.2s' }}>
           <Badge variant="secondary" className="mb-2">{project.category}</Badge>
           <h1 className="font-headline text-4xl font-bold text-primary mb-4">{project.title}</h1>
           <p className="text-muted-foreground text-lg mb-6">{project.description}</p>

@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -12,13 +13,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AdminUsersPage() {
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <div className="mb-6">
+    <div className="p-4 sm:p-6 lg:p-8 animate-fade-in">
+      <div className="mb-6 animate-fade-in-down">
         <h1 className="font-headline text-3xl font-bold">Users</h1>
         <p className="text-muted-foreground">View and manage all registered users.</p>
       </div>
 
-      <Card>
+      <Card className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <CardContent className="p-0">
           <Table>
             <TableHeader>

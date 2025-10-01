@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Image from 'next/image';
@@ -10,10 +11,10 @@ export default function AboutPage() {
   return (
     <div className="bg-background animate-fade-in">
       {/* Hero Section */}
-      <section className="py-24 md:py-32 text-center bg-muted/30 relative">
+      <section className="py-24 md:py-32 text-center bg-muted/30">
         <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4">About Project Hub</h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 animate-fade-in-down">About Project Hub</h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
             We are dedicated to empowering the next generation of engineers and developers by providing high-quality, real-world project examples.
           </p>
         </div>
@@ -58,7 +59,7 @@ export default function AboutPage() {
       {/* Our Values Section */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Our Values</h2>
             <p className="text-lg text-muted-foreground mt-2">The principles that guide us.</p>
           </div>

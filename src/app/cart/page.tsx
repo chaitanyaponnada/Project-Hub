@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Image from "next/image";
@@ -33,13 +34,13 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="font-headline text-4xl font-bold text-primary mb-8">Shopping Cart</h1>
+    <div className="container mx-auto px-4 py-12 animate-fade-in">
+      <h1 className="font-headline text-4xl font-bold text-primary mb-8 animate-fade-in-down">Shopping Cart</h1>
       {cartCount > 0 ? (
         <div className="grid md:grid-cols-3 gap-8 items-start">
           <div className="md:col-span-2 space-y-4">
-            {cartItems.map((item) => (
-              <Card key={item.id} className="flex items-center p-4">
+            {cartItems.map((item, index) => (
+              <Card key={item.id} className="flex items-center p-4 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="relative h-24 w-24 md:h-28 md:w-28 rounded-md overflow-hidden mr-4 flex-shrink-0">
                   <Image
                     src={item.imageUrls[0]}
@@ -61,7 +62,7 @@ export default function CartPage() {
             ))}
           </div>
 
-          <Card className="sticky top-24">
+          <Card className="sticky top-24 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <CardHeader>
               <CardTitle className="font-headline">Order Summary</CardTitle>
             </CardHeader>
@@ -88,7 +89,7 @@ export default function CartPage() {
           </Card>
         </div>
       ) : (
-        <Card className="text-center p-12 border-dashed">
+        <Card className="text-center p-12 border-dashed animate-fade-in-up">
           <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
           <h2 className="font-headline text-2xl font-semibold mb-2">Your cart is empty</h2>
           <p className="text-muted-foreground mb-6">Looks like you haven't added any projects yet.</p>

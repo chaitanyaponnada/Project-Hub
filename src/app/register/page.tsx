@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -99,7 +100,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
-      <Card className="w-full max-w-sm">
+      <Card className="w-full max-w-sm animate-fade-in-up">
         <CardHeader className="text-center">
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
             <Code className="h-8 w-8 text-primary" />
