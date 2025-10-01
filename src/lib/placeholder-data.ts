@@ -23,9 +23,103 @@ export const categories = [
   "Game Development",
 ];
 
-// This is now legacy data and will not be used by the app.
-// It is kept here for reference or fallback if needed.
-export const projects: Project[] = [];
+export const projects: Project[] = [
+  {
+    id: "1",
+    title: "AI-Powered E-commerce Platform",
+    description: "A full-featured e-commerce site using Next.js, with AI-driven product recommendations and a modern, responsive design.",
+    category: "Web Development",
+    technologies: ["Next.js", "React", "Tailwind CSS", "Firebase", "Genkit AI"],
+    price: 150.00,
+    originalPrice: 200.00,
+    tags: ["Best Seller"],
+    imageUrls: [
+      "https://picsum.photos/seed/proj1-img1/800/600",
+      "https://picsum.photos/seed/proj1-img2/800/600",
+    ],
+    imageHints: ["code abstract", "app dashboard"],
+    includedFiles: ["Full Source Code (ZIP)", "Deployment Guide (PDF)", "API Documentation"],
+    downloadUrl: "#"
+  },
+  {
+    id: "2",
+    title: "Mobile Fitness Tracker App",
+    description: "A React Native app for tracking workouts, setting goals, and visualizing progress with beautiful charts and graphs.",
+    category: "Mobile App Development",
+    technologies: ["React Native", "Firebase", "Recharts"],
+    price: 120.00,
+    imageUrls: [
+      "https://picsum.photos/seed/proj2-img1/800/600",
+      "https://picsum.photos/seed/proj2-img2/800/600"
+    ],
+    imageHints: ["app mockup", "fitness tracker"],
+    includedFiles: ["Full Source Code (ZIP)", "Setup Instructions (MD)"],
+    downloadUrl: "#"
+  },
+  {
+    id: "3",
+    title: "Real-time Object Detection System",
+    description: "A Python-based system using TensorFlow and OpenCV to detect objects in a live video stream with high accuracy.",
+    category: "Machine Learning",
+    technologies: ["Python", "TensorFlow", "OpenCV"],
+    price: 250.00,
+    originalPrice: 300.00,
+    tags: ["New"],
+    imageUrls: [
+      "https://picsum.photos/seed/proj3-img1/800/600",
+      "https://picsum.photos/seed/proj3-img2/800/600"
+    ],
+    imageHints: ["circuit board", "object detection"],
+     includedFiles: ["Python Scripts", "Pre-trained Models", "Jupyter Notebooks"],
+    downloadUrl: "#"
+  },
+  {
+    id: "4",
+    title: "Maze-Solving Robot Simulation",
+    description: "A robotics project in Python where a simulated robot autonomously navigates and solves complex mazes using AI algorithms.",
+    category: "Robotics",
+    technologies: ["Python", "Pygame", "Q-Learning"],
+    price: 90.00,
+    imageUrls: [
+      "https://picsum.photos/seed/proj4-img1/800/600",
+      "https://picsum.photos/seed/proj4-img2/800/600"
+    ],
+    imageHints: ["robot arm", "maze"],
+    includedFiles: ["Full Source Code (ZIP)", "Algorithm Explanation (PDF)"],
+    downloadUrl: "#"
+  },
+  {
+    id: "5",
+    title: "Interactive Data Visualization Dashboard",
+    description: "A web-based dashboard built with D3.js and React to create stunning, interactive visualizations from any dataset.",
+    category: "Data Science",
+    technologies: ["React", "D3.js", "Node.js"],
+    price: 180.00,
+    imageUrls: [
+      "https://picsum.photos/seed/proj5-img1/800/600",
+      "https://picsum.photos/seed/proj5-img2/800/600"
+    ],
+    imageHints: ["data visualization", "dashboard"],
+    includedFiles: ["Full Source Code (ZIP)", "User Guide (PDF)"],
+    downloadUrl: "#"
+  },
+   {
+    id: "6",
+    title: "3D Platformer Game Engine",
+    description: "A simple yet powerful 3D game engine built from scratch using C++ and OpenGL, perfect for learning game development principles.",
+    category: "Game Development",
+    technologies: ["C++", "OpenGL", "GLM"],
+    price: 220.00,
+    tags: ["Popular"],
+    imageUrls: [
+      "https://picsum.photos/seed/proj6-img1/800/600",
+      "https://picsum.photos/seed/proj6-img2/800/600"
+    ],
+    imageHints: ["3d render", "game world"],
+    includedFiles: ["Full C++ Source Code", "Asset Files", "Build Instructions"],
+    downloadUrl: "#"
+  }
+];
 
 
 export const users = [

@@ -6,12 +6,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ProjectCard } from "@/components/project-card"
-import { categories } from "@/lib/placeholder-data"
+import { categories, projects as placeholderProjects } from "@/lib/placeholder-data"
 import { Search, Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth";
 import type { Project } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
-import { getProjects } from "@/lib/firebase-services";
 
 function ProjectsContent() {
   const { user, loading } = useAuth();
@@ -25,13 +24,9 @@ function ProjectsContent() {
   const [category, setCategory] = useState(searchParams.get('category') || 'all');
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      setIsLoading(true);
-      const fetchedProjects = await getProjects();
-      setProjects(fetchedProjects);
-      setIsLoading(false);
-    };
-    fetchProjects();
+    setIsLoading(true);
+    setProjects(placeholderProjects);
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {

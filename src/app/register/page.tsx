@@ -32,7 +32,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { addUserToFirestore } from "@/lib/firebase-services";
 import { NodeGarden } from "@/components/node-garden";
 
 const formSchema = z.object({
@@ -67,8 +66,7 @@ export default function RegisterPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(userCredential.user, { displayName: values.name });
-      await userCredential.user.reload(); // Ensure profile is updated before adding to Firestore
-      await addUserToFirestore(userCredential.user);
+      await userCredential.user.reload();
       router.push("/");
       toast({ title: "Account created successfully!" });
     } catch (error: any) {
@@ -86,8 +84,7 @@ export default function RegisterPage() {
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      await addUserToFirestore(result.user);
+      await signInWithPopup(auth, provider);
       router.push("/");
       toast({ title: "Signed in with Google successfully!" });
     } catch (error: any) {

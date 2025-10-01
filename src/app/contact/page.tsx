@@ -24,10 +24,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Send } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { addInquiryToFirestore } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -43,36 +42,40 @@ export default function ContactPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user?.displayName || "",
-      email: user?.email || "",
+      name: "",
+      email: "",
       message: "",
     },
   });
 
+  useEffect(() => {
+    if (user) {
+        form.reset({
+            name: user.displayName || '',
+            email: user.email || '',
+            message: ''
+        })
+    }
+  }, [user, form]);
+
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    try {
-      await addInquiryToFirestore(values);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
       
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you shortly.",
-      });
+    toast({
+      title: "Message Sent!",
+      description: "Thank you for contacting us. We'll get back to you shortly.",
+    });
 
-      form.reset({
-          ...form.getValues(),
-          message: ''
-      });
-    } catch (error) {
-       toast({
-        title: "Error Sending Message",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    form.reset({
+        ...form.getValues(),
+        message: ''
+    });
+    
+    setIsLoading(false);
   }
 
   return (

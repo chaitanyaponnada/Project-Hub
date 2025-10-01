@@ -7,12 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Zap } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Zap, Ban } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { getProjectById } from "@/lib/firebase-services";
-import type { Project } from "@/lib/placeholder-data";
+import { projects, type Project } from "@/lib/placeholder-data";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [isClient, setIsClient] = useState(false);
@@ -25,7 +24,6 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const [project, setProject] = useState<Project | null>(null);
   const [loadingProject, setLoadingProject] = useState(true);
   
-  const { addToCart, buyNow, cartItems, purchasedItems } = useCart();
   const { user, loading: authLoading } = useAuth();
   
   useEffect(() => {
@@ -35,28 +33,25 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   }, [user, authLoading, router, params.id]);
 
   useEffect(() => {
-    const fetchProject = async () => {
-      setLoadingProject(true);
-      const fetchedProject = await getProjectById(params.id);
-      if (fetchedProject) {
-        setProject(fetchedProject);
-      }
-      setLoadingProject(false);
-    };
-    fetchProject();
+    setLoadingProject(true);
+    const foundProject = projects.find(p => p.id === params.id);
+    if (foundProject) {
+      setProject(foundProject);
+    }
+    setLoadingProject(false);
   }, [params.id]);
 
-  const handleBuyNow = () => {
-    if(project) {
-        buyNow(project, '/checkout');
-    }
-  };
 
-  const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
-  const isPurchased = useMemo(() => purchasedItems.some(item => item.id === project?.id), [purchasedItems, project]);
-
-  if (loadingProject || authLoading || !user || !isClient) {
+  if (loadingProject || authLoading || !isClient) {
     return (
+      <div className="flex items-center justify-center h-[50vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+  
+  if (!user) {
+     return (
       <div className="flex items-center justify-center h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
@@ -136,26 +131,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </Card>
           </div>
           
-          {isPurchased ? (
-             <Card className="bg-green-100 dark:bg-green-900/30 border-green-500">
-                <CardContent className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-4">
-                        <CheckCircle className="h-8 w-8 text-green-600" />
-                        <div>
-                            <h3 className="font-bold text-green-800 dark:text-green-300">Project Purchased!</h3>
-                            <p className="text-sm text-green-700 dark:text-green-400">You can now download the project files.</p>
-                        </div>
-                    </div>
-                     <Button asChild size="lg">
-                        <a href={project.downloadUrl} download>
-                          <Download className="mr-2 h-5 w-5" />
-                          Download Project
-                        </a>
-                      </Button>
-                </CardContent>
-            </Card>
-          ) : (
-            <Card className="bg-background/50">
+            <Card className="bg-destructive/10 border-destructive">
               <CardContent className="p-6">
                  <div className="flex items-baseline gap-2 mb-6">
                     <p className="text-4xl font-bold text-primary">Rs. {project.price.toFixed(2)}</p>
@@ -163,38 +139,15 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                         <p className="text-xl text-muted-foreground line-through">Rs. {project.originalPrice.toFixed(2)}</p>
                     )}
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <Button 
-                        size="lg"
-                        onClick={handleBuyNow}
-                        className="w-full bg-accent hover:bg-accent/90 text-accent-foreground flex-1"
-                    >
-                        <Zap className="mr-2 h-5 w-5" />
-                        Buy Now
-                    </Button>
-                    <Button 
-                      size="lg"
-                      variant="outline"
-                      onClick={() => addToCart(project)}
-                      disabled={isInCart}
-                      className="w-full flex-1"
-                    >
-                      {isInCart ? (
-                        <>
-                          <CheckCircle className="mr-2 h-5 w-5" />
-                          Added to Cart
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingCart className="mr-2 h-5 w-5" />
-                          Add to Cart
-                        </>
-                      )}
-                    </Button>
+                <div className="flex items-center gap-4">
+                    <Ban className="h-8 w-8 text-destructive" />
+                    <div>
+                        <h3 className="font-bold text-destructive-foreground">Purchase Disabled</h3>
+                        <p className="text-sm text-destructive-foreground/80">Database functionality has been removed.</p>
+                    </div>
                 </div>
               </CardContent>
             </Card>
-          )}
         </div>
       </div>
     </div>

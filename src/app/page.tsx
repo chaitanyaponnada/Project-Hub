@@ -4,13 +4,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Code, Feather, Zap, Users, Target, Search, Loader2, Send, Lightbulb } from "lucide-react";
-import Image from "next/image";
-import { categories, faqs } from "@/lib/placeholder-data";
+import { ArrowRight, Code, Feather, Zap, Target, Loader2, Send, Lightbulb } from "lucide-react";
+import { categories, faqs, projects as placeholderProjects } from "@/lib/placeholder-data";
 import type { Project } from "@/lib/placeholder-data";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRouter } from "next/navigation";
@@ -26,16 +22,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { addInquiryToFirestore } from "@/lib/firebase-services";
 import { useState, useEffect, useRef } from "react";
 import { Footer } from "@/components/layout/footer";
 import { ProjectCard } from "@/components/project-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { getProjects } from "@/lib/firebase-services";
 import { NodeGarden } from "@/components/node-garden";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 
 const formSchema = z.object({
@@ -89,26 +84,28 @@ const HeroBackground = () => {
     }
   }, [theme, isClient]);
 
-  if (!isClient || !videoSrc) {
+  if (!isClient) {
     return (
-        <div className="absolute top-0 left-0 w-full h-full bg-background z-0">
-             <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
-        </div>
+      <div className="absolute top-0 left-0 w-full h-full bg-background z-0">
+        <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
+      </div>
     );
   }
 
   return (
     <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-      <video
-        key={videoSrc}
-        className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto object-cover transform -translate-x-1/2 -translate-y-1/2"
-        autoPlay
-        loop
-        muted
-        playsInline
-      >
-        <source src={videoSrc} type="video/mp4" />
-      </video>
+       {videoSrc && (
+        <video
+          key={videoSrc}
+          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto object-cover transform -translate-x-1/2 -translate-y-1/2"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+      )}
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   );
@@ -129,13 +126,8 @@ export default function Home() {
   );
 
   useEffect(() => {
-    const fetchProjects = async () => {
-        setProjectsLoading(true);
-        const fetchedProjects = await getProjects();
-        setProjects(fetchedProjects);
-        setProjectsLoading(false);
-    };
-    fetchProjects();
+    setProjects(placeholderProjects);
+    setProjectsLoading(false);
   }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -157,17 +149,11 @@ export default function Home() {
     }
   }, [user, form]);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const query = formData.get('search');
-    router.push(`/projects?q=${query}`);
-  };
-
   async function onContactSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
     try {
-      await addInquiryToFirestore(values);
       toast({
         title: "Message Sent!",
         description: "Thank you for contacting us. We'll get back to you shortly.",
@@ -457,7 +443,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    

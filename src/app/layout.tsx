@@ -6,7 +6,6 @@ import { Header } from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/hooks/use-cart';
 import { AuthProvider } from '@/hooks/use-auth';
-import { InquiryProvider } from '@/hooks/use-inquiry';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 
@@ -40,14 +39,12 @@ export default function RootLayout({
         >
             <div id="root-container" className="flex min-h-screen flex-col">
                 <AuthProvider>
-                  <InquiryProvider>
                     <CartProvider>
                       <Header />
                       <main className="flex-1">{children}</main>
                       <Toaster />
                       <ThemeToggle />
                     </CartProvider>
-                  </InquiryProvider>
                 </AuthProvider>
             </div>
         </ThemeProvider>
