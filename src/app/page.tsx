@@ -207,7 +207,7 @@ export default function Home() {
                 <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                   <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-primary">
+                <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   <Link href="/about">Learn More</Link>
                 </Button>
               </div>
