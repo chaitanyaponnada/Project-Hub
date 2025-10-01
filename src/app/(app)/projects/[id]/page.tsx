@@ -14,9 +14,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { getProjectById } from "@/lib/firebase-services";
 import type { Project } from "@/lib/placeholder-data";
 
-export default function ProjectDetailsPage({ params: { id } }: { params: { id: string } }) {
+export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  const { id } = params;
   
   useEffect(() => {
     setIsClient(true);
