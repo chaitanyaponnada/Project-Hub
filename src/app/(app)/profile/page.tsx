@@ -117,7 +117,7 @@ export default function ProfilePage() {
                                             <div className="flex-1 text-left">
                                                 <p className="font-semibold">{inquiry.message.substring(0, 80)}{inquiry.message.length > 80 && '...'}</p>
                                                 <p className="text-sm text-muted-foreground mt-1">
-                                                    Asked on {inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP') : 'N/A'}
+                                                    Asked on {inquiry.receivedAt?.toDate ? format(inquiry.receivedAt.toDate(), 'PPP') : 'N/A'}
                                                 </p>
                                             </div>
                                         </AccordionTrigger>
@@ -125,13 +125,13 @@ export default function ProfilePage() {
                                             <p className="text-muted-foreground whitespace-pre-wrap mb-6">{inquiry.message}</p>
                                             {inquiry.reply ? (
                                                 <Card className="bg-muted/50">
-                                                    <CardHeader>
-                                                        <CardTitle className="text-lg font-headline">Admin Reply</CardTitle>
-                                                         <p className="text-sm text-muted-foreground">
-                                                            Replied on {inquiry.repliedAt ? format(inquiry.repliedAt.toDate(), 'PPP') : 'N/A'}
+                                                    <CardHeader className="pt-4">
+                                                        <CardTitle className="text-base font-headline">Admin Reply</CardTitle>
+                                                         <p className="text-xs text-muted-foreground">
+                                                            Replied on {inquiry.repliedAt?.toDate ? format(inquiry.repliedAt.toDate(), 'PPP') : 'N/A'}
                                                         </p>
                                                     </CardHeader>
-                                                    <CardContent>
+                                                    <CardContent className="pt-2">
                                                         <p className="whitespace-pre-wrap">{inquiry.reply}</p>
                                                     </CardContent>
                                                 </Card>

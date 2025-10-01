@@ -75,11 +75,11 @@ export default function AdminInquiriesPage() {
             await replyToInquiry(inquiryToReply.id, replyText);
             fetchInquiries(); // Re-fetch to show the updated reply status
             toast({title: "Reply sent."});
+            setInquiryToReply(null); // Close dialog on success
         } catch(error) {
             toast({title: "Error sending reply.", variant: "destructive"})
         } finally {
             setIsReplying(false);
-            setInquiryToReply(null);
             setReplyText('');
         }
     }
@@ -123,16 +123,18 @@ export default function AdminInquiriesPage() {
                                     </TableCell>
                                     <TableCell>{inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP p') : 'N/A'}</TableCell>
                                     <TableCell className="space-x-1">
-                                        <Dialog onOpenChange={(open) => !open && setInquiryToReply(null)}>
+                                        <Dialog onOpenChange={(open) => { if(!open) setInquiryToReply(null); }}>
                                             <DialogTrigger asChild>
                                                 <Button variant="ghost" size="icon" onClick={() => { setInquiryToReply(inquiry); setReplyText(inquiry.reply || ''); }}>
                                                     <Reply className="h-4 w-4"/>
                                                 </Button>
                                             </DialogTrigger>
                                         </Dialog>
-                                        <Button variant="ghost" size="icon" onClick={() => setInquiryToDelete(inquiry)}>
-                                            <Trash2 className="h-4 w-4 text-destructive"/>
-                                        </Button>
+                                        <AlertDialogTrigger asChild>
+                                            <Button variant="ghost" size="icon" onClick={() => setInquiryToDelete(inquiry)}>
+                                                <Trash2 className="h-4 w-4 text-destructive"/>
+                                            </Button>
+                                        </AlertDialogTrigger>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -148,7 +150,7 @@ export default function AdminInquiriesPage() {
         </Card>
         
         {/* Reply Dialog */}
-        <Dialog open={!!inquiryToReply} onOpenChange={(open) => !open && setInquiryToReply(null)}>
+        <Dialog open={!!inquiryToReply} onOpenChange={(open) => { if(!open) setInquiryToReply(null); }}>
              <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Reply to {inquiryToReply?.name}</DialogTitle>
@@ -165,7 +167,7 @@ export default function AdminInquiriesPage() {
                     />
                 </div>
                 <DialogFooter>
-                    <DialogClose asChild><Button variant="outline" disabled={isReplying}>Cancel</Button></DialogClose>
+                    <Button variant="outline" onClick={() => setInquiryToReply(null)} disabled={isReplying}>Cancel</Button>
                     <Button onClick={handleReply} disabled={isReplying || !replyText}>
                         {isReplying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Send Reply
@@ -185,7 +187,7 @@ export default function AdminInquiriesPage() {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                 <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
                     {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Delete
                 </AlertDialogAction>
