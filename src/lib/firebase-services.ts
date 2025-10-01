@@ -12,18 +12,6 @@ import type { Project } from './placeholder-data';
  */
 export const isAdmin = async (uid: string): Promise<boolean> => {
     if (!uid) return false;
-
-    // Temporary one-time check to grant initial admin access.
-    // This should be removed after the first admin has promoted others.
-    const currentUser = auth.currentUser;
-    if (currentUser && currentUser.uid === uid && currentUser.email === 'chaitanyaponnada657@gmail.com') {
-        const adminDocCheck = await getDoc(doc(db, 'admins', uid));
-        if (!adminDocCheck.exists()) {
-             await promoteToAdmin(uid);
-        }
-        return true;
-    }
-
     const adminDoc = await getDoc(doc(db, 'admins', uid));
     return adminDoc.exists();
 };
