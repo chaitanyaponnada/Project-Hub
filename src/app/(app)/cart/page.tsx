@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 export default function CartPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart } = useCart();
+  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, checkoutWithStripe, isCheckingOut } = useCart();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -49,15 +49,11 @@ export default function CartPage() {
       );
   }
 
-  const handleCheckout = () => {
-      router.push('/checkout');
-  }
-
   return (
     <div className="container mx-auto px-4 py-12 animate-fade-in">
         <div className="flex justify-between items-center mb-8">
             <h1 className="font-headline text-4xl font-bold text-primary animate-fade-in-down">Shopping Cart</h1>
-             <Button variant="outline" size="sm" onClick={clearCart} disabled={cartCount === 0}>
+             <Button variant="outline" size="sm" onClick={clearCart} disabled={cartCount === 0 || isCheckingOut}>
                 <Trash2 className="mr-2 h-4 w-4" /> Clear Cart
             </Button>
         </div>
@@ -74,7 +70,7 @@ export default function CartPage() {
                         <p className="text-muted-foreground text-sm">{item.category}</p>
                         <p className="font-bold text-primary mt-1">Rs. {item.price.toFixed(2)}</p>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)} disabled={isCheckingOut}>
                         <Trash2 className="h-5 w-5 text-muted-foreground hover:text-destructive" />
                     </Button>
                 </Card>
@@ -101,7 +97,8 @@ export default function CartPage() {
                             <p>Total</p>
                             <p>Rs. {totalPrice.toFixed(2)}</p>
                         </div>
-                        <Button className="w-full" size="lg" onClick={handleCheckout}>
+                        <Button className="w-full" size="lg" onClick={() => checkoutWithStripe()} disabled={isCheckingOut}>
+                            {isCheckingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Proceed to Checkout
                         </Button>
                     </div>

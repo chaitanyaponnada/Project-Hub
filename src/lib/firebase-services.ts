@@ -1,6 +1,6 @@
 
 import { db, auth, storage } from './firebase';
-import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { User } from 'firebase/auth';
 import type { Project } from './placeholder-data';
@@ -199,4 +199,39 @@ export const getSales = async () => {
     const q = query(salesCol, orderBy("purchasedAt", "desc"));
     const salesSnapshot = await getDocs(q);
     return salesSnapshot.docs.map(doc => doc.data());
-}
+};
+
+
+/**
+ * Creates a checkout session document in Firestore for the Stripe extension to process.
+ * @param uid The user's ID.
+ * @param cartItems The items in the user's cart.
+ */
+export const createStripeCheckoutSession = async (uid: string, cartItems: any[]) => {
+  const checkoutSessionCollection = collection(db, 'customers', uid, 'checkout_sessions');
+
+  const line_items = cartItems.map(item => ({
+      price_data: {
+          currency: 'inr',
+          product_data: {
+              name: item.title,
+              images: [item.imageUrls[0]],
+          },
+          unit_amount: item.price * 100, // Stripe expects price in cents
+      },
+      quantity: 1,
+  }));
+
+  const sessionDocRef = await addDoc(checkoutSessionCollection, {
+    mode: 'payment',
+    success_url: `${window.location.origin}/checkout?status=success`,
+    cancel_url: `${window.location.origin}/checkout?status=cancelled`,
+    line_items: line_items,
+    metadata: {
+        userId: uid,
+        cartItemIds: JSON.stringify(cartItems.map(item => item.id)),
+    }
+  });
+
+  return sessionDocRef;
+};

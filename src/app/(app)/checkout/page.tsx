@@ -1,37 +1,31 @@
+
 "use client";
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { Loader2, CheckCircle, Ban } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useCart } from '@/hooks/use-cart';
 
 function CheckoutContent() {
     const { user, loading } = useAuth();
-    const { addPurchasedItems, clearCart, cartItems } = useCart();
+    const { clearCart, cartItems } = useCart();
     const router = useRouter();
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
 
-    const [isProcessing, setIsProcessing] = useState(false);
-
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login?redirect=/checkout');
-        }
-    }, [user, loading, router]);
-    
     useEffect(() => {
         if (status === 'success' && cartItems.length > 0) {
-            addPurchasedItems(cartItems);
+            // The Stripe extension and webhooks will handle purchase fulfillment.
+            // We just need to clear the local cart.
             clearCart();
         }
-    }, [status, addPurchasedItems, clearCart, cartItems]);
+    }, [status, clearCart, cartItems.length]);
 
 
-    if (loading || !user || isProcessing) {
+    if (loading || !user) {
         return (
             <div className="flex items-center justify-center h-[50vh]">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -80,31 +74,15 @@ function CheckoutContent() {
         )
     }
 
-  return (
-     <div className="container mx-auto px-4 py-20 flex items-center justify-center">
-        <Card className="max-w-md w-full text-center p-8">
-            <CardHeader>
-                <CardTitle>Checkout</CardTitle>
-                <CardDescription>This is a placeholder checkout page.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <p className="text-muted-foreground mb-6">
-                    In a real application, this page would integrate a payment provider like Stripe.
-                    Clicking "Confirm Purchase" will simulate a successful transaction.
-                </p>
-                <Button onClick={() => {
-                    setIsProcessing(true);
-                    setTimeout(() => {
-                         router.push('/checkout?status=success');
-                         setIsProcessing(false);
-                    }, 1500)
-                }}>
-                    Confirm Purchase
-                </Button>
-            </CardContent>
-        </Card>
-    </div>
-  );
+    // Default view if no status is present, might indicate an issue or direct navigation
+    return (
+        <div className="container mx-auto px-4 py-20 flex items-center justify-center">
+             <div className="flex items-center justify-center h-[50vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <p className="ml-4">Processing your request...</p>
+            </div>
+        </div>
+    )
 }
 
 export default function CheckoutPage() {
@@ -118,3 +96,4 @@ export default function CheckoutPage() {
         </Suspense>
     );
 }
+

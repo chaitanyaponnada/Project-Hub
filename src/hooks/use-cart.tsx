@@ -5,9 +5,10 @@ import type { Project } from '@/lib/placeholder-data';
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
-import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
+import { createStripeCheckoutSession } from '@/lib/firebase-services';
 
 interface CartItem extends Project {
   quantity: number;
@@ -21,6 +22,8 @@ interface CartContextType {
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
+  checkoutWithStripe: () => Promise<void>;
+  isCheckingOut: boolean;
   cartCount: number;
   totalPrice: number;
 }
@@ -31,6 +34,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
@@ -117,15 +121,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     toast({ title: 'Added to Cart', description: `${project.title} has been added to your cart.` });
   };
 
-  const buyNow = (project: Project) => {
+  const buyNow = async (project: Project) => {
     if (!user) {
       router.push('/login?redirect=/projects/' + project.id);
       return;
     }
-    const newCartItems = [{ ...project, quantity: 1 }];
-    setCartItems(newCartItems);
-    updateFirestoreCart(newCartItems);
-    router.push('/checkout');
+    await updateFirestoreCart([{ ...project, quantity: 1 }]);
+    checkoutWithStripe();
   };
 
   const removeFromCart = (projectId: string) => {
@@ -138,14 +140,49 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = () => {
     setCartItems([]);
     updateFirestoreCart([]);
-    toast({ title: 'Cart Cleared' });
+  };
+
+  const checkoutWithStripe = async () => {
+    if (!user) {
+      router.push('/login?redirect=/cart');
+      return;
+    }
+
+    if(cartItems.length === 0) {
+      toast({title: "Your cart is empty.", variant: "destructive"});
+      return;
+    }
+
+    setIsCheckingOut(true);
+
+    try {
+      const checkoutSessionRef = await createStripeCheckoutSession(user.uid, cartItems);
+      
+      const unsubscribe = onSnapshot(checkoutSessionRef, (snap) => {
+        const { error, url } = snap.data() || {};
+        if (error) {
+          console.error(`Stripe Checkout Error: ${error.message}`);
+          toast({ title: "Payment Error", description: error.message, variant: "destructive" });
+          unsubscribe();
+          setIsCheckingOut(false);
+        }
+        if (url) {
+          window.location.assign(url);
+          // Don't need to unsubscribe or set isCheckingOut to false, as the page is redirecting.
+        }
+      });
+    } catch (error) {
+      console.error("Error creating Stripe checkout session:", error);
+      toast({ title: "Error", description: "Could not initiate checkout.", variant: "destructive" });
+      setIsCheckingOut(false);
+    }
   };
 
   const cartCount = useMemo(() => cartItems.reduce((count, item) => count + item.quantity, 0), [cartItems]);
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithStripe, isCheckingOut }}>
       {children}
     </CartContext.Provider>
   );
