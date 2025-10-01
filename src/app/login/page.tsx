@@ -105,7 +105,7 @@ export default function LoginPage() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       await addUserToFirestore(result.user);
-      router.push('/');
+      router.push(redirectUrl);
       toast({ title: "Signed in with Google successfully!" });
     } catch (error: any) {
       toast({
@@ -292,4 +292,5 @@ export default function LoginPage() {
   );
 }
 
+    
     
