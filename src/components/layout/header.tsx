@@ -62,15 +62,17 @@ export function Header() {
     if (!name) return "";
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
+  
+  const showTransparentHeader = isHomePage && !isScrolled;
 
   const headerClasses = cn(
     "sticky top-0 z-50 w-full border-b transition-colors duration-300",
-    isScrolled || !isHomePage ? "bg-background/80 backdrop-blur-xl border-border" : "bg-transparent border-transparent"
+    showTransparentHeader ? "bg-transparent border-transparent" : "bg-background/80 backdrop-blur-xl border-border"
   );
   
-  const contentColorClass = isScrolled || !isHomePage ? "text-primary" : "text-white";
-  const navLinkColorClass = isScrolled || !isHomePage ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white";
-  const activeNavLinkColorClass = isScrolled || !isHomePage ? "text-primary font-semibold" : "text-white font-semibold";
+  const contentColorClass = showTransparentHeader ? "text-white" : "text-primary";
+  const navLinkColorClass = showTransparentHeader ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground";
+  const activeNavLinkColorClass = showTransparentHeader ? "text-white font-semibold" : "text-primary font-semibold";
 
 
   const NavLinks = ({ className }: { className?: string }) => (
@@ -149,7 +151,7 @@ export function Header() {
                 variant={"outline"}
                 size="sm" 
                 asChild 
-                className={cn("hidden sm:flex", !isScrolled && isHomePage && "border-white/50 text-white bg-transparent hover:bg-white hover:text-primary")}
+                className={cn("hidden sm:flex", showTransparentHeader && "border-white/50 text-white bg-transparent hover:bg-white hover:text-primary")}
             >
                <Link href="/login">
                   <User className="mr-2 h-4 w-4" />
