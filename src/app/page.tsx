@@ -158,11 +158,11 @@ export default function Home() {
         <section id="home" className="relative py-24 md:py-32 text-center">
           <div className="container mx-auto px-4 relative">
             <div className="max-w-4xl mx-auto">
-              <h1 className="font-headline text-6xl md:text-8xl font-bold text-primary mb-4 min-h-[90px] md:min-h-[128px]">
+              <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-primary mb-4 min-h-[90px] md:min-h-[128px]">
                 {typedTitle}<span className="animate-ping">|</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
-                Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now.
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
+                Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
               </p>
               <div className="flex justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
@@ -217,7 +217,7 @@ export default function Home() {
 
         {/* Projects Section */}
         <div className="relative">
-          <div className="absolute inset-0 pointer-events-none z-10 bg-[radial-gradient(ellipse_at_center,transparent_30%,hsl(var(--background))_90%)]" />
+          <div className="absolute inset-0 pointer-events-none z-10 bg-[linear-gradient(to_right,hsl(var(--background)),transparent_25%,transparent_75%,hsl(var(--background)))]" />
           <section id="projects" className="py-20">
               <div className="container mx-auto px-4 relative z-20">
                 <header className="mb-12 text-center animate-fade-in-up">
