@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -355,7 +356,10 @@ export default function Home() {
           <div className="container mx-auto px-4 relative z-20">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
-              <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line! If you have a desired idea, or if you need any help, feel free to contact us.</p>
+              <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
+              <p className="text-lg text-muted-foreground mt-2">
+                If you have a desired idea, or if you need any help, feel free to contact us.
+              </p>
             </div>
             <div className="max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <Card>
@@ -437,3 +441,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
