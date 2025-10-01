@@ -51,10 +51,6 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (pathname.startsWith('/admin')) {
-    return null;
-  }
-  
   const handleSignOut = async () => {
     await signOut(auth);
     router.push('/');

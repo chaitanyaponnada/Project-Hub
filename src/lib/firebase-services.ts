@@ -36,19 +36,6 @@ export const addUserToFirestore = async (user: User) => {
 };
 
 /**
- * Checks if a user is an admin.
- * @param uid The user's ID.
- * @returns True if the user is an admin, false otherwise.
- */
-export const isAdmin = async (uid: string): Promise<boolean> => {
-    if (!uid) return false;
-    const adminDocRef = doc(db, 'admins', uid);
-    const adminDoc = await getDoc(adminDocRef);
-    return adminDoc.exists();
-};
-
-
-/**
  * Fetches all projects from Firestore.
  */
 export const getProjects = async (): Promise<Project[]> => {
@@ -71,116 +58,6 @@ export const getProjectById = async (id: string): Promise<Project | null> => {
     } else {
         return null;
     }
-};
-
-/**
- * Uploads a file to Firebase Storage and returns the download URL.
- * @param file The file to upload.
- * @param path The path in storage to upload to.
- */
-export const uploadFile = async (file: File, path: string): Promise<string> => {
-    const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL;
-};
-
-/**
- * Adds a new project to Firestore.
- * @param projectData The project data to add.
- * @param images The image files to upload.
- * @param projectFile The project zip file to upload.
- */
-export const addProject = async (projectData: Omit<Project, 'id' | 'imageUrls' | 'downloadUrl'>, images: File[], projectFile: File): Promise<string> => {
-    
-    // 1. Create a new project document to get an ID
-    const newProjectRef = doc(collection(db, "projects"));
-    const projectId = newProjectRef.id;
-
-    // 2. Upload images
-    const imageUrls = await Promise.all(
-        images.map((image, index) => uploadFile(image, `projects/${projectId}/image_${index}_${image.name}`))
-    );
-
-    // 3. Upload project file
-    const downloadUrl = await uploadFile(projectFile, `projects/${projectId}/${projectFile.name}`);
-
-    // 4. Create the project document in Firestore
-    const newProject: Omit<Project, 'id'> & {createdAt: any} = {
-        ...projectData,
-        imageUrls,
-        downloadUrl,
-        createdAt: serverTimestamp()
-    };
-    await setDoc(newProjectRef, newProject);
-    return projectId;
-};
-
-/**
- * Updates an existing project in Firestore.
- */
-export const updateProject = async (
-    projectId: string, 
-    projectData: Partial<Project>,
-    newImages?: File[],
-    newProjectFile?: File
-) => {
-    const projectRef = doc(db, 'projects', projectId);
-    const updateData: any = { ...projectData };
-
-    if (newImages && newImages.length > 0) {
-        const newImageUrls = await Promise.all(
-            newImages.map((image, index) => uploadFile(image, `projects/${projectId}/image_${Date.now()}_${index}_${image.name}`))
-        );
-        const existingProject = await getProjectById(projectId);
-        updateData.imageUrls = [...(existingProject?.imageUrls || []), ...newImageUrls];
-    }
-    
-    if (newProjectFile) {
-        const newDownloadUrl = await uploadFile(newProjectFile, `projects/${projectId}/${newProjectFile.name}`);
-        updateData.downloadUrl = newDownloadUrl;
-    }
-
-    await updateDoc(projectRef, updateData);
-};
-
-
-/**
- * Deletes a project from Firestore and its associated files from Storage.
- * @param projectId The ID of the project to delete.
- */
-export const deleteProject = async (projectId: string) => {
-    const project = await getProjectById(projectId);
-    if (!project) throw new Error("Project not found");
-
-    // Delete images from Storage
-    if(project.imageUrls && project.imageUrls.length > 0) {
-        const imageDeletePromises = project.imageUrls.map(url => {
-            try {
-                const imageRef = ref(storage, url);
-                return deleteObject(imageRef);
-            } catch (error) {
-                console.error(`Failed to delete image at ${url}`, error);
-                return Promise.resolve();
-            }
-        });
-        await Promise.all(imageDeletePromises);
-    }
-
-
-    // Delete project file from Storage
-    if(project.downloadUrl){
-        try {
-            const fileRef = ref(storage, project.downloadUrl);
-            await deleteObject(fileRef);
-        } catch (error) {
-             console.error(`Failed to delete file at ${project.downloadUrl}`, error);
-        }
-    }
-
-
-    // Delete project document from Firestore
-    await deleteDoc(doc(db, 'projects', projectId));
 };
 
 /**
@@ -214,12 +91,4 @@ export const getInquiries = async () => {
     const q = query(inquiriesCol, orderBy("receivedAt", "desc"));
     const inquirySnapshot = await getDocs(q);
     return inquirySnapshot.docs.map(doc => doc.data());
-};
-
-/**
- * Deletes an inquiry from Firestore.
- * @param inquiryId The ID of the inquiry to delete.
- */
-export const deleteInquiry = async (inquiryId: string) => {
-    await deleteDoc(doc(db, 'inquiries', inquiryId));
 };

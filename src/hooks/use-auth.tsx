@@ -4,21 +4,19 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, User, getRedirectResult } from 'firebase/auth';
-import { isAdmin, addUserToFirestore } from '@/lib/firebase-services';
+import { addUserToFirestore } from '@/lib/firebase-services';
 import { useToast } from './use-toast';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  isAdmin: boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true, isAdmin: false });
+const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isUserAdmin, setIsUserAdmin] = useState(false);
   const { toast } = useToast();
   
   useEffect(() => {
@@ -50,11 +48,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setLoading(true);
           if (currentUser) {
             setUser(currentUser);
-            const adminStatus = await isAdmin(currentUser.uid);
-            setIsUserAdmin(adminStatus);
           } else {
             setUser(null);
-            setIsUserAdmin(false);
           }
           setLoading(false);
         });
@@ -65,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [toast]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin: isUserAdmin }}>
+    <AuthContext.Provider value={{ user, loading }}>
       {children}
     </AuthContext.Provider>
   );
