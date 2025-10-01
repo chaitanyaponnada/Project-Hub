@@ -1,41 +1,47 @@
 
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check for admin role
-    function isAdmin() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+
+    // Helper function to check for admin privileges.
+    function isAdmin(userId) {
+      return exists(/databases/$(database)/documents/users/$(userId)) &&
+             get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == true;
     }
 
-    // Projects can be read by anyone, but only written by admins
-    match /projects/{projectId} {
-      allow read: if request.auth != null;
-      allow write: if isAdmin();
-    }
-    
-    // Users can create their own user document, read any user document
-    // Only admins can update other user documents (e.g. to make them an admin)
+    // Users can only be created by themselves.
+    // Any authenticated user can read the users list.
     match /users/{userId} {
       allow read: if request.auth != null;
       allow create: if request.auth.uid == userId;
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
+      allow update: if isAdmin(request.auth.uid); // Admins can update user roles.
     }
 
-    // Carts can only be read/written by the user who owns it
-    match /carts/{userId} {
-      allow read, write: if request.auth.uid == userId;
+    // Projects can be read by anyone, but only created, updated,
+    // or deleted by an administrator.
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
     }
     
-    // Purchases can only be read/written by the user who owns it
-    match /purchases/{userId} {
-      allow read, write: if request.auth.uid == userId;
+    // Carts can only be accessed by the user who owns them.
+    match /carts/{userId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-
-    // Inquiries can be created by anyone, but only read/deleted by admins
+    
+    // Purchases can only be accessed by the user who owns them.
+    match /purchases/{userId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Inquiries can be created by anyone.
+    // Users can read their own inquiries.
+    // Admins can read all inquiries and write (reply to) them.
     match /inquiries/{inquiryId} {
-        allow create: if request.auth != null;
-        allow read, delete: if isAdmin();
+        allow create: if true;
+        allow read: if (request.auth != null && request.auth.uid == resource.data.userId) || (request.auth != null && isAdmin(request.auth.uid));
+        allow write: if request.auth != null && isAdmin(request.auth.uid);
     }
   }
 }

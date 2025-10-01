@@ -96,8 +96,9 @@ export function ProjectForm({ project }: ProjectFormProps) {
       router.push('/admin/projects');
       router.refresh();
     } catch (error) {
-      console.error(error);
-      toast({ title: 'Error', description: 'Something went wrong.', variant: 'destructive' });
+      console.error("Project creation/update failed:", error);
+      const errorMessage = (error instanceof Error) ? error.message : 'Something went wrong.';
+      toast({ title: 'Error', description: errorMessage, variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
