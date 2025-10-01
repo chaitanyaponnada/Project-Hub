@@ -48,10 +48,11 @@ const useTypewriter = (text: string, speed = 50) => {
   
     useEffect(() => {
       setIsTyping(true);
+      setDisplayText('');
       let i = 0;
       const typingInterval = setInterval(() => {
         if (i < text.length) {
-          setDisplayText(text.substring(0, i + 1));
+          setDisplayText(prev => prev + text.charAt(i));
           i++;
         } else {
           clearInterval(typingInterval);
@@ -321,8 +322,12 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="animate-fade-in-left aspect-[4/3]">
+                <div className="animate-fade-in-left aspect-[4/3] relative flex items-center justify-center">
                   <NodeGarden />
+                  <div className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none">
+                      <Code className="h-16 w-16 text-primary mb-4" />
+                      <h3 className="font-headline text-4xl font-bold text-primary">Project Hub</h3>
+                  </div>
                 </div>
               </div>
             </div>
@@ -338,8 +343,8 @@ export default function Home() {
             <div className="max-w-3xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`} className="font-semibold text-lg hover:no-underline text-left">
-                    <AccordionTrigger>{faq.question}</AccordionTrigger>
+                  <AccordionItem key={index} value={`item-${index}`} className="border-b">
+                    <AccordionTrigger className="font-semibold text-lg hover:no-underline text-left">{faq.question}</AccordionTrigger>
                     <AccordionContent className="text-muted-foreground text-base">
                       {faq.answer}
                     </AccordionContent>
