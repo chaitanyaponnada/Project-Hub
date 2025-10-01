@@ -173,28 +173,31 @@ export default function Home() {
                 </p>
               </header>
               
-              <Carousel 
-                opts={{
-                    align: "start",
-                    loop: true,
-                }}
-                plugins={[plugin.current]}
-                onMouseEnter={() => plugin.current.stop()}
-                onMouseLeave={() => plugin.current.reset()}
-                className="w-full max-w-5xl mx-auto"
-              >
-                <CarouselContent>
-                    {projects.slice(0, 5).map((project, i) => (
-                    <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
-                        <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                            <ProjectCard project={project} isBlurred={!user && !loading} />
-                        </div>
-                    </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
+               <div className="relative w-full max-w-5xl mx-auto">
+                <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
+                 <Carousel 
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    plugins={[plugin.current]}
+                    onMouseEnter={() => plugin.current.stop()}
+                    onMouseLeave={() => plugin.current.reset()}
+                    className="w-full"
+                >
+                    <CarouselContent>
+                        {projects.slice(0, 5).map((project, i) => (
+                        <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
+                            <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                                <ProjectCard project={project} isBlurred={!user && !loading} />
+                            </div>
+                        </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
+              </div>
               
               <div className="text-center mt-12">
                 <Button asChild size="lg" variant="outline">
@@ -353,4 +356,6 @@ export default function Home() {
 }
 
     
+    
+
     
