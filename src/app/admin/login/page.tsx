@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { verifyAdminCredentials } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -57,8 +58,6 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "").split(',').map(e => e.trim());
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,17 +70,15 @@ export default function AdminLoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     
-    // Simulate a brief delay for a better user experience
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // This is a simplified auth check. In a real app, you'd use Firebase Auth with custom claims.
-    if (adminEmails.includes(values.email) && values.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+    const isAdmin = await verifyAdminCredentials(values.email, values.password);
+
+    if (isAdmin) {
       toast({ title: "Admin login successful!" });
       router.push("/admin");
     } else {
       toast({
         title: "Unauthorized",
-        description: "Invalid credentials. Please try again.",
+        description: "Invalid credentials or not an admin.",
         variant: "destructive",
       });
     }

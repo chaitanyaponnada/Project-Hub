@@ -31,6 +31,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { addUserToFirestore } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -102,7 +103,8 @@ export default function LoginPage() {
     setIsGoogleLoading(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      await addUserToFirestore(result.user);
       router.push('/');
       toast({ title: "Signed in with Google successfully!" });
     } catch (error: any) {

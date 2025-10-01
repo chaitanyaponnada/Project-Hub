@@ -32,6 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
+import { addUserToFirestore } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -85,8 +86,8 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       if (userCredential.user) {
         await updateProfile(userCredential.user, { displayName: values.name });
-        // Reload the user to get the updated displayName
         await userCredential.user.reload();
+        await addUserToFirestore(userCredential.user);
       }
       router.push("/");
       toast({ title: "Account created successfully!" });
@@ -105,10 +106,11 @@ export default function RegisterPage() {
     setIsGoogleLoading(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      await addUserToFirestore(result.user);
       router.push("/");
       toast({ title: "Signed in with Google successfully!" });
-    } catch (error: any) => {
+    } catch (error: any) {
       toast({
         title: "Google Sign-in Failed",
         description: error.message,

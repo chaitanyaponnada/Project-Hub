@@ -84,7 +84,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
           return;
       }
 
-      const projectData: Omit<Project, 'id'> = {
+      const projectData = {
         title: data.title,
         description: data.description,
         category: data.category,
@@ -94,14 +94,14 @@ export function ProjectForm({ project }: ProjectFormProps) {
         tags: data.tags?.split(',').map(t => t.trim()).filter(Boolean) || [],
         imageUrls: data.imageUrls.split(',').map(url => url.trim()),
         imageHints: data.imageHints.split(',').map(hint => hint.trim()),
-        includedFiles: data.includedFiles.split('\n'),
+        includedFiles: data.includedFiles.split('\n').map(f => f.trim()).filter(Boolean),
         downloadUrl: downloadUrl,
       };
 
       if (isEditMode && project.id) {
         await updateProject(project.id, projectData);
       } else {
-        await addProject(projectData);
+        await addProject(projectData as Omit<Project, 'id'>);
       }
 
       toast({

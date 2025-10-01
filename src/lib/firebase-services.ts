@@ -1,9 +1,10 @@
 
-import { db, storage } from './firebase';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, Timestamp } from 'firebase/firestore';
+import { db, storage, auth } from './firebase';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, Timestamp, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { Project } from './placeholder-data';
 import type { Inquiry } from '@/hooks/use-inquiry';
+import { User, signInWithEmailAndPassword } from 'firebase/auth';
 
 
 // --------- Projects API ---------
@@ -57,7 +58,7 @@ export const deleteProject = async (id: string) => {
 };
 
 // --------- Inquiries API ---------
-export const addInquiryToFirestore = async (inquiryData: Omit<Inquiry, 'id'>) => {
+export const addInquiryToFirestore = async (inquiryData: Omit<Inquiry, 'id' | 'receivedAt'>) => {
   const inquiriesCol = collection(db, 'inquiries');
   await addDoc(inquiriesCol, {
     ...inquiryData,
@@ -77,7 +78,7 @@ export const getInquiries = async (): Promise<Inquiry[]> => {
                 receivedAt: (data.receivedAt as Timestamp).toDate().toLocaleDateString(),
             } as Inquiry;
         });
-        return inquiryList;
+        return inquiryList.sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
     } catch (error) {
         console.error("Error fetching inquiries:", error);
         return [];
@@ -92,4 +93,40 @@ export const uploadFile = async (file: File, path: string): Promise<string> => {
   const snapshot = await uploadBytes(storageRef, file);
   const downloadURL = await getDownloadURL(snapshot.ref);
   return downloadURL;
+};
+
+
+// --------- User API ---------
+export const addUserToFirestore = async (user: User) => {
+    const userRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+        await setDoc(userRef, {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            createdAt: Timestamp.now(),
+        });
+    }
+};
+
+// -------- Admin Auth API --------
+export const verifyAdminCredentials = async (email: string, password: string): Promise<boolean> => {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        if (user) {
+            const adminDocRef = doc(db, 'admins', user.uid);
+            const adminDoc = await getDoc(adminDocRef);
+            return adminDoc.exists() && adminDoc.data().isAdmin === true;
+        }
+        return false;
+    } catch (error) {
+        // This will catch failed sign-in attempts (wrong password, etc.)
+        console.error("Admin verification failed", error);
+        return false;
+    }
 };
