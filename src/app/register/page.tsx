@@ -74,16 +74,17 @@ export default function RegisterPage() {
       if(updatedUser) {
         if (activeTab === 'admin') {
            await addAdminToAdminsCollection(updatedUser);
-           router.push("/admin");
            toast({ title: "Admin account created successfully!" });
+           router.push("/login");
         } else {
            await addUserToUsersCollection(updatedUser);
-           router.push("/");
            toast({ title: "User account created successfully!" });
+           router.push("/login");
         }
       }
 
     } catch (error: any) {
+       console.error("Registration failed:", error);
        let friendlyMessage = "An unexpected error occurred. Please try again.";
         if (error.code === 'auth/email-already-in-use') {
             friendlyMessage = "This email is already registered. Please try logging in.";
@@ -101,7 +102,7 @@ export default function RegisterPage() {
   const SignupForm = () => (
      <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pt-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -221,5 +222,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-    
