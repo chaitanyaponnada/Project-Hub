@@ -18,25 +18,26 @@ export const addUserToUsersCollection = async (user: User) => {
 
     // Secure, one-time bootstrap for the first admin
     if (user.email === 'chaitanyaponnada657@gmail.com') {
-        const adminDocRef = doc(db, 'users', user.uid);
-        const adminDoc = await getDoc(adminDocRef);
-        if (!adminDoc.exists() || !adminDoc.data().isAdmin) {
-             const userCountSnapshot = await getDocs(collection(db, 'users'));
-             const adminUsers = userCountSnapshot.docs.filter(d => d.data().isAdmin);
-             if(adminUsers.length === 0) {
+        const userDoc = await getDoc(userRef);
+        if (!userDoc.exists() || !userDoc.data().isAdmin) {
+             const userCountSnapshot = await getDocs(query(collection(db, 'users'), where("isAdmin", "==", true)));
+             if(userCountSnapshot.empty) {
                 isAdmin = true;
              }
         }
     }
-
-    await setDoc(userRef, {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        createdAt: serverTimestamp(),
-        isAdmin: isAdmin,
-    }, { merge: true });
+    
+    const existingDoc = await getDoc(userRef);
+    if (!existingDoc.exists()) {
+        await setDoc(userRef, {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            createdAt: serverTimestamp(),
+            isAdmin: isAdmin,
+        }, { merge: true });
+    }
 };
 
 /**
@@ -234,13 +235,17 @@ export const getUsers = async () => {
 /**
  * Adds a new inquiry to the `inquiries` collection in Firestore.
  * @param inquiryData The inquiry data.
+ * @param userId Optional user ID if the user is logged in.
  */
-export const addInquiry = async (inquiryData: { name: string, email: string, message: string }) => {
+export const addInquiry = async (inquiryData: { name: string, email: string, message: string }, userId?: string) => {
     const inquiryRef = doc(collection(db, 'inquiries'));
     await setDoc(inquiryRef, {
         ...inquiryData,
+        userId: userId || null,
         receivedAt: serverTimestamp(),
-        id: inquiryRef.id
+        id: inquiryRef.id,
+        reply: null,
+        repliedAt: null,
     });
 };
 
@@ -260,4 +265,28 @@ export const getInquiries = async () => {
  */
 export const deleteInquiry = async (inquiryId: string) => {
     await deleteDoc(doc(db, 'inquiries', inquiryId));
+};
+
+/**
+ * Fetches inquiries for a specific user.
+ * @param userId The user's ID.
+ */
+export const getInquiriesByUserId = async (userId: string) => {
+    const inquiriesCol = collection(db, 'inquiries');
+    const q = query(inquiriesCol, where("userId", "==", userId), orderBy("receivedAt", "desc"));
+    const inquirySnapshot = await getDocs(q);
+    return inquirySnapshot.docs.map(doc => doc.data());
+};
+
+/**
+ * Adds or updates a reply for an inquiry.
+ * @param inquiryId The ID of the inquiry to reply to.
+ * @param replyText The text of the reply.
+ */
+export const replyToInquiry = async (inquiryId: string, replyText: string) => {
+    const inquiryRef = doc(db, 'inquiries', inquiryId);
+    await updateDoc(inquiryRef, {
+        reply: replyText,
+        repliedAt: serverTimestamp(),
+    });
 };

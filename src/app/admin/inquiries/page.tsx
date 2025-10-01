@@ -4,8 +4,8 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Trash2 } from 'lucide-react';
-import { getInquiries, deleteInquiry } from '@/lib/firebase-services';
+import { Loader2, Trash2, Reply } from 'lucide-react';
+import { getInquiries, deleteInquiry, replyToInquiry } from '@/lib/firebase-services';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -18,22 +18,38 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Textarea } from '@/components/ui/textarea';
 
 export default function AdminInquiriesPage() {
     const [inquiries, setInquiries] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [inquiryToDelete, setInquiryToDelete] = useState<any | null>(null);
+    const [inquiryToReply, setInquiryToReply] = useState<any | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isReplying, setIsReplying] = useState(false);
+    const [replyText, setReplyText] = useState('');
     const { toast } = useToast();
     
+    const fetchInquiries = async () => {
+        setIsLoading(true);
+        const fetchedInquiries = await getInquiries();
+        setInquiries(fetchedInquiries);
+        setIsLoading(false);
+    };
+
     useEffect(() => {
-        const fetchInquiries = async () => {
-            setIsLoading(true);
-            const fetchedInquiries = await getInquiries();
-            setInquiries(fetchedInquiries);
-            setIsLoading(false);
-        };
         fetchInquiries();
     }, []);
 
@@ -49,6 +65,22 @@ export default function AdminInquiriesPage() {
         } finally {
             setIsDeleting(false);
             setInquiryToDelete(null);
+        }
+    }
+    
+    const handleReply = async () => {
+        if (!inquiryToReply || !replyText) return;
+        setIsReplying(true);
+        try {
+            await replyToInquiry(inquiryToReply.id, replyText);
+            fetchInquiries(); // Re-fetch to show the updated reply status
+            toast({title: "Reply sent."});
+        } catch(error) {
+            toast({title: "Error sending reply.", variant: "destructive"})
+        } finally {
+            setIsReplying(false);
+            setInquiryToReply(null);
+            setReplyText('');
         }
     }
 
@@ -71,6 +103,7 @@ export default function AdminInquiriesPage() {
                                 <TableHead>From</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Message</TableHead>
+                                <TableHead>Status</TableHead>
                                 <TableHead>Received</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
@@ -81,8 +114,22 @@ export default function AdminInquiriesPage() {
                                     <TableCell className="font-medium">{inquiry.name}</TableCell>
                                     <TableCell>{inquiry.email}</TableCell>
                                     <TableCell className="max-w-sm whitespace-pre-wrap">{inquiry.message}</TableCell>
-                                    <TableCell>{inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP p') : 'N/A'}</TableCell>
                                     <TableCell>
+                                        {inquiry.reply ? (
+                                            <span className="text-green-600 font-medium">Replied</span>
+                                        ) : (
+                                            <span className="text-yellow-600 font-medium">Pending</span>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>{inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP p') : 'N/A'}</TableCell>
+                                    <TableCell className="space-x-1">
+                                        <Dialog onOpenChange={(open) => !open && setInquiryToReply(null)}>
+                                            <DialogTrigger asChild>
+                                                <Button variant="ghost" size="icon" onClick={() => { setInquiryToReply(inquiry); setReplyText(inquiry.reply || ''); }}>
+                                                    <Reply className="h-4 w-4"/>
+                                                </Button>
+                                            </DialogTrigger>
+                                        </Dialog>
                                         <Button variant="ghost" size="icon" onClick={() => setInquiryToDelete(inquiry)}>
                                             <Trash2 className="h-4 w-4 text-destructive"/>
                                         </Button>
@@ -99,6 +146,35 @@ export default function AdminInquiriesPage() {
                 )}
             </CardContent>
         </Card>
+        
+        {/* Reply Dialog */}
+        <Dialog open={!!inquiryToReply} onOpenChange={(open) => !open && setInquiryToReply(null)}>
+             <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Reply to {inquiryToReply?.name}</DialogTitle>
+                    <DialogDescription>Your reply will be visible to the user on their profile page.</DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                    <p className="text-sm font-semibold mb-2">Original Message:</p>
+                    <blockquote className="border-l-2 pl-4 text-sm text-muted-foreground mb-4 whitespace-pre-wrap">{inquiryToReply?.message}</blockquote>
+                    <Textarea
+                        placeholder="Type your reply here..."
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        rows={6}
+                    />
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild><Button variant="outline" disabled={isReplying}>Cancel</Button></DialogClose>
+                    <Button onClick={handleReply} disabled={isReplying || !replyText}>
+                        {isReplying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Send Reply
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
+        {/* Delete Dialog */}
         <AlertDialog open={!!inquiryToDelete} onOpenChange={() => setInquiryToDelete(null)}>
             <AlertDialogContent>
                 <AlertDialogHeader>

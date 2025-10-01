@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -62,7 +63,7 @@ export default function ContactPage() {
     setIsLoading(true);
 
     try {
-      await addInquiry(values);
+      await addInquiry(values, user?.uid);
       toast({
         title: "Message Sent!",
         description: "Thank you for contacting us. We'll get back to you shortly.",
