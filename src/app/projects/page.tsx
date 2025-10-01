@@ -6,16 +6,19 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ProjectCard } from "@/components/project-card"
-import { categories, projects as placeholderProjects } from "@/lib/placeholder-data"
+import { categories } from "@/lib/placeholder-data"
 import { Search, Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth";
 import type { Project } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
+import { getProjects } from "@/lib/firebase-services";
+import { useToast } from "@/hooks/use-toast";
 
 function ProjectsContent() {
   const { user, loading } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { toast } = useToast();
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,10 +27,24 @@ function ProjectsContent() {
   const [category, setCategory] = useState(searchParams.get('category') || 'all');
 
   useEffect(() => {
-    setIsLoading(true);
-    setProjects(placeholderProjects);
-    setIsLoading(false);
-  }, []);
+    const fetchProjects = async () => {
+        setIsLoading(true);
+        try {
+            const fetchedProjects = await getProjects();
+            setProjects(fetchedProjects);
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+            toast({
+                title: "Error",
+                description: "Could not fetch projects.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    fetchProjects();
+  }, [toast]);
 
   useEffect(() => {
     let results = projects;
@@ -50,16 +67,20 @@ function ProjectsContent() {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const query = formData.get('search') as string;
-    const currentCategoryQuery = category === 'all' ? '' : `category=${category}`;
-    router.push(`/projects?q=${query}&${currentCategoryQuery}`);
+    const params = new URLSearchParams(searchParams);
+    params.set('q', searchTerm);
+    router.push(`/projects?${params.toString()}`);
   };
 
   const handleCategoryChange = (value: string) => {
-    const currentSearchQuery = searchTerm ? `q=${searchTerm}` : '';
-    const newCategoryQuery = value === 'all' ? '' : `category=${value}`;
-    router.push(`/projects?${currentSearchQuery}&${newCategoryQuery}`);
+    const params = new URLSearchParams(searchParams);
+    if (value === 'all') {
+      params.delete('category');
+    } else {
+      params.set('category', value);
+    }
+    setCategory(value);
+    router.push(`/projects?${params.toString()}`);
   };
 
   if (isLoading) {

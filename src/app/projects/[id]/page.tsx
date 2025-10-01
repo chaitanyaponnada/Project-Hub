@@ -7,11 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Zap, Ban } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Zap, Ban, Bolt } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { projects, type Project } from "@/lib/placeholder-data";
+import { getProjectById } from "@/lib/firebase-services";
+import type { Project } from "@/lib/placeholder-data";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [isClient, setIsClient] = useState(false);
@@ -25,7 +26,11 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const [loadingProject, setLoadingProject] = useState(true);
   
   const { user, loading: authLoading } = useAuth();
+  const { cartItems, addToCart, buyNow, purchasedItems } = useCart();
   
+  const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
+  const isPurchased = useMemo(() => purchasedItems.some(item => item.id === project?.id), [purchasedItems, project]);
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login?redirect=/projects/' + params.id);
@@ -33,12 +38,18 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   }, [user, authLoading, router, params.id]);
 
   useEffect(() => {
-    setLoadingProject(true);
-    const foundProject = projects.find(p => p.id === params.id);
-    if (foundProject) {
-      setProject(foundProject);
+    const fetchProject = async () => {
+      setLoadingProject(true);
+      const foundProject = await getProjectById(params.id);
+      if (foundProject) {
+        setProject(foundProject);
+      }
+      setLoadingProject(false);
+    };
+
+    if(params.id) {
+        fetchProject();
     }
-    setLoadingProject(false);
   }, [params.id]);
 
 
@@ -84,7 +95,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                             alt={`${project.title} - preview ${index + 1}`}
                             fill
                             className="object-cover"
-                            data-ai-hint={project.imageHints[index]}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
                         </div>
                       </Card>
@@ -131,7 +142,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </Card>
           </div>
           
-            <Card className="bg-destructive/10 border-destructive">
+            <Card className="bg-muted/50">
               <CardContent className="p-6">
                  <div className="flex items-baseline gap-2 mb-6">
                     <p className="text-4xl font-bold text-primary">Rs. {project.price.toFixed(2)}</p>
@@ -139,13 +150,40 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                         <p className="text-xl text-muted-foreground line-through">Rs. {project.originalPrice.toFixed(2)}</p>
                     )}
                 </div>
-                <div className="flex items-center gap-4">
-                    <Ban className="h-8 w-8 text-destructive" />
-                    <div>
-                        <h3 className="font-bold text-destructive-foreground">Purchase Disabled</h3>
-                        <p className="text-sm text-destructive-foreground/80">Database functionality has been removed.</p>
+
+                {isPurchased ? (
+                     <Button asChild className="w-full" size="lg">
+                        <a href={project.downloadUrl} target="_blank" rel="noopener noreferrer">
+                            <Download className="mr-2 h-5 w-5"/>
+                            Download Project
+                        </a>
+                    </Button>
+                ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                        <Button 
+                            variant="outline" 
+                            size="lg"
+                            onClick={() => addToCart(project)}
+                            disabled={isInCart}
+                        >
+                            {isInCart ? (
+                                <>
+                                    <CheckCircle className="mr-2 h-5 w-5 text-green-500" />
+                                    Added to Cart
+                                </>
+                            ) : (
+                                <>
+                                    <ShoppingCart className="mr-2 h-5 w-5"/>
+                                    Add to Cart
+                                </>
+                            )}
+                        </Button>
+                        <Button size="lg" onClick={() => buyNow(project, '/checkout')}>
+                             <Bolt className="mr-2 h-5 w-5"/>
+                             Buy Now
+                        </Button>
                     </div>
-                </div>
+                )}
               </CardContent>
             </Card>
         </div>

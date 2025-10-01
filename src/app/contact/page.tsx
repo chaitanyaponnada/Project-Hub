@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -27,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { Loader2, Send } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { addInquiry } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -62,20 +62,26 @@ export default function ContactPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-      
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you shortly.",
-    });
+    try {
+      await addInquiry(values);
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you shortly.",
+      });
 
-    form.reset({
-        ...form.getValues(),
-        message: ''
-    });
-    
-    setIsLoading(false);
+      form.reset({
+          ...form.getValues(),
+          message: ''
+      });
+    } catch(e) {
+       toast({
+        title: "Error Sending Message",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (

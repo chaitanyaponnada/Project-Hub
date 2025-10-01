@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Code, Feather, Zap, Target, Loader2, Send, Lightbulb } from "lucide-react";
-import { categories, faqs, projects as placeholderProjects } from "@/lib/placeholder-data";
+import { categories, faqs } from "@/lib/placeholder-data";
 import type { Project } from "@/lib/placeholder-data";
 import { useAuth } from "@/hooks/use-auth";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -31,6 +31,7 @@ import { useTheme } from "next-themes";
 import { NodeGarden } from "@/components/node-garden";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { getProjects, addInquiry } from "@/lib/firebase-services";
 
 
 const formSchema = z.object({
@@ -126,9 +127,24 @@ export default function Home() {
   );
 
   useEffect(() => {
-    setProjects(placeholderProjects);
-    setProjectsLoading(false);
-  }, []);
+    const fetchProjects = async () => {
+        setProjectsLoading(true);
+        try {
+            const fetchedProjects = await getProjects();
+            setProjects(fetchedProjects);
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+            toast({
+                title: "Error",
+                description: "Could not fetch projects.",
+                variant: "destructive"
+            });
+        } finally {
+            setProjectsLoading(false);
+        }
+    };
+    fetchProjects();
+  }, [toast]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -151,9 +167,8 @@ export default function Home() {
 
   async function onContactSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
     try {
+      await addInquiry(values);
       toast({
         title: "Message Sent!",
         description: "Thank you for contacting us. We'll get back to you shortly.",
