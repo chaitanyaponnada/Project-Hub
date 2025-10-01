@@ -28,9 +28,12 @@ export function Footer() {
     }
   };
   
-  if (pathname.startsWith('/admin') || pathname.startsWith('/checkout')) {
+  const noFooterPaths = ['/admin', '/checkout', '/profile', '/login', '/register'];
+
+  if (noFooterPaths.some(path => pathname.startsWith(path)) || (pathname.startsWith('/projects/') && pathname !== '/projects')) {
       return null;
   }
+
 
   return (
     <footer className="bg-muted text-muted-foreground mt-auto border-t section-gradient">
