@@ -27,12 +27,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, updateProfile } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
+import { addUserToFirestore } from "@/lib/firebase-services";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -66,7 +67,15 @@ export default function RegisterPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(userCredential.user, { displayName: values.name });
+      
+      // We need to reload the user to get the updated displayName
       await userCredential.user.reload();
+      const updatedUser = auth.currentUser;
+
+      if(updatedUser) {
+        await addUserToFirestore(updatedUser);
+      }
+
       router.push("/");
       toast({ title: "Account created successfully!" });
     } catch (error: any) {
@@ -84,16 +93,13 @@ export default function RegisterPage() {
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      router.push("/");
-      toast({ title: "Signed in with Google successfully!" });
+      await signInWithRedirect(auth, provider);
     } catch (error: any) {
       toast({
         title: "Google Sign-in Failed",
         description: error.message,
         variant: "destructive",
       });
-    } finally {
       setIsGoogleLoading(false);
     }
   }
@@ -224,3 +230,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+    

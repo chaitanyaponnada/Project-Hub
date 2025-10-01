@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -83,17 +83,14 @@ export default function LoginPage() {
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      router.push("/");
-      toast({ title: "Signed in with Google successfully!" });
+      await signInWithRedirect(auth, provider);
     } catch (error: any) {
       toast({
         title: "Google Sign-in Failed",
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setIsGoogleLoading(false);
+       setIsGoogleLoading(false);
     }
   }
 
@@ -270,3 +267,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+    
