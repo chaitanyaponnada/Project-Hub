@@ -1,4 +1,5 @@
 
+
 import { db, auth, storage } from './firebase';
 import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
@@ -52,6 +53,7 @@ export const addAdminToFirestore = async (user: User) => {
  * Adds or updates a user in the `users` collection in Firestore.
  * If the user doesn't exist, it creates a new document.
  * If the user exists, it updates their last sign-in time.
+ * On first registration, checks if the user is the designated first admin.
  * @param user The user object from Firebase Auth.
  */
 export const addUserToFirestore = async (user: User) => {
@@ -69,8 +71,14 @@ export const addUserToFirestore = async (user: User) => {
             createdAt: serverTimestamp(),
             lastSignInTime: serverTimestamp(),
         });
+        
+        // Securely designate the first administrator on their first sign-up.
+        if (user.email === 'chaitanyaponnada657@gmail.com') {
+            await promoteToAdmin(user.uid);
+        }
+
     } else {
-        // Update last sign-in time
+        // Update last sign-in time for existing users
          await updateDoc(userRef, {
             lastSignInTime: serverTimestamp(),
         });
@@ -264,5 +272,3 @@ export const getInquiries = async () => {
 export const deleteInquiry = async (inquiryId: string) => {
     await deleteDoc(doc(db, 'inquiries', inquiryId));
 };
-
-    

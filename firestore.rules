@@ -3,46 +3,45 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-  
-    // Helper function to check for admin role
-    function isAdmin() {
-      return exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+
+    // Helper function to check if a user is an admin
+    function isAdmin(userId) {
+      return exists(/databases/$(database)/documents/admins/$(userId));
     }
-    
-    // Admins collection: Only other admins can create new admins.
-    // Any authenticated user can read the list to check roles.
+
+    // Admins: Only admins can write to the admins collection. Any authenticated user can read it.
     match /admins/{adminId} {
       allow read: if request.auth != null;
-      allow write: if isAdmin();
+      allow write: if isAdmin(request.auth.uid);
     }
 
-    // Projects, Users, Inquiries: Admins have full access.
-    // Authenticated users can read projects.
+    // Users: Users can only create their own user document. Admins can do anything.
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth.uid == userId;
+      allow update, delete: if isAdmin(request.auth.uid);
+    }
+    
+    // Inquiries: Logged in users can create inquiries. Admins can read/delete them.
+    match /inquiries/{inquiryId} {
+      allow create: if request.auth != null;
+      allow read, delete: if isAdmin(request.auth.uid);
+    }
+
+    // Projects: Any authenticated user can read projects. Only admins can write/delete.
     match /projects/{projectId} {
       allow read: if request.auth != null;
-      allow write: if isAdmin();
-    }
-    
-    match /users/{userId} {
-      allow read, write: if isAdmin();
-    }
-    
-    match /inquiries/{inquiryId} {
-       allow read, write: if isAdmin();
-    }
-    
-    // Carts and Purchases are user-specific.
-    match /carts/{userId} {
-        allow read, write: if request.auth.uid == userId;
-    }
-    
-     match /purchases/{userId} {
-        allow read, write: if request.auth.uid == userId;
+      allow write, delete: if isAdmin(request.auth.uid);
     }
 
-    // Default deny all other access
-    match /{document=**} {
-      allow read, write: if false;
+    // Carts: Users can only read and write their own cart.
+    match /carts/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+    
+    // Purchases: Users can only read and write their own purchases.
+     match /purchases/{userId} {
+      allow read, write: if request.auth.uid == userId;
     }
   }
 }
