@@ -26,10 +26,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Code, Loader2 } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { isAdmin } from "@/lib/firebase-services";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -40,6 +41,8 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,6 +85,31 @@ export default function AdminLoginPage() {
     }
   }
 
+  async function handlePasswordReset() {
+    if (!resetEmail) {
+        toast({ title: "Email required", description: "Please enter your email address.", variant: "destructive" });
+        return;
+    }
+    setIsResetting(true);
+    try {
+        await sendPasswordResetEmail(auth, resetEmail);
+        toast({
+            title: "Password Reset Email Sent",
+            description: "If an account with that email exists, a reset link has been sent.",
+        });
+        setResetEmail("");
+    } catch (error: any) {
+        // We generally don't want to reveal if an email exists or not, but for debugging, you might log this.
+        console.error("Password reset error:", error);
+         toast({
+            title: "Password Reset Email Sent",
+            description: "If an account with that email exists, a reset link has been sent.",
+        });
+    } finally {
+        setIsResetting(false);
+    }
+}
+
   return (
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
@@ -123,7 +151,39 @@ export default function AdminLoginPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                     <div className="flex items-center justify-between">
+                        <FormLabel>Password</FormLabel>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="link" className="p-0 h-auto text-xs">Forgot Password?</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Reset Password</DialogTitle>
+                                    <DialogDescription>
+                                        Enter your email address below. We'll send you a link to reset your password.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4 py-2">
+                                    <Input
+                                        type="email"
+                                        placeholder="you@example.com"
+                                        value={resetEmail}
+                                        onChange={(e) => setResetEmail(e.target.value)}
+                                    />
+                                </div>
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button type="button" variant="outline">Cancel</Button>
+                                    </DialogClose>
+                                    <Button onClick={handlePasswordReset} disabled={isResetting}>
+                                        {isResetting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        Send Reset Link
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                     <FormControl>
                       <Input type="password" {...field} />
                     </FormControl>

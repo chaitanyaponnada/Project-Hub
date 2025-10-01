@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -101,28 +101,18 @@ export default function LoginPage() {
     }
     setIsResetting(true);
     try {
-        const signInMethods = await fetchSignInMethodsForEmail(auth, resetEmail);
-        if (signInMethods.length === 0) {
-            toast({
-                title: "User Not Found",
-                description: "This email is not registered. Please sign up.",
-                variant: "destructive",
-            });
-            setIsResetting(false);
-            return;
-        }
-
         await sendPasswordResetEmail(auth, resetEmail);
         toast({
             title: "Password Reset Email Sent",
-            description: "Check your inbox for a link to reset your password.",
+            description: "If an account with that email exists, a reset link has been sent.",
         });
         setResetEmail("");
     } catch (error: any) {
-        toast({
-            title: "Error Sending Reset Email",
-            description: error.message,
-            variant: "destructive",
+        // We generally don't want to reveal if an email exists or not, but for debugging, you might log this.
+        console.error("Password reset error:", error);
+         toast({
+            title: "Password Reset Email Sent",
+            description: "If an account with that email exists, a reset link has been sent.",
         });
     } finally {
         setIsResetting(false);
@@ -267,5 +257,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-    
