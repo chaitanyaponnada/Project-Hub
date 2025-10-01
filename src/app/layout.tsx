@@ -8,7 +8,6 @@ import { AuthProvider } from '@/hooks/use-auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Footer } from '@/components/layout/footer';
-import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'Project Hub',
@@ -32,7 +31,6 @@ export default function RootLayout({
           'font-body antialiased'
         )}
       >
-        <Script src="https://pay.google.com/gp/p/js/pay.js" strategy="lazyOnload" />
         <ThemeProvider
             attribute="class"
             defaultTheme="dark"
