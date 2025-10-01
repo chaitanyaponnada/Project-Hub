@@ -48,6 +48,12 @@ export const addUserToFirestore = async (user: User) => {
             createdAt: serverTimestamp(),
             lastSignInTime: serverTimestamp(),
         });
+        // --- ONE-TIME ADMIN BOOTSTRAP ---
+        // This will create the first admin user automatically upon registration.
+        if (user.email === 'chaitanyaponnada657@gmail.com') {
+            await promoteToAdmin(user.uid);
+        }
+        // ------------------------------------
     } else {
         // Update last sign-in time
          await updateDoc(userRef, {
