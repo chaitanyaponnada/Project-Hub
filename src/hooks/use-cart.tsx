@@ -7,6 +7,7 @@ import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
 
 interface CartItem extends Project {
   quantity: number;
@@ -32,6 +33,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const { toast } = useToast();
   const { user } = useAuth();
+  const router = useRouter();
 
   // Fetch cart and purchased items from Firestore on user change
   useEffect(() => {
@@ -93,17 +95,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const buyNow = (project: Project, redirectUrl: string) => {
-    // This is a simplified "buy now" - it just adds to cart and redirects.
-    // A real implementation would go straight to a checkout session.
     const existingItem = cartItems.find(item => item.id === project.id);
+    let newCartItems = [...cartItems];
     if (!existingItem) {
-      const newCartItems = [...cartItems, { ...project, quantity: 1 }];
+      newCartItems.push({ ...project, quantity: 1 });
       setCartItems(newCartItems);
       updateFirestoreCart(newCartItems);
     }
-    // In a real app, you would create a checkout session and redirect
-    // for now, we just go to the checkout page.
-    window.location.href = redirectUrl;
+    router.push(redirectUrl);
   };
 
   const removeFromCart = (projectId: string) => {
