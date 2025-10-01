@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -173,8 +174,8 @@ export default function Home() {
                 </p>
               </header>
               
-               <div className="relative w-full max-w-5xl mx-auto">
-                <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
+               <div className="relative w-full max-w-6xl mx-auto">
+                 <div className="absolute inset-0 -inset-x-4 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
                  <Carousel 
                     opts={{
                         align: "start",
@@ -194,8 +195,8 @@ export default function Home() {
                         </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
+                    <CarouselPrevious className="-left-8" />
+                    <CarouselNext className="-right-8" />
                 </Carousel>
               </div>
               
