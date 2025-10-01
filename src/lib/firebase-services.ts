@@ -17,14 +17,15 @@ export const isAdmin = async (uid: string): Promise<boolean> => {
 };
 
 /**
- * Adds a new admin UID to the `admins` collection.
- * @param uid The user's ID to be added as an admin.
+ * Promotes a user to an admin by adding their UID to the 'admins' collection.
+ * @param uid The user's ID to be promoted.
  */
-export const addAdminToFirestore = async (uid: string) => {
+export const promoteToAdmin = async (uid: string) => {
     if (!uid) return;
     const adminRef = doc(db, 'admins', uid);
-    await setDoc(adminRef, { admin: true, createdAt: serverTimestamp() });
-}
+    await setDoc(adminRef, { admin: true, promotedAt: serverTimestamp() });
+};
+
 
 /**
  * Adds or updates a user in the `users` collection in Firestore.

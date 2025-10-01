@@ -95,7 +95,7 @@ export default function RegisterPage() {
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
             <Code className="h-8 w-8 text-primary" />
           </Link>
-          <CardTitle className="font-headline text-2xl">Create a User Account</CardTitle>
+          <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
           <CardDescription>Enter your details to get started.</CardDescription>
         </CardHeader>
         <Form {...form}>

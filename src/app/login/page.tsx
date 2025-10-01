@@ -216,12 +216,12 @@ export default function LoginPage() {
               </Button>
               
               <div className="text-center text-sm">
-                {isAdminForm ? "Need an admin account?" : "Don't have an account?"}{" "}
+                Don't have an account?{" "}
                 <Link
-                  href={isAdminForm ? "/register/admin" : "/register"}
+                  href={"/register"}
                   className="underline text-primary hover:text-primary/80"
                 >
-                  {isAdminForm ? "Create Admin Account" : "Sign up"}
+                  Sign up
                 </Link>
               </div>
             </CardFooter>
