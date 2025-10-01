@@ -4,7 +4,7 @@
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { useAuth } from "@/hooks/use-auth";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -19,7 +19,7 @@ export default function AdminLayout({
     useEffect(() => {
         if (!loading) {
             if (!user) {
-                router.push('/admin/login');
+                router.push('/login');
             } else if (!isAdmin) {
                 router.push('/admin/unauthorized');
             }
