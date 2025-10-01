@@ -38,8 +38,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <div className="animated-background"></div>
-          <div className="relative z-10 flex min-h-screen flex-col bg-background/60 text-foreground">
+          <div className="coding-canvas"></div>
+          <div className="relative z-10 flex min-h-screen flex-col bg-transparent text-foreground">
             <AuthProvider>
               <InquiryProvider>
                 <CartProvider>

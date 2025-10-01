@@ -36,33 +36,33 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 0 0% 2%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 0 0% 4%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 0 0% 2%;
     --popover-foreground: 0 0% 98%;
     --primary: 213.9 98.2% 61.2%;
     --primary-foreground: 210 20% 9%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 15%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
     --ring: 213.9 98.2% 61.2%;
 
-    --sidebar-background: 240 10% 3.9%;
+    --sidebar-background: 0 0% 2%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 240 10% 3.9%;
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 0 0% 15%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-border: 0 0% 15%;
     --sidebar-ring: 213.9 98.2% 61.2%;
   }
 }
@@ -84,19 +84,43 @@
       @apply shadow-black/20;
   }
   
-  .animated-background {
-      @apply fixed inset-0 -z-10 h-full w-full;
-      background: hsl(var(--background));
-      background-size: 200% 200%;
+  .coding-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    background-color: hsl(var(--background));
+    overflow: hidden;
   }
 
-  .dark .animated-background {
-      background: linear-gradient(-45deg, hsl(0, 0%, 4%), hsl(0, 0%, 10%), hsl(0, 0%, 4%), hsl(0, 0%, 10%));
-      background-size: 400% 400%;
-	    animation: gradient 15s ease infinite;
+  .dark .coding-canvas::before {
+    content: "const project = 'amazing';\n\nfunction getStarted() {\n  console.log('Welcome to Project Hub!');\n}\n\n// UI Components\nimport { Button } from '@shadcn/ui';\n\n// API Routes\napp.get('/api/projects', (req, res) => {\n  res.json(projects);\n});\n\nclass DataVisualizer {\n  constructor(data) {\n    this.data = data;\n  }\n\n  renderChart() {\n    // ...\n  }\n}\n\n// React Hooks\nconst [user, setUser] = useState(null);\n\n// Styles\n.header {\n  font-size: 2rem;\n  color: var(--primary);\n}\n\n// More code\nconst API_KEY = '...';\n\n// And more\nconst a = 1;\nconst b = 2;\n\n// Functions\nfunction sum(a, b) {\n  return a + b;\n}\n\n// Database connection\nconst db = new Database();\n\n// Machine Learning model\nconst model = new Model();";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 14px;
+    color: hsla(var(--foreground), 0.05);
+    white-space: pre;
+    animation: scrollCode 60s linear infinite;
+    will-change: transform;
   }
+}
 
-  @keyframes gradient {
+@keyframes scrollCode {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes gradient {
 	0% {
 		background-position: 0% 50%;
 	}
@@ -106,5 +130,4 @@
 	100% {
 		background-position: 0% 50%;
 	}
-}
 }

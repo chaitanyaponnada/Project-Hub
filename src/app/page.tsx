@@ -40,12 +40,35 @@ const formSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters.").max(1000, "Message must not exceed 1000 characters."),
 });
 
+const useTypewriter = (text: string, speed = 50) => {
+    const [displayText, setDisplayText] = useState('');
+  
+    useEffect(() => {
+      let i = 0;
+      const typingInterval = setInterval(() => {
+        if (i < text.length) {
+          setDisplayText(text.substring(0, i + 1));
+          i++;
+        } else {
+          clearInterval(typingInterval);
+        }
+      }, speed);
+  
+      return () => {
+        clearInterval(typingInterval);
+      };
+    }, [text, speed]);
+  
+    return displayText;
+};
+
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const { addInquiry } = useInquiry();
   const [isLoading, setIsLoading] = useState(false);
+  const typedTitle = useTypewriter("Project Hub", 100);
 
   const plugin = useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
@@ -101,14 +124,10 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero Section */}
         <section id="home" className="relative py-24 md:py-32 text-center bg-gradient-to-b from-background to-background/80">
-          <div
-            className="absolute inset-0 bg-grid-slate-900/[0.04] bg-[10px_10px] [mask-image:linear-gradient(0deg,transparent,black)] dark:bg-grid-slate-100/[0.03]"
-            style={{ backgroundSize: "2rem 2rem" }}
-          ></div>
           <div className="container mx-auto px-4 relative">
-            <div className="max-w-3xl mx-auto">
-              <h1 className="font-headline text-4xl md:text-6xl font-bold text-primary mb-4 animate-fade-in-down">
-                Project Hub
+            <div className="max-w-4xl mx-auto">
+              <h1 className="font-headline text-5xl md:text-7xl font-bold text-primary mb-4 min-h-[84px] md:min-h-[112px]">
+                {typedTitle}<span className="animate-ping">|</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
                 complete your final year project now
@@ -174,8 +193,8 @@ export default function Home() {
                 </p>
               </header>
               
-               <div className="relative w-full max-w-6xl mx-auto">
-                 <div className="absolute inset-0 -inset-x-4 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background" />
+               <div className="relative w-full max-w-4xl mx-auto">
+                 <div className="absolute inset-0 -inset-x-4 z-10 pointer-events-none bg-gradient-to-r from-background via-transparent to-background opacity-80" />
                  <Carousel 
                     opts={{
                         align: "start",
@@ -355,8 +374,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-    
-
-    
