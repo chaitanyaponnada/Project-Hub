@@ -31,7 +31,7 @@ import { addInquiry } from "@/lib/firebase-services";
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
-  phone: z.string().optional(),
+  phone: z.string().min(10, "Please enter a valid phone number."),
   message: z.string().min(10, "Message must be at least 10 characters.").max(1000, "Message must not exceed 1000 characters."),
 });
 
@@ -138,7 +138,7 @@ export default function ContactPage() {
                                 name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Phone Number (Optional)</FormLabel>
+                                        <FormLabel>Phone Number</FormLabel>
                                         <FormControl>
                                             <Input type="tel" placeholder="+1 (555) 123-4567" {...field} />
                                         </FormControl>

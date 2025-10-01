@@ -36,6 +36,7 @@ import { getProjects, addInquiry } from "@/lib/firebase-services";
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
+  phone: z.string().min(10, "Please enter a valid phone number."),
   message: z.string().min(10, "Message must be at least 10 characters.").max(1000, "Message must not exceed 1000 characters."),
 });
 
@@ -150,6 +151,7 @@ export default function Home() {
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       message: "",
     },
   });
@@ -159,6 +161,7 @@ export default function Home() {
       form.reset({
         name: user.displayName || "",
         email: user.email || "",
+        phone: user.phoneNumber || "",
         message: form.getValues("message") || "",
       });
     }
@@ -385,64 +388,79 @@ export default function Home() {
                   <CardContent>
                       <Form {...form}>
                           <form onSubmit={form.handleSubmit(onContactSubmit)} className="space-y-6">
-                              <FormField
-                                  control={form.control}
-                                  name="name"
-                                  render={({ field }) => (
-                                      <FormItem>
-                                          <FormLabel>Your Name</FormLabel>
-                                          <FormControl>
-                                              <Input placeholder="John Doe" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                      </FormItem>
-                                  )}
-                              />
-                              <FormField
-                                  control={form.control}
-                                  name="email"
-                                  render={({ field }) => (
-                                      <FormItem>
-                                          <FormLabel>Email Address</FormLabel>
-                                          <FormControl>
-                                              <Input type="email" placeholder="you@example.com" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                      </FormItem>
-                                  )}
-                              />
-                              <FormField
-                                  control={form.control}
-                                  name="message"
-                                  render={({ field }) => (
-                                      <FormItem>
-                                          <FormLabel>Your Message</FormLabel>
-                                          <FormControl>
-                                              <Textarea
-                                                  placeholder="Tell us what's on your mind..."
-                                                  className="min-h-[150px]"
-                                                  {...field}
-                                              />
-                                          </FormControl>
-                                          <FormMessage />
-                                      </FormItem>
-                                  )}
-                              />
-                              <div className="flex justify-end">
-                                  <Button type="submit" disabled={isLoading} size="lg">
-                                      {isLoading ? (
-                                          <>
-                                              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                              Sending...
-                                          </>
-                                      ) : (
-                                          <>
-                                              <Send className="mr-2 h-5 w-5" />
-                                              Send Message
-                                          </>
-                                      )}
-                                  </Button>
-                              </div>
+                            <div className="grid sm:grid-cols-2 gap-6">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Your Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="John Doe" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Email Address</FormLabel>
+                                            <FormControl>
+                                                <Input type="email" placeholder="you@example.com" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormControl>
+                                            <Input type="tel" placeholder="+1 (555) 123-4567" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="message"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Your Message</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Tell us what's on your mind..."
+                                                className="min-h-[150px]"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="flex justify-end">
+                                <Button type="submit" disabled={isLoading} size="lg">
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="mr-2 h-5 w-5" />
+                                            Send Message
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
                           </form>
                       </Form>
                   </CardContent>
