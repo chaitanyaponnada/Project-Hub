@@ -216,7 +216,7 @@ export default function Home() {
 
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 relative z-20">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
@@ -254,57 +254,53 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <div className="relative">
-          <div className="absolute inset-0 pointer-events-none z-10 bg-[linear-gradient(to_right,hsl(var(--background)),transparent_25%,transparent_75%,hsl(var(--background)))]" />
-          <section id="projects" className="py-20 section-gradient">
-              <div className="container mx-auto px-4 relative z-20">
-                <header className="mb-12 text-center animate-fade-in-up">
-                  <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
-                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                    Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
-                  </p>
-                </header>
-                
-                 <div className="relative w-full max-w-4xl mx-auto">
-                   <Carousel 
-                      opts={{
-                          align: "start",
-                          loop: true,
-                      }}
-                      plugins={[plugin.current]}
-                      onMouseEnter={() => plugin.current.stop()}
-                      onMouseLeave={() => plugin.current.reset()}
-                      className="w-full"
-                  >
-                      <CarouselContent className="-ml-1">
-                          {projects.slice(0, 5).map((project, i) => (
-                          <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
-                              <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                                  <ProjectCard project={project} isBlurred={!user && !loading} />
-                              </div>
-                          </CarouselItem>
-                          ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="left-[-50px] z-20" />
-                      <CarouselNext className="right-[-50px] z-20" />
-                  </Carousel>
-                </div>
-                
-                <div className="text-center mt-12 animate-fade-in-up">
-                  <Button asChild size="lg" variant="outline">
-                    <Link href="/projects">
-                      View All Projects <ArrowRight className="ml-2" />
-                    </Link>
-                  </Button>
-                </div>
+        <section id="projects" className="py-20 section-gradient">
+            <div className="container mx-auto px-4 relative z-20">
+              <header className="mb-12 text-center animate-fade-in-up">
+                <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
+                </p>
+              </header>
+              
+               <div className="relative w-full max-w-4xl mx-auto">
+                 <Carousel 
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    plugins={[plugin.current]}
+                    onMouseEnter={() => plugin.current.stop()}
+                    onMouseLeave={() => plugin.current.reset()}
+                    className="w-full"
+                >
+                    <CarouselContent className="-ml-1">
+                        {projects.slice(0, 5).map((project, i) => (
+                        <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
+                            <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                                <ProjectCard project={project} isBlurred={!user && !loading} />
+                            </div>
+                        </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-[-50px] z-20" />
+                    <CarouselNext className="right-[-50px] z-20" />
+                </Carousel>
               </div>
-          </section>
-        </div>
-
+              
+              <div className="text-center mt-12 animate-fade-in-up">
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/projects">
+                    View All Projects <ArrowRight className="ml-2" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+        </section>
 
         {/* About Section */}
         <section id="about" className="py-20 bg-muted/30 section-gradient">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-4 relative z-20">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div className="animate-fade-in-right">
                   <h3 className="font-headline text-3xl font-bold text-primary mb-4">Our Mission</h3>
@@ -334,7 +330,7 @@ export default function Home() {
 
         {/* FAQ Section */}
         <section id="faq" className="py-20 section-gradient">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 relative z-20">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
               <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
@@ -356,7 +352,7 @@ export default function Home() {
 
         {/* Contact Section */}
         <section id="contact" className="py-20 bg-muted/30 section-gradient">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 relative z-20">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line! If you have a desired idea, or if you need any help, feel free to contact us.</p>
