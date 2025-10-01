@@ -2,7 +2,7 @@
 "use client";
 
 import type { Project } from '@/lib/placeholder-data';
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
 import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
 import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp, addDoc } from 'firebase/firestore';
@@ -26,6 +26,7 @@ interface CartContextType {
   isCheckingOut: boolean;
   cartCount: number;
   totalPrice: number;
+  googlePayButton: React.ReactNode;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -35,9 +36,84 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [googlePayButton, setGooglePayButton] = useState<React.ReactNode>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
+
+  const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
+
+  const onGooglePayPayment = useCallback(async (paymentData: any) => {
+      if (!user) return;
+      setIsCheckingOut(true);
+      const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+      
+      const paymentsCollectionRef = collection(db, 'customers', user.uid, 'payments');
+      const paymentDocRef = await addDoc(paymentsCollectionRef, {
+        amount: totalPrice * 100,
+        currency: 'INR',
+        paymentToken: JSON.parse(paymentToken), // The extension expects the token object
+      });
+
+      router.push(`/checkout?gpay_session_id=${paymentDocRef.id}`);
+
+  }, [user, totalPrice, router]);
+
+   useEffect(() => {
+    if (typeof window === 'undefined' || !totalPrice || totalPrice <= 0) {
+      setGooglePayButton(null);
+      return;
+    };
+    
+    const googlePayClient = new (window as any).google.payments.api.PaymentsClient({
+        environment: 'TEST', // Or 'PRODUCTION'
+    });
+
+    const button = googlePayClient.createButton({
+        onClick: () => {
+            const paymentDataRequest = {
+                apiVersion: 2,
+                apiVersionMinor: 0,
+                allowedPaymentMethods: [{
+                    type: 'CARD',
+                    parameters: {
+                        allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+                        allowedCardNetworks: ["MASTERCARD", "VISA"]
+                    },
+                    tokenizationSpecification: {
+                        type: 'PAYMENT_GATEWAY',
+                        parameters: {
+                            'gateway': 'stripe',
+                            'stripe:version': '2020-08-27',
+                            // IMPORTANT: Use your public key from Stripe, not a secret key
+                            'stripe:publishableKey': 'pk_test_...YOUR_PUBLIC_KEY' 
+                        }
+                    }
+                }],
+                merchantInfo: {
+                    merchantId: '12345678901234567890', // Replace with your Merchant ID
+                    merchantName: 'Project Hub'
+                },
+                transactionInfo: {
+                    totalPriceStatus: 'FINAL',
+                    totalPrice: String(totalPrice),
+                    currencyCode: 'INR'
+                }
+            };
+            googlePayClient.loadPaymentData(paymentDataRequest)
+                .then((paymentData: any) => onGooglePayPayment(paymentData))
+                .catch((err: any) => {
+                    console.error("Google Pay Error:", err);
+                    toast({title: "Payment Error", description: "Google Pay checkout failed.", variant: "destructive"})
+                });
+        },
+        buttonColor: 'black',
+        buttonType: 'pay'
+    });
+
+    setGooglePayButton(button);
+
+  }, [totalPrice, onGooglePayPayment, toast]);
 
   // Fetch cart and purchased items from Firestore on user change
   useEffect(() => {
@@ -179,10 +255,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const cartCount = useMemo(() => cartItems.reduce((count, item) => count + item.quantity, 0), [cartItems]);
-  const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
+  
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithStripe, isCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithStripe, isCheckingOut, googlePayButton }}>
       {children}
     </CartContext.Provider>
   );
