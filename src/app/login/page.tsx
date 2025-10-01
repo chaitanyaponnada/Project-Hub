@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -103,7 +103,7 @@ export default function LoginPage() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      router.push(redirectUrl);
+      router.push('/');
       toast({ title: "Signed in with Google successfully!" });
     } catch (error: any) {
       toast({
@@ -123,6 +123,17 @@ export default function LoginPage() {
     }
     setIsResetting(true);
     try {
+        const signInMethods = await fetchSignInMethodsForEmail(auth, resetEmail);
+        if (signInMethods.length === 0) {
+            toast({
+                title: "User Not Found",
+                description: "This email is not registered. Please sign up.",
+                variant: "destructive",
+            });
+            setIsResetting(false);
+            return;
+        }
+
         await sendPasswordResetEmail(auth, resetEmail);
         toast({
             title: "Password Reset Email Sent",
