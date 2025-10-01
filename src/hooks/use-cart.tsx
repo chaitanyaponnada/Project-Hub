@@ -5,7 +5,7 @@ import type { Project } from '@/lib/placeholder-data';
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 
@@ -75,11 +75,34 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   
   const addPurchasedItems = async (items: CartItem[]) => {
       if (!user) return;
+      
+      const batch = writeBatch(db);
+
+      // 1. Add to user's "purchases" collection
       const purchasesDocRef = doc(db, 'purchases', user.uid);
       const docSnap = await getDoc(purchasesDocRef);
       const existingItems = docSnap.exists() ? docSnap.data().items : [];
       const newItems = [...existingItems, ...items.map(({...item}) => item)];
-      await setDoc(purchasesDocRef, { items: newItems }, { merge: true });
+      batch.set(purchasesDocRef, { items: newItems }, { merge: true });
+
+      // 2. Add each item to the global "sales" collection for analytics
+      const salesColRef = collection(db, 'sales');
+      items.forEach(item => {
+          const saleDocRef = doc(salesColRef);
+          batch.set(saleDocRef, {
+              id: saleDocRef.id,
+              projectId: item.id,
+              projectTitle: item.title,
+              price: item.price,
+              userId: user.uid,
+              userName: user.displayName,
+              userEmail: user.email,
+              userPhotoURL: user.photoURL,
+              purchasedAt: serverTimestamp()
+          });
+      });
+      
+      await batch.commit();
   };
 
   const addToCart = (project: Project) => {
@@ -98,10 +121,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const existingItem = cartItems.find(item => item.id === project.id);
     let newCartItems = [...cartItems];
     if (!existingItem) {
-      newCartItems.push({ ...project, quantity: 1 });
-      setCartItems(newCartItems);
-      updateFirestoreCart(newCartItems);
+      newCartItems = [{ ...project, quantity: 1 }];
+    } else {
+      // If item is already in cart, move to checkout with just that item.
+      newCartItems = [existingItem];
     }
+    setCartItems(newCartItems);
+    updateFirestoreCart(newCartItems);
     router.push(redirectUrl);
   };
 

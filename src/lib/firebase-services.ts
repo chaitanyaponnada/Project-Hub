@@ -55,18 +55,6 @@ export const isAdmin = async (uid: string): Promise<boolean> => {
     }
 };
 
-/**
- * Promotes a user to an admin.
- * @param uid The user's ID to promote.
- */
-export const promoteToAdmin = async (uid: string) => {
-    if (!uid) return;
-    const userRef = doc(db, 'users', uid);
-    await updateDoc(userRef, {
-        isAdmin: true
-    });
-};
-
 
 /**
  * Fetches a single user by their ID from Firestore.
@@ -222,3 +210,13 @@ export const replyToInquiry = async (inquiryId: string) => {
         repliedAt: serverTimestamp(),
     });
 };
+
+/**
+ * Fetches all sales from the 'sales' collection in Firestore.
+ */
+export const getSales = async () => {
+    const salesCol = collection(db, 'sales');
+    const q = query(salesCol, orderBy("purchasedAt", "desc"));
+    const salesSnapshot = await getDocs(q);
+    return salesSnapshot.docs.map(doc => doc.data());
+}

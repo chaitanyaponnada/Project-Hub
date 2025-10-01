@@ -5,25 +5,22 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, User, ShieldCheck } from 'lucide-react';
-import { getUsers, promoteToAdmin } from '@/lib/firebase-services';
+import { getUsers } from '@/lib/firebase-services';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminUsersPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { toast } = useToast();
-
-    const fetchUsers = async () => {
-        setIsLoading(true);
-        const fetchedUsers = await getUsers();
-        setUsers(fetchedUsers);
-        setIsLoading(false);
-    };
     
     useEffect(() => {
+        const fetchUsers = async () => {
+            setIsLoading(true);
+            const fetchedUsers = await getUsers();
+            setUsers(fetchedUsers);
+            setIsLoading(false);
+        };
         fetchUsers();
     }, []);
 
@@ -32,23 +29,11 @@ export default function AdminUsersPage() {
         return name.split(' ').map(n => n[0]).join('').toUpperCase();
     }
 
-    const handlePromote = async (uid: string) => {
-        try {
-            await promoteToAdmin(uid);
-            // Re-fetch users to update the list with the new admin status
-            fetchUsers();
-            toast({title: "User Promoted", description: "The user has been granted admin privileges."});
-        } catch (error) {
-            console.error("Failed to promote user:", error);
-            toast({title: "Error", description: "Failed to promote user.", variant: "destructive"});
-        }
-    }
-
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Users</CardTitle>
-                <CardDescription>List of all registered users. You can promote users to admins here.</CardDescription>
+                <CardDescription>List of all registered users.</CardDescription>
             </CardHeader>
             <CardContent>
                 {isLoading ? (
@@ -63,7 +48,6 @@ export default function AdminUsersPage() {
                                 <TableHead>Email</TableHead>
                                 <TableHead>Date Joined</TableHead>
                                 <TableHead>Role</TableHead>
-                                <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -87,13 +71,6 @@ export default function AdminUsersPage() {
                                             <span className="flex items-center gap-1 font-semibold text-primary"><ShieldCheck size={16}/> Admin</span>
                                         ) : (
                                             'User'
-                                        )}
-                                    </TableCell>
-                                     <TableCell>
-                                        {!user.isAdmin && (
-                                            <Button size="sm" onClick={() => handlePromote(user.uid)}>
-                                                Promote to Admin
-                                            </Button>
                                         )}
                                     </TableCell>
                                 </TableRow>
