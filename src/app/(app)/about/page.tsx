@@ -1,15 +1,25 @@
+
 "use client";
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, Target, Code } from 'lucide-react';
+import { Users, Target, Code, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function AboutPage() {
+  const router = useRouter();
 
   return (
     <div className="bg-background animate-fade-in">
       {/* Hero Section */}
-      <section className="py-24 md:py-32 text-center bg-muted/30">
+      <section className="py-24 md:py-32 text-center bg-muted/30 relative">
+        <div className="absolute top-8 left-8">
+          <Button variant="outline" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4" />
+             <span className="sr-only">Back</span>
+          </Button>
+        </div>
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 animate-fade-in-down">About Project Hub</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
