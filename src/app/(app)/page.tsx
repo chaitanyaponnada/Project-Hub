@@ -120,7 +120,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
-  const {displayText: typedTitle, isTyping} = useTypewriter("Project Hub", 100);
+  const {displayText: typedTitle, isTyping} = useTypewriter("PROJECT HUB", 100);
 
   const plugin = useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
@@ -471,3 +471,5 @@ export default function Home() {
     </>
   );
 }
+
+    
