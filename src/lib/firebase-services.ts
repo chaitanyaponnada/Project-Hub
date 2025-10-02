@@ -4,6 +4,8 @@ import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, delete
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { User } from 'firebase/auth';
 import type { Project } from './placeholder-data';
+import { errorEmitter } from './error-emitter';
+import { FirestorePermissionError } from './errors';
 
 
 /**
@@ -74,13 +76,23 @@ export const getUserById = async (id: string): Promise<any | null> => {
  * Adds a new project to Firestore.
  * @param projectData The complete project data, including URLs.
  */
-export const addProject = async (projectData: Omit<Project, 'id' | 'createdAt'>) => {
+export const addProject = (projectData: Omit<Project, 'id' | 'createdAt'>) => {
     const projectRef = doc(collection(db, 'projects'));
-    await setDoc(projectRef, {
+    const dataToSave = {
         ...projectData,
         id: projectRef.id,
         createdAt: serverTimestamp()
-    });
+    };
+    
+    setDoc(projectRef, dataToSave)
+        .catch(async (serverError) => {
+            const permissionError = new FirestorePermissionError({
+                path: projectRef.path,
+                operation: 'create',
+                requestResourceData: dataToSave,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        });
 };
 
 /**
@@ -254,4 +266,3 @@ export const listenForPaymentResult = (
 
   return unsubscribe;
 };
-

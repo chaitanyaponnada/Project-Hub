@@ -8,6 +8,7 @@ import { AuthProvider } from '@/hooks/use-auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Footer } from '@/components/layout/footer';
+import { FirebaseErrorListener } from '@/components/firebase-error-listener';
 
 export const metadata: Metadata = {
   title: 'Project Hub',
@@ -40,6 +41,7 @@ export default function RootLayout({
             <div id="root-container" className="flex min-h-screen flex-col">
                 <AuthProvider>
                     <CartProvider>
+                      <FirebaseErrorListener />
                       {children}
                       <Toaster />
                       <ThemeToggle />

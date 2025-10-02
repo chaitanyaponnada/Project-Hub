@@ -75,32 +75,39 @@ export function ProjectForm({ project }: ProjectFormProps) {
   const onSubmit = async (data: ProjectFormValues) => {
     setIsLoading(true);
 
-    try {
-      const projectData = {
-        ...data,
-        technologies: data.technologies.map(t => t.value),
-        includedFiles: data.includedFiles.map(f => f.value),
-        tags: data.tags ? data.tags.map(t => t.value) : [],
-        imageUrls: data.imageUrls.map(i => i.value),
-        imageHints: [], // imageHints are deprecated as we use URLs now
-        originalPrice: data.originalPrice || null,
-      };
+    const projectData = {
+      ...data,
+      technologies: data.technologies.map(t => t.value),
+      includedFiles: data.includedFiles.map(f => f.value),
+      tags: data.tags ? data.tags.map(t => t.value) : [],
+      imageUrls: data.imageUrls.map(i => i.value),
+      imageHints: [], // imageHints are deprecated as we use URLs now
+      originalPrice: data.originalPrice || null,
+    };
 
-      if (project) {
-        await updateProject(project.id, projectData);
-        toast({ title: 'Success', description: 'Project updated successfully.' });
-      } else {
-        await addProject(projectData);
-        toast({ title: 'Success', description: 'Project added successfully.' });
-      }
-      router.push('/admin/projects');
-      router.refresh();
-    } catch (error) {
-      console.error("Project creation/update failed:", error);
-      const errorMessage = (error instanceof Error) ? error.message : 'Something went wrong.';
-      toast({ title: 'Error', description: errorMessage, variant: 'destructive' });
-    } finally {
-      setIsLoading(false);
+    if (project) {
+        try {
+            await updateProject(project.id, projectData);
+            toast({ title: 'Success', description: 'Project updated successfully.' });
+            router.push('/admin/projects');
+            router.refresh();
+        } catch (error) {
+            console.error("Project update failed:", error);
+            // This is already using try-catch, so we don't implement the new error handling here for now.
+            // A more comprehensive refactor could centralize this.
+            toast({ title: 'Error updating project', description: 'Please check permissions and try again.', variant: 'destructive' });
+        } finally {
+            setIsLoading(false);
+        }
+    } else {
+        // This now calls the non-async version of addProject
+        addProject(projectData);
+        // We can't easily know if it succeeded here, but we optimistically navigate.
+        // The error will be caught by the global listener.
+        toast({ title: 'Submitting Project', description: 'Your new project is being added.' });
+        router.push('/admin/projects');
+        router.refresh();
+        setIsLoading(false); // We can set loading to false immediately
     }
   };
   
