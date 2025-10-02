@@ -21,6 +21,7 @@ interface CartContextType {
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
+  handlePayUCheckout: () => void;
   isCheckingOut: boolean;
   setIsCheckingOut: (isCheckingOut: boolean) => void;
   cartCount: number;
@@ -79,9 +80,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addPurchasedItems = async (items: CartItem[]) => {
       if (!user || items.length === 0) return;
       
+      setIsCheckingOut(true);
       const batch = writeBatch(db);
 
-      // 1. Add to user's "purchases" collection
       const purchasesDocRef = doc(db, 'purchases', user.uid);
       const docSnap = await getDoc(purchasesDocRef);
       const existingItems = docSnap.exists() ? docSnap.data().items : [];
@@ -92,7 +93,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const newItems = [...existingItems, ...itemsToAdd.map(({...item}) => item)];
         batch.set(purchasesDocRef, { items: newItems }, { merge: true });
 
-        // 2. Add each item to the global "sales" collection for analytics
         const salesColRef = collection(db, 'sales');
         itemsToAdd.forEach(item => {
             const saleDocRef = doc(salesColRef);
@@ -112,6 +112,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         await batch.commit();
         clearCart();
       }
+      setIsCheckingOut(false);
   };
 
   const addToCart = (project: Project) => {
@@ -136,16 +137,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     
-    // Check if item is already in cart, if not, add it.
     const existingItem = cartItems.find(item => item.id === project.id);
     if (!existingItem) {
-        const newCartItems = [{ ...project, quantity: 1 }];
-        setCartItems(newCartItems); 
-        await updateFirestoreCart(newCartItems);
-    } else {
-        // If multiple items are in cart, we want to buy only this one.
-        const newCartItems = [{ ...project, quantity: 1 }];
-        setCartItems(newCartItems);
+        const newCartItems = [...cartItems, { ...project, quantity: 1 }];
         await updateFirestoreCart(newCartItems);
     }
     
@@ -166,11 +160,73 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const handlePayUCheckout = async () => {
+      if (!user) {
+        toast({ title: "Please log in", description: "You need to be logged in to check out.", variant: "destructive" });
+        return;
+      }
+      if (cartCount === 0) {
+        toast({ title: "Your cart is empty", description: "Add some projects to your cart first.", variant: "destructive" });
+        return;
+      }
+
+      setIsCheckingOut(true);
+
+      const txnid = "txn" + Date.now();
+      const productinfo = cartItems.map(item => item.title).join(', ');
+      
+      try {
+        const res = await fetch("/api/payu/initiate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            txnid,
+            amount: totalPrice.toFixed(2),
+            firstname: user.displayName || 'Customer',
+            email: user.email,
+            phone: user.phoneNumber || '9999999999', // PayU requires a phone number
+            productinfo,
+          }),
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to initiate payment");
+        }
+
+        const data = await res.json();
+        
+        // This function will programmatically create and submit the form to PayU
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://test.payu.in/_payment"; // Test URL
+
+        for (let key in data) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = data[key];
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+        
+        // Add purchased items after successful redirection
+        await addPurchasedItems(cartItems);
+
+      } catch (error) {
+        console.error("PayU checkout error:", error);
+        toast({ title: "Checkout Error", description: "Could not connect to the payment gateway. Please try again.", variant: "destructive" });
+        setIsCheckingOut(false);
+      }
+  };
+
+
   const cartCount = useMemo(() => cartItems.reduce((count, item) => count + item.quantity, 0), [cartItems]);
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, isCheckingOut, setIsCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, handlePayUCheckout, isCheckingOut, setIsCheckingOut }}>
       {children}
     </CartContext.Provider>
   );

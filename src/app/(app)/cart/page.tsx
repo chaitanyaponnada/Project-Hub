@@ -5,18 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { ShoppingBag, Loader2, Trash2 } from "lucide-react";
+import { ShoppingBag, Loader2, Trash2, CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Separator } from "@/components/ui/separator";
-import { GooglePayButton } from "@/components/google-pay-button";
 
 export default function CartPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, isCheckingOut } = useCart();
+  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, handlePayUCheckout, isCheckingOut } = useCart();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -100,7 +99,19 @@ export default function CartPage() {
                         </div>
                          
                         <div className="w-full">
-                           <GooglePayButton />
+                           <Button onClick={handlePayUCheckout} disabled={isCheckingOut} className="w-full" size="lg">
+                                {isCheckingOut ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <CreditCard className="mr-2 h-5 w-5" />
+                                        Checkout with PayU
+                                    </>
+                                )}
+                            </Button>
                         </div>
                     </div>
                 </CardContent>

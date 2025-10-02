@@ -30,7 +30,7 @@ export default function PaymentGuidePage() {
         },
         {
             title: "Go Live",
-            description: "When you are ready for real transactions, you will need to update the form action URL in `src/app/cart/page.tsx` from `https://test.payu.in/_payment` to PayU's live endpoint: `https://secure.payu.in/_payment`.",
+            description: "When you are ready for real transactions, you will need to update the form action URL in `src/hooks/use-cart.tsx` from `https://test.payu.in/_payment` to PayU's live endpoint: `https://secure.payu.in/_payment`.",
         },
     ];
 
