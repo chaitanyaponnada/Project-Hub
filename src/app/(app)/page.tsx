@@ -178,7 +178,7 @@ export default function Home() {
               </p>
                <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
                  <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
-                    Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-full h-8 w-8 leading-8 text-center mx-2 font-bold">Or</span> get your idea developed by us.
+                    Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-md px-2 py-1 text-sm font-code mx-2 font-bold">&lt;Or&gt;</span> get your idea developed by us.
                  </p>
                </div>
               <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
