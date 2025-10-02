@@ -8,7 +8,7 @@ import { useAuth } from './use-auth';
 import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import { createStripeCheckoutSession } from '@/lib/firebase-services';
+import { createPaymentRequest } from '@/lib/firebase-services';
 
 interface CartItem extends Project {
   quantity: number;
@@ -22,7 +22,7 @@ interface CartContextType {
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
-  checkoutWithStripe: () => Promise<void>;
+  checkout: () => Promise<void>;
   isCheckingOut: boolean;
   cartCount: number;
   totalPrice: number;
@@ -107,6 +107,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
       
       await batch.commit();
+      
+      // For now, we'll manually clear the cart and redirect.
+      // In a real scenario, you'd do this after payment confirmation.
+      clearCart();
+      router.push('/checkout?status=success');
   };
 
   const addToCart = (project: Project) => {
@@ -127,7 +132,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     await updateFirestoreCart([{ ...project, quantity: 1 }]);
-    checkoutWithStripe();
+    checkout();
   };
 
   const removeFromCart = (projectId: string) => {
@@ -139,10 +144,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = () => {
     setCartItems([]);
-    updateFirestoreCart([]);
+    if (user) {
+      updateFirestoreCart([]);
+    }
   };
 
-  const checkoutWithStripe = async () => {
+  const checkout = async () => {
     if (!user) {
       router.push('/login?redirect=/cart');
       return;
@@ -156,23 +163,30 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setIsCheckingOut(true);
 
     try {
-      const checkoutSessionRef = await createStripeCheckoutSession(user.uid, cartItems);
+      //
+      // In a real app, you would get this token from the Google Pay button on your frontend.
+      //
+      const placeholderPaymentToken = 'placeholder-google-pay-token';
       
-      const unsubscribe = onSnapshot(checkoutSessionRef, (snap) => {
-        const { error, url } = snap.data() || {};
-        if (error) {
-          console.error(`Stripe Checkout Error: ${error.message}`);
-          toast({ title: "Payment Error", description: error.message, variant: "destructive" });
-          unsubscribe();
+      await createPaymentRequest(totalPrice, 'INR', placeholderPaymentToken);
+
+      // The extension now handles the payment. You need to listen to the
+      // created document in Firestore to get the response from Square.
+      // For this example, we'll simulate a successful purchase after a short delay.
+      
+      toast({ title: "Processing Payment...", description: "Please wait while we process your transaction." });
+      
+      // --- SIMULATION ---
+      // In a real app, you'd replace this timeout with a Firestore listener
+      // that waits for the payment extension to write the result.
+      setTimeout(() => {
+          addPurchasedItems(cartItems);
           setIsCheckingOut(false);
-        }
-        if (url) {
-          window.location.assign(url);
-          // Don't need to unsubscribe or set isCheckingOut to false, as the page is redirecting.
-        }
-      });
+      }, 3000);
+      // --- END SIMULATION ---
+
     } catch (error) {
-      console.error("Error creating Stripe checkout session:", error);
+      console.error("Error creating payment request:", error);
       toast({ title: "Error", description: "Could not initiate checkout.", variant: "destructive" });
       setIsCheckingOut(false);
     }
@@ -181,8 +195,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const cartCount = useMemo(() => cartItems.reduce((count, item) => count + item.quantity, 0), [cartItems]);
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
+  const checkoutWithStripe = checkout;
+
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithStripe, isCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkout, isCheckingOut }}>
       {children}
     </CartContext.Provider>
   );
@@ -193,5 +209,6 @@ export const useCart = () => {
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider');
   }
-  return context;
+  // Remapping checkout to avoid breaking existing components that call checkoutWithStripe
+  return {...context, checkoutWithStripe: context.checkout };
 };

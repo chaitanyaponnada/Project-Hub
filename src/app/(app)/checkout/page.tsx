@@ -14,14 +14,16 @@ function CheckoutContent() {
     const { clearCart, cartItems } = useCart();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const stripeStatus = searchParams.get('status');
+    const status = searchParams.get('status');
 
-    // Listener for Stripe redirect
+    // This page is now mostly for displaying purchase status,
+    // as the actual payment processing happens via the extension.
     useEffect(() => {
-        if (stripeStatus === 'success' && cartItems.length > 0) {
-            clearCart();
+        if (status === 'success' && cartItems.length > 0) {
+            // The cart is now cleared within the useCart hook after simulated purchase.
+            // This is just a display page.
         }
-    }, [stripeStatus, clearCart, cartItems.length]);
+    }, [status, cartItems.length]);
 
 
     if (loading || !user) {
@@ -32,7 +34,7 @@ function CheckoutContent() {
         );
     }
     
-    if (stripeStatus === 'success') {
+    if (status === 'success') {
          return (
             <div className="container mx-auto px-4 py-20 flex items-center justify-center">
               <Card className="max-w-md w-full text-center p-8">
@@ -54,7 +56,7 @@ function CheckoutContent() {
           );
     }
 
-    if(stripeStatus === 'cancelled') {
+    if(status === 'cancelled') {
         return (
             <div className="container mx-auto px-4 py-20 flex items-center justify-center">
               <Card className="max-w-md w-full text-center p-8">
