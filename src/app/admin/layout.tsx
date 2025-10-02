@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { isAdmin } from '@/lib/firebase-services';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { LayoutDashboard, Package, Users, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Package, Users, MessageSquare, CreditCard } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ const navItems = [
     { href: '/admin/projects', label: 'Projects', icon: Package },
     { href: '/admin/users', label: 'Users', icon: Users },
     { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+    { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
