@@ -144,7 +144,6 @@
     padding: 1rem 1.5rem;
     border-radius: var(--radius);
     overflow: hidden;
-    filter: drop-shadow(0 0 10px hsl(var(--destructive) / 0.8));
   }
 
   .glowing-border-container::before {
@@ -156,12 +155,14 @@
     bottom: 0;
     border: 2px solid transparent;
     border-radius: var(--radius);
-    background: conic-gradient(from var(--angle), transparent 0%, hsl(var(--destructive)) 2%, transparent 15%) border-box;
-    mask:
+    background: conic-gradient(from var(--angle), transparent 25%, hsl(var(--destructive)) 40%, hsl(var(--destructive)) 60%, transparent 80%) border-box;
+    -webkit-mask:
         linear-gradient(#fff 0 0) padding-box, 
         linear-gradient(#fff 0 0);
-    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
     animation: rotate-border 4s linear infinite;
+    filter: drop-shadow(0 0 10px hsl(var(--destructive) / 0.8));
   }
 
   @property --angle {
@@ -231,4 +232,3 @@
     
 
     
-
