@@ -164,6 +164,33 @@
     animation: rotate-border 4s linear infinite;
     filter: drop-shadow(0 0 10px hsl(var(--destructive) / 0.8));
   }
+  
+  .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      transform: scaleX(0);
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: hsl(var(--primary));
+      transform-origin: bottom center;
+      transition: transform 0.25s ease-out;
+  }
+  .nav-link:hover {
+      text-shadow: 0 0 8px hsl(var(--primary) / 0.5);
+  }
+  .nav-link:hover::after {
+      transform: scaleX(1);
+  }
+
+  .dark .nav-link:hover {
+      text-shadow: 0 0 8px hsl(var(--primary) / 0.8);
+  }
+
+  .dark .nav-link.text-white\/80:hover::after {
+    background-color: #fff;
+  }
 
   @property --angle {
     syntax: '<angle>';

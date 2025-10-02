@@ -78,12 +78,17 @@ export function Header() {
 
 
   const NavLinks = ({ className }: { className?: string }) => (
-    <nav className={cn("hidden md:flex items-center gap-6 text-sm font-medium", className)}>
+    <nav className={cn("hidden md:flex items-center gap-8 text-sm font-medium", className)}>
       {navLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className={cn(navLinkColorClass, pathname === link.href && activeNavLinkColorClass, link.label === "Purchased Projects" && "hidden lg:flex items-center")}
+          className={cn(
+              "nav-link relative",
+              navLinkColorClass, 
+              pathname === link.href && activeNavLinkColorClass, 
+              link.label === "Purchased Projects" && "hidden lg:flex items-center"
+          )}
           onClick={() => setMenuOpen(false)}
         >
           {link.label === "Purchased Projects" && <Package className="mr-2 h-4 w-4" />}
@@ -96,7 +101,7 @@ export function Header() {
   return (
     <header className={headerClasses}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 mr-auto">
           <Code className={cn("h-7 w-7", contentColorClass)} />
           <span className={cn("font-headline text-xl font-bold", contentColorClass)}>Project Hub</span>
         </Link>
