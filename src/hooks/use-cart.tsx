@@ -8,7 +8,6 @@ import { useAuth } from './use-auth';
 import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import { createPaymentRequest, listenForPaymentResult } from '@/lib/firebase-services';
 
 interface CartItem extends Project {
   quantity: number;
@@ -22,8 +21,8 @@ interface CartContextType {
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
-  checkoutWithToken: (paymentToken: string) => Promise<void>;
   isCheckingOut: boolean;
+  setIsCheckingOut: (isCheckingOut: boolean) => void;
   cartCount: number;
   totalPrice: number;
 }
@@ -78,7 +77,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const addPurchasedItems = async (items: CartItem[]) => {
-      if (!user) return;
+      if (!user || items.length === 0) return;
       
       const batch = writeBatch(db);
 
@@ -86,32 +85,40 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const purchasesDocRef = doc(db, 'purchases', user.uid);
       const docSnap = await getDoc(purchasesDocRef);
       const existingItems = docSnap.exists() ? docSnap.data().items : [];
-      const newItems = [...existingItems, ...items.map(({...item}) => item)];
-      batch.set(purchasesDocRef, { items: newItems }, { merge: true });
+      
+      const itemsToAdd = items.filter(item => !existingItems.some((p: Project) => p.id === item.id));
 
-      // 2. Add each item to the global "sales" collection for analytics
-      const salesColRef = collection(db, 'sales');
-      items.forEach(item => {
-          const saleDocRef = doc(salesColRef);
-          batch.set(saleDocRef, {
-              id: saleDocRef.id,
-              projectId: item.id,
-              projectTitle: item.title,
-              price: item.price,
-              userId: user.uid,
-              userName: user.displayName,
-              userEmail: user.email,
-              userPhotoURL: user.photoURL,
-              purchasedAt: serverTimestamp()
-          });
-      });
-      
-      await batch.commit();
-      
-      clearCart();
+      if (itemsToAdd.length > 0) {
+        const newItems = [...existingItems, ...itemsToAdd.map(({...item}) => item)];
+        batch.set(purchasesDocRef, { items: newItems }, { merge: true });
+
+        // 2. Add each item to the global "sales" collection for analytics
+        const salesColRef = collection(db, 'sales');
+        itemsToAdd.forEach(item => {
+            const saleDocRef = doc(salesColRef);
+            batch.set(saleDocRef, {
+                id: saleDocRef.id,
+                projectId: item.id,
+                projectTitle: item.title,
+                price: item.price,
+                userId: user.uid,
+                userName: user.displayName,
+                userEmail: user.email,
+                userPhotoURL: user.photoURL,
+                purchasedAt: serverTimestamp()
+            });
+        });
+        
+        await batch.commit();
+        clearCart();
+      }
   };
 
   const addToCart = (project: Project) => {
+    if (!user) {
+        router.push('/login?redirect=/projects/' + project.id);
+        return;
+    }
     const existingItem = cartItems.find(item => item.id === project.id);
     if (existingItem) {
       toast({ title: 'Already in Cart', description: `${project.title} is already in your cart.` });
@@ -128,12 +135,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       router.push('/login?redirect=/projects/' + project.id);
       return;
     }
-    // Clear cart and add only the new item
-    const newCartItems = [{ ...project, quantity: 1 }];
-    setCartItems(newCartItems); 
-    await updateFirestoreCart(newCartItems);
     
-    // Push to cart page to complete checkout with Google Pay
+    // Check if item is already in cart, if not, add it.
+    const existingItem = cartItems.find(item => item.id === project.id);
+    if (!existingItem) {
+        const newCartItems = [{ ...project, quantity: 1 }];
+        setCartItems(newCartItems); 
+        await updateFirestoreCart(newCartItems);
+    } else {
+        // If multiple items are in cart, we want to buy only this one.
+        const newCartItems = [{ ...project, quantity: 1 }];
+        setCartItems(newCartItems);
+        await updateFirestoreCart(newCartItems);
+    }
+    
     router.push('/cart');
   };
 
@@ -151,50 +166,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const checkoutWithToken = async (paymentToken: string) => {
-    if (!user) {
-      router.push('/login?redirect=/cart');
-      return;
-    }
-    if (cartItems.length === 0) {
-      toast({ title: "Your cart is empty.", variant: "destructive" });
-      return;
-    }
-
-    setIsCheckingOut(true);
-    toast({ title: "Processing Payment...", description: "Please wait while we process your transaction." });
-
-    try {
-      const paymentDocId = await createPaymentRequest(totalPrice, 'INR', paymentToken);
-
-      // Listen for the result from the extension
-      const unsubscribe = listenForPaymentResult(paymentDocId, (result) => {
-        unsubscribe(); // Stop listening once we have a result
-        if (result.success) {
-          addPurchasedItems(cartItems);
-          toast({ title: "Payment Successful!", description: "Your purchase is complete." });
-          router.push('/checkout?status=success');
-        } else {
-          console.error("Payment failed:", result.error);
-          toast({ title: "Payment Failed", description: result.error || "An unknown error occurred.", variant: "destructive" });
-           router.push('/checkout?status=cancelled');
-        }
-        setIsCheckingOut(false);
-      });
-
-    } catch (error) {
-      console.error("Error creating payment request:", error);
-      toast({ title: "Error", description: "Could not initiate checkout.", variant: "destructive" });
-      setIsCheckingOut(false);
-    }
-  };
-
-
   const cartCount = useMemo(() => cartItems.reduce((count, item) => count + item.quantity, 0), [cartItems]);
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithToken, isCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, isCheckingOut, setIsCheckingOut }}>
       {children}
     </CartContext.Provider>
   );

@@ -8,42 +8,37 @@ export default function PaymentGuidePage() {
 
     const steps = [
         {
-            title: "Go to the Firebase Console",
-            description: "Navigate to your Firebase project console to find and install extensions.",
-            link: "https://console.firebase.google.com/",
+            title: "Sign up for a PayU Merchant Account",
+            description: "If you don't have one already, create a merchant account on the PayU website.",
+            link: "https://payu.in/",
         },
         {
-            title: "Install the 'Payments with Google Pay' Extension",
-            description: "In the Firebase Extensions marketplace, search for 'Payments with Google Pay' and install it. This extension handles routing payment requests to different providers.",
-            link: "https://firebase.google.com/products/extensions/google-pay-payments",
+            title: "Get Your Merchant Key and Salt",
+            description: "Navigate to your PayU dashboard, find the 'Integration Details' section (usually under 'Account' or 'Settings'), and copy your Merchant Key and Salt.",
         },
         {
-            title: "Configure the Extension for Square",
-            description: "During installation, you will be prompted for several configuration values. Set the 'Cloud Functions location', and define the 'Collection path' where your app will write payment requests (e.g., 'payments').",
+            title: "Add Credentials to Environment File",
+            description: "Open the `.env` file in the root of your project. You will see two placeholders: `PAYU_KEY` and `PAYU_SALT`. Replace the placeholder text with the actual Key and Salt you copied from your PayU dashboard.",
         },
         {
-            title: "Add Square Configuration",
-            description: `You'll need to provide a JSON string for your PSP configuration. For Square, use the following format: { "environment": "Sandbox" } (or "Production" for live payments).`,
+            title: "Understand the Test Environment",
+            description: "The integration is currently configured to use PayU's test environment ('https://test.payu.in/_payment'). This allows you to use PayU's test card numbers and credentials to simulate transactions without using real money.",
         },
         {
-            title: "Set Up Square Access Token in Secret Manager",
-            description: "The extension will ask for your Square access token. Provide a name for the secret (e.g., SQUARE_ACCESS_TOKEN) and the actual token value from your Square Developer Dashboard. The extension will store this securely in Google Secret Manager.",
+            title: "Test the Checkout Flow",
+            description: "Add a project to your cart and click the 'Checkout with PayU' button. You will be redirected to the PayU test page to complete a mock payment.",
         },
         {
-            title: "Implement the Google Pay Button",
-            description: "The frontend needs to use the Google Pay API to request a payment token from the user when they click 'Checkout'. This token must then be sent to the Firestore collection you configured in step 3.",
-        },
-        {
-            title: "Test Your Integration",
-            description: "Once the Google Pay button is implemented, perform a test transaction using Google Pay's test environment to ensure the entire flow is working correctly.",
+            title: "Go Live",
+            description: "When you are ready for real transactions, you will need to update the form action URL in `src/app/cart/page.tsx` from `https://test.payu.in/_payment` to PayU's live endpoint: `https://secure.payu.in/_payment`.",
         },
     ];
 
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold">Square Payment Integration Guide (via Google Pay)</h1>
-      <p className="text-muted-foreground">Follow these steps to set up payments using the 'Payments with Google Pay' Firebase extension.</p>
+      <h1 className="text-3xl font-bold">PayU Payment Integration Guide</h1>
+      <p className="text-muted-foreground">Follow these steps to set up payments using your PayU merchant account.</p>
       
       <div className="grid gap-6">
         {steps.map((step, index) => (
@@ -72,11 +67,11 @@ export default function PaymentGuidePage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="text-green-500"/>
-                <span>Next Steps</span>
+                <span>Integration Complete</span>
             </CardTitle>
-          </CardHeader>
+          </Header>
           <CardContent>
-            <p className="text-secondary-foreground">After completing these configuration steps, the final piece is to implement the Google Pay button on the frontend to generate the payment token. The application's checkout logic has been updated to support this flow, but the UI component for Google Pay still needs to be built.</p>
+            <p className="text-secondary-foreground">The application is now fully configured for a custom PayU integration. Once you add your credentials to the `.env` file, the payment flow will be active and ready for testing.</p>
           </CardContent>
         </Card>
     </div>
