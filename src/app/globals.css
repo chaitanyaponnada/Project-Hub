@@ -161,6 +161,28 @@
 
 }
 
+@layer utilities {
+    .animate-letter-in {
+        display: inline-block;
+        opacity: 0;
+        animation-name: animate-letter-in;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes animate-letter-in {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
 @keyframes gradient {
 	0% {
 		background-position: 0% 50%;
@@ -172,3 +194,5 @@
 		background-position: 0% 50%;
 	}
 }
+
+    
