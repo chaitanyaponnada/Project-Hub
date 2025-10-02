@@ -170,7 +170,7 @@ export default function Home() {
           <HeroBackground />
           <div className="container mx-auto px-4 relative z-20">
             <div className="max-w-4xl mx-auto">
-              <h1 className="font-headline text-6xl md:text-8xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px] animate-zoom-in-fade-in" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.5)'}}>
+              <h1 className="font-headline text-7xl md:text-9xl font-extrabold text-white mb-4 min-h-[90px] md:min-h-[128px] animate-zoom-in-fade-in bg-gradient-to-t from-white/50 to-white bg-clip-text text-transparent" style={{textShadow: '2px 2px 8px rgba(0,0,0,0.5)'}}>
                 PROJECT HUB
               </h1>
               <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
@@ -446,3 +446,5 @@ export default function Home() {
     </>
   );
 }
+
+    
