@@ -78,7 +78,7 @@ export function Header() {
 
 
   const NavLinks = ({ className }: { className?: string }) => (
-    <nav className={cn("flex items-center gap-6 text-sm font-medium", className)}>
+    <nav className={cn("hidden md:flex items-center gap-6 text-sm font-medium", className)}>
       {navLinks.map((link) => (
         <Link
           key={link.href}
@@ -101,11 +101,9 @@ export function Header() {
           <span className={cn("font-headline text-xl font-bold", contentColorClass)}>Project Hub</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-6">
-          <NavLinks />
-        </div>
-
         <div className="flex items-center gap-3">
+          <NavLinks />
+
           <Button variant="ghost" size="icon" className={cn("relative", navLinkColorClass)} asChild>
             <Link href="/cart">
               <ShoppingCart className="h-5 w-5" />
