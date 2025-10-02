@@ -5,10 +5,10 @@ import type { Project } from '@/lib/placeholder-data';
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
-import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp, addDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import { createPaymentRequest } from '@/lib/firebase-services';
+import { createPaymentRequest, listenForPaymentResult } from '@/lib/firebase-services';
 
 interface CartItem extends Project {
   quantity: number;
@@ -22,7 +22,7 @@ interface CartContextType {
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
-  checkout: () => Promise<void>;
+  checkoutWithToken: (paymentToken: string) => Promise<void>;
   isCheckingOut: boolean;
   cartCount: number;
   totalPrice: number;
@@ -108,10 +108,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       
       await batch.commit();
       
-      // For now, we'll manually clear the cart and redirect.
-      // In a real scenario, you'd do this after payment confirmation.
       clearCart();
-      router.push('/checkout?status=success');
   };
 
   const addToCart = (project: Project) => {
@@ -131,8 +128,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       router.push('/login?redirect=/projects/' + project.id);
       return;
     }
-    await updateFirestoreCart([{ ...project, quantity: 1 }]);
-    checkout();
+    // Clear cart and add only the new item
+    const newCartItems = [{ ...project, quantity: 1 }];
+    setCartItems(newCartItems); 
+    await updateFirestoreCart(newCartItems);
+    
+    // Push to cart page to complete checkout with Google Pay
+    router.push('/cart');
   };
 
   const removeFromCart = (projectId: string) => {
@@ -149,41 +151,36 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const checkout = async () => {
+  const checkoutWithToken = async (paymentToken: string) => {
     if (!user) {
       router.push('/login?redirect=/cart');
       return;
     }
-
-    if(cartItems.length === 0) {
-      toast({title: "Your cart is empty.", variant: "destructive"});
+    if (cartItems.length === 0) {
+      toast({ title: "Your cart is empty.", variant: "destructive" });
       return;
     }
 
     setIsCheckingOut(true);
+    toast({ title: "Processing Payment...", description: "Please wait while we process your transaction." });
 
     try {
-      //
-      // In a real app, you would get this token from the Google Pay button on your frontend.
-      //
-      const placeholderPaymentToken = 'placeholder-google-pay-token';
-      
-      await createPaymentRequest(totalPrice, 'INR', placeholderPaymentToken);
+      const paymentDocId = await createPaymentRequest(totalPrice, 'INR', paymentToken);
 
-      // The extension now handles the payment. You need to listen to the
-      // created document in Firestore to get the response from Square.
-      // For this example, we'll simulate a successful purchase after a short delay.
-      
-      toast({ title: "Processing Payment...", description: "Please wait while we process your transaction." });
-      
-      // --- SIMULATION ---
-      // In a real app, you'd replace this timeout with a Firestore listener
-      // that waits for the payment extension to write the result.
-      setTimeout(() => {
+      // Listen for the result from the extension
+      const unsubscribe = listenForPaymentResult(paymentDocId, (result) => {
+        unsubscribe(); // Stop listening once we have a result
+        if (result.success) {
           addPurchasedItems(cartItems);
-          setIsCheckingOut(false);
-      }, 3000);
-      // --- END SIMULATION ---
+          toast({ title: "Payment Successful!", description: "Your purchase is complete." });
+          router.push('/checkout?status=success');
+        } else {
+          console.error("Payment failed:", result.error);
+          toast({ title: "Payment Failed", description: result.error || "An unknown error occurred.", variant: "destructive" });
+           router.push('/checkout?status=cancelled');
+        }
+        setIsCheckingOut(false);
+      });
 
     } catch (error) {
       console.error("Error creating payment request:", error);
@@ -192,13 +189,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+
   const cartCount = useMemo(() => cartItems.reduce((count, item) => count + item.quantity, 0), [cartItems]);
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
-  const checkoutWithStripe = checkout;
-
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkout, isCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, checkoutWithToken, isCheckingOut }}>
       {children}
     </CartContext.Provider>
   );
@@ -209,6 +205,5 @@ export const useCart = () => {
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider');
   }
-  // Remapping checkout to avoid breaking existing components that call checkoutWithStripe
-  return {...context, checkoutWithStripe: context.checkout };
+  return context;
 };

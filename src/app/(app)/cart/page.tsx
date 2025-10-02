@@ -11,11 +11,12 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Separator } from "@/components/ui/separator";
+import { GooglePayButton } from "@/components/google-pay-button";
 
 export default function CartPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, checkoutWithStripe, isCheckingOut } = useCart();
+  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, isCheckingOut } = useCart();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -97,11 +98,10 @@ export default function CartPage() {
                             <p>Total</p>
                             <p>Rs. {totalPrice.toFixed(2)}</p>
                         </div>
-                         {/* TODO: This should be replaced with a Google Pay Button */}
-                        <Button className="w-full" size="lg" onClick={checkoutWithStripe} disabled={isCheckingOut}>
-                            {isCheckingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Proceed to Checkout
-                        </Button>
+                         
+                        <div className="w-full">
+                           <GooglePayButton />
+                        </div>
                     </div>
                 </CardContent>
             </Card>
