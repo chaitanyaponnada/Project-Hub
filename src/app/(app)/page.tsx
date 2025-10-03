@@ -196,9 +196,7 @@ export default function Home() {
                     )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
                     PROJECT HUB
                     </h1>
-                    <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
-                    Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
-                    </p>
+                    
                     <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
                     <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
                         Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-md px-2 py-1 text-sm font-code mx-2 font-bold">&lt;Or&gt;</span> get your idea developed by us.
@@ -472,5 +470,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
