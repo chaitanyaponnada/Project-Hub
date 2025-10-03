@@ -91,5 +91,9 @@ export const faqs = [
   {
     question: "How are the projects licensed?",
     answer: "All projects are licensed for personal and educational use. You can use them in your portfolio, for learning, or as a foundation for your own applications. Redistribution or commercial resale is not permitted."
+  },
+  {
+    question: "Can you develop my custom project idea?",
+    answer: "Absolutely! We love bringing new ideas to life. Contact us with your requirements, and we'll work with you to understand your vision, provide a quote, and deliver a high-quality, custom project within an agreed-upon timeframe."
   }
 ];
