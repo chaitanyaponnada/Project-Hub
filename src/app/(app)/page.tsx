@@ -184,7 +184,7 @@ export default function Home() {
     <>
       <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
           <HeroBackground />
-          <div className="container mx-auto px-4 relative z-20">
+          <div className="relative z-20">
           <div className="max-w-4xl mx-auto">
                 <h1 className={cn(
                   "text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
@@ -195,9 +195,9 @@ export default function Home() {
               </h1>
               
               <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-              <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
-                  Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-md px-2 py-1 text-sm font-code mx-2 font-bold">&lt;Or&gt;</span> get your idea developed by us.
-              </p>
+                <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
+                    Buy ready-to-use final year projects or share your idea for custom development. Your one-stop hub for innovative, high-quality academic projects.
+                </p>
               </div>
               <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
               <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
@@ -465,3 +465,5 @@ export default function Home() {
     </>
   );
 }
+
+    
