@@ -98,10 +98,15 @@ export default function Home() {
 
   const headlineFonts = ['font-headline', 'font-roboto-slab', 'font-orbitron', 'font-press-start', 'font-bebas-neue', 'font-pacifico'];
   const [currentFontIndex, setCurrentFontIndex] = useState(0);
+  const [isGlitching, setIsGlitching] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentFontIndex((prevIndex) => (prevIndex + 1) % headlineFonts.length);
+      setIsGlitching(true);
+      setTimeout(() => {
+        setCurrentFontIndex((prevIndex) => (prevIndex + 1) % headlineFonts.length);
+        setIsGlitching(false);
+      }, 500); // Duration of the glitch effect
     }, 10000); // Change font every 10 seconds
 
     return () => clearInterval(interval);
@@ -177,38 +182,44 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero Section */}
-      <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
-        <HeroBackground />
-        <div className="container mx-auto px-4 relative z-20">
-          <div className="max-w-4xl mx-auto">
-            <h1 className={cn(
-              "text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
-              headlineFonts[currentFontIndex]
-            )} style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
-              PROJECT HUB
-            </h1>
-            <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
-              Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
-            </p>
-             <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-               <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
-                  Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-md px-2 py-1 text-sm font-code mx-2 font-bold">&lt;Or&gt;</span> get your idea developed by us.
-               </p>
-             </div>
-            <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                <Link href="/about">Learn More</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="h-screen">
+          <main className="h-full">
+             {/* Hero Section */}
+            <section id="home" className="relative h-full flex items-center justify-center text-center overflow-hidden">
+                <HeroBackground />
+                <div className="container mx-auto px-4 relative z-20">
+                <div className="max-w-4xl mx-auto">
+                     <h1 className={cn(
+                        "text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in",
+                        headlineFonts[currentFontIndex],
+                        isGlitching ? 'glitch' : ''
+                    )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+                    PROJECT HUB
+                    </h1>
+                    <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
+                    Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
+                    </p>
+                    <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
+                    <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
+                        Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-md px-2 py-1 text-sm font-code mx-2 font-bold">&lt;Or&gt;</span> get your idea developed by us.
+                    </p>
+                    </div>
+                    <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
+                    <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                        <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
+                    </Button>
+                    <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                        <Link href="/about">Learn More</Link>
+                    </Button>
+                    </div>
+                </div>
+                </div>
+            </section>
+          </main>
+      </div>
 
-      <div className="relative z-10 bg-background pt-16">
+
+      <div className="relative z-10 bg-background">
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
            <div className="container mx-auto px-4 relative z-20">
