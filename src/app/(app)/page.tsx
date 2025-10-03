@@ -31,6 +31,7 @@ import { NodeGarden } from "@/components/node-garden";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getProjects, addInquiry } from "@/lib/firebase-services";
+import { cn } from "@/lib/utils";
 
 
 const formSchema = z.object({
@@ -331,9 +332,9 @@ export default function Home() {
             </div>
             <div className="max-w-3xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq, index) => (
+                {faqs.map((faq: any, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="border-b">
-                    <AccordionTrigger className="font-semibold text-lg hover:no-underline text-left">{faq.question}</AccordionTrigger>
+                    <AccordionTrigger className={cn("font-semibold text-lg hover:no-underline text-left", faq.highlight && "text-destructive")}>{faq.question}</AccordionTrigger>
                     <AccordionContent className="text-muted-foreground text-base">
                       {faq.answer}
                     </AccordionContent>
@@ -446,5 +447,3 @@ export default function Home() {
     </>
   );
 }
-
-    

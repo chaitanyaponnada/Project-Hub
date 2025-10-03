@@ -94,6 +94,11 @@ export const faqs = [
   },
   {
     question: "Can you develop my custom project idea?",
-    answer: "Absolutely! We love bringing new ideas to life. Contact us with your requirements, and we'll work with you to understand your vision, provide a quote, and deliver a high-quality, custom project within an agreed-upon timeframe."
+    answer: "Absolutely! We love bringing new ideas to life. Contact us with your requirements, and we'll work with you to understand your vision, provide a quote, and deliver a high-quality, custom project within an agreed-upon timeframe.",
+    highlight: true,
+  },
+  {
+    question: "How long does it take to develop and deliver a custom project?",
+    answer: "The timeline for a custom project depends on its complexity and your specific requirements. After our initial discussion, we'll provide a detailed project plan with key milestones and a final delivery date. We are committed to timely delivery without compromising on quality."
   }
 ];
