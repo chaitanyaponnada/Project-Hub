@@ -28,7 +28,7 @@ export function Footer() {
     }
   };
   
-  const noFooterPaths = ['/admin', '/checkout', '/profile', '/login', '/register'];
+  const noFooterPaths = ['/admin', '/checkout', '/profile', '/login', '/register', '/contact'];
 
   if (noFooterPaths.some(path => pathname.startsWith(path)) || (pathname.startsWith('/projects/') && pathname !== '/projects')) {
       return null;
