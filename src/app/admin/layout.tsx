@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -16,7 +17,7 @@ const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/projects', label: 'Projects', icon: Package },
     { href: '/admin/users', label: 'Users', icon: Users },
-    { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+    { href: 'src/app/admin/inquiries/page.tsx', label: 'Inquiries', icon: MessageSquare },
     { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
 ];
 
@@ -26,7 +27,8 @@ function AdminNav({ onLinkClick }: { onLinkClick?: () => void }) {
 
     const handleSignOut = async () => {
         await signOut(auth);
-        router.push('/login');
+        router.replace('/'); // Redirect to home page for a clean exit
+        if (onLinkClick) onLinkClick();
     };
 
     return (
@@ -106,24 +108,31 @@ function AdminDashboardLayout({ children }: { children: ReactNode }) {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [checkingAdmin, setCheckingAdmin] = useState(true);
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.push('/login?redirect=/admin');
-      } else {
-        isAdmin(user.uid).then(adminStatus => {
-          if (!adminStatus) {
-            router.push('/admin/unauthorized');
-          }
-          setIsUserAdmin(adminStatus);
-          setCheckingAdmin(false);
-        });
-      }
+    if (loading) return;
+
+    if (!user) {
+      // If user is not logged in, redirect to login page with a return url
+      const redirectUrl = pathname.startsWith('/admin') ? '?redirect=' + pathname : '';
+      router.push('/login' + redirectUrl);
+      return;
     }
-  }, [user, loading, router]);
+
+    // If user is logged in, check for admin privileges
+    isAdmin(user.uid).then(adminStatus => {
+      if (!adminStatus) {
+        // If not an admin, redirect to an unauthorized page
+        router.push('/admin/unauthorized');
+      }
+      setIsUserAdmin(adminStatus);
+      setCheckingAdmin(false);
+    });
+
+  }, [user, loading, router, pathname]);
 
   if (loading || checkingAdmin) {
     return (
@@ -137,8 +146,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <AdminDashboardLayout>{children}</AdminDashboardLayout>;
   }
 
-  // This return is for the brief moment before the redirect happens, 
-  // or if the user is not an admin.
+  // This fallback is for non-admin users before they are redirected.
   return (
      <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
