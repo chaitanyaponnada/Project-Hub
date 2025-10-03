@@ -21,6 +21,7 @@ const navItems = [
     { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
 ];
 
+// This component contains the actual UI and is wrapped by SidebarProvider
 function AdminDashboardLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
@@ -66,6 +67,7 @@ function AdminDashboardLayout({ children }: { children: ReactNode }) {
     );
 }
 
+// This is the main layout component that handles auth and admin checks
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -78,11 +80,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         router.push('/login');
       } else {
         isAdmin(user.uid).then(adminStatus => {
-          setIsUserAdmin(adminStatus);
-          setCheckingAdmin(false);
           if (!adminStatus) {
             router.push('/admin/unauthorized');
           }
+          setIsUserAdmin(adminStatus);
+          setCheckingAdmin(false);
         });
       }
     }
@@ -96,13 +98,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (!isUserAdmin) {
-      return (
-         <div className="flex h-screen items-center justify-center">
-            <p>Redirecting...</p>
-        </div>
-      )
+  if (isUserAdmin) {
+    return <AdminDashboardLayout>{children}</AdminDashboardLayout>;
   }
 
-  return <AdminDashboardLayout>{children}</AdminDashboardLayout>;
+  // Fallback for non-admin users before redirect happens
+  return (
+     <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+    </div>
+  );
 }
