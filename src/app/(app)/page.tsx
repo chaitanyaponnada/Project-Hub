@@ -187,7 +187,7 @@ export default function Home() {
           <div className="relative z-20 pt-16 px-4">
           <div className="max-w-4xl mx-auto">
               <h1 className={cn(
-                  "text-5xl sm:text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
+                  "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
                   headlineFonts[currentFontIndex],
                   isGlitching ? 'glitch' : ''
               )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
@@ -466,5 +466,4 @@ export default function Home() {
       </div>
     </>
   );
-
-    
+}
