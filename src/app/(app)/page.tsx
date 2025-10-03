@@ -196,7 +196,7 @@ export default function Home() {
               
               <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
                 <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
-                    Buy ready-to-use final year projects or share your idea for custom development. Your one-stop hub for innovative, high-quality academic projects.
+                    Buy ready-to-use final year projects or share your idea for custom development.
                 </p>
               </div>
               <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
