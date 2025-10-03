@@ -184,9 +184,9 @@ export default function Home() {
     <>
       <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
           <HeroBackground />
-          <div className="relative z-20 pt-16">
+          <div className="relative z-20">
           <div className="max-w-4xl mx-auto">
-                <h1 className={cn(
+              <h1 className={cn(
                   "text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
                   headlineFonts[currentFontIndex],
                   isGlitching ? 'glitch' : ''
@@ -196,7 +196,7 @@ export default function Home() {
               
               <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
                 <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
-                    Choose from Ready to use projects or get your idea developed by us
+                    Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
                 </p>
               </div>
               <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
@@ -210,7 +210,6 @@ export default function Home() {
           </div>
           </div>
       </section>
-
 
       <div className="relative z-10 bg-background pt-16">
         {/* Features Section */}
@@ -465,7 +464,3 @@ export default function Home() {
     </>
   );
 }
-
-    
-
-    
