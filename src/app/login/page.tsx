@@ -28,7 +28,7 @@ import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { NodeGarden } from "@/components/node-garden";
@@ -41,8 +41,7 @@ const formSchema = z.object({
   password: z.string().min(6),
 });
 
-
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/';
@@ -152,17 +151,16 @@ export default function LoginPage() {
         return;
     }
     setIsResetting(true);
+    setIsResetDialogOpen(false); 
     try {
         await sendPasswordResetEmail(auth, resetEmail);
         setShowResetConfirmation(true);
     } catch (error: any) {
         console.error("Password reset error:", error);
-        // For security, show a generic success message even on failure to prevent email enumeration
         setShowResetConfirmation(true);
     } finally {
         setIsResetting(false);
         setResetEmail("");
-        setIsResetDialogOpen(false);
     }
   }
 
@@ -313,4 +311,15 @@ export default function LoginPage() {
   );
 }
 
-    
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+        <div className="flex items-center justify-center h-screen">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+    }>
+      <LoginContent />
+    </Suspense>
+  )
+}
