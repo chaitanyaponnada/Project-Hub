@@ -49,6 +49,7 @@ export default function LoginPage() {
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -118,12 +119,15 @@ export default function LoginPage() {
             description: "If an account with that email exists, a reset link has been sent.",
         });
         setResetEmail("");
+        setIsResetDialogOpen(false); // Close dialog on success
     } catch (error: any) {
         console.error("Password reset error:", error);
-         toast({
-            title: "Password Reset Email Sent",
+        // For security, show a generic success message even on failure to prevent email enumeration
+        toast({
+            title: "Password Reset Attempted",
             description: "If an account with that email exists, a reset link has been sent.",
         });
+        setIsResetDialogOpen(false); // Also close dialog on error
     } finally {
         setIsResetting(false);
     }
@@ -175,7 +179,7 @@ export default function LoginPage() {
                             <FormItem>
                             <div className="flex items-center justify-between">
                                 <FormLabel>Password</FormLabel>
-                                <Dialog>
+                                <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant="link" className="p-0 h-auto text-xs">Forgot Password?</Button>
                                     </DialogTrigger>
