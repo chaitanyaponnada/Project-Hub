@@ -74,6 +74,7 @@ export const getUserById = async (id: string): Promise<any | null> => {
 
 /**
  * Adds a new project to Firestore.
+ * This function is non-blocking and uses the error emitter for permission errors.
  * @param projectData The complete project data, including URLs.
  */
 export const addProject = (projectData: Omit<Project, 'id' | 'createdAt'>) => {
@@ -97,16 +98,26 @@ export const addProject = (projectData: Omit<Project, 'id' | 'createdAt'>) => {
 
 /**
 * Updates an existing project in Firestore.
+* This function is non-blocking and uses the error emitter for permission errors.
 * @param projectId The ID of the project to update.
 * @param projectData The new data for the project.
 */
-export const updateProject = async (
+export const updateProject = (
     projectId: string,
     projectData: Partial<Omit<Project, 'id' | 'createdAt'>>
 ) => {
     const projectRef = doc(db, 'projects', projectId);
     const updateData: any = { ...projectData, lastUpdatedAt: serverTimestamp() };
-    await updateDoc(projectRef, updateData);
+    
+    updateDoc(projectRef, updateData)
+      .catch(async (serverError) => {
+            const permissionError = new FirestorePermissionError({
+                path: projectRef.path,
+                operation: 'update',
+                requestResourceData: updateData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        });
 };
 
 
@@ -212,3 +223,5 @@ export const getSales = async () => {
     const salesSnapshot = await getDocs(q);
     return salesSnapshot.docs.map(doc => doc.data());
 };
+
+    

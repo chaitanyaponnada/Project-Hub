@@ -72,7 +72,7 @@ export function ProjectForm({ project }: ProjectFormProps) {
   const { fields: imageUrlFields, append: appendImageUrl, remove: removeImageUrl } = useFieldArray({ control: form.control, name: "imageUrls" });
 
 
-  const onSubmit = async (data: ProjectFormValues) => {
+  const onSubmit = (data: ProjectFormValues) => {
     setIsLoading(true);
 
     const projectData = {
@@ -85,30 +85,21 @@ export function ProjectForm({ project }: ProjectFormProps) {
       originalPrice: data.originalPrice || null,
     };
 
+    const action = project ? 'updated' : 'added';
+
     if (project) {
-        try {
-            await updateProject(project.id, projectData);
-            toast({ title: 'Success', description: 'Project updated successfully.' });
-            router.push('/admin/projects');
-            router.refresh();
-        } catch (error) {
-            console.error("Project update failed:", error);
-            // This is already using try-catch, so we don't implement the new error handling here for now.
-            // A more comprehensive refactor could centralize this.
-            toast({ title: 'Error updating project', description: 'Please check permissions and try again.', variant: 'destructive' });
-        } finally {
-            setIsLoading(false);
-        }
+        updateProject(project.id, projectData);
     } else {
-        // This now calls the non-async version of addProject
         addProject(projectData);
-        // We can't easily know if it succeeded here, but we optimistically navigate.
-        // The error will be caught by the global listener.
-        toast({ title: 'Submitting Project', description: 'Your new project is being added.' });
-        router.push('/admin/projects');
-        router.refresh();
-        setIsLoading(false); // We can set loading to false immediately
     }
+    
+    // We can't easily know if it succeeded here because the functions are non-blocking,
+    // but we optimistically navigate and show a toast.
+    // The global error listener will catch any permission errors.
+    toast({ title: 'Project Submitted', description: `Your project is being ${action}.` });
+    router.push('/admin/projects');
+    router.refresh();
+    setIsLoading(false);
   };
   
   const renderFieldArray = (fields: any, append: any, remove: any, name: string, label: string) => (
@@ -254,3 +245,5 @@ export function ProjectForm({ project }: ProjectFormProps) {
     </Form>
   );
 }
+
+    

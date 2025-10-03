@@ -257,30 +257,28 @@ export default function Home() {
                     <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
               ) : (
-                <div className="relative w-full max-w-4xl mx-auto">
-                  <Carousel 
-                      opts={{
-                          align: "start",
-                          loop: true,
-                      }}
-                      plugins={[plugin.current]}
-                      onMouseEnter={() => plugin.current.stop()}
-                      onMouseLeave={() => plugin.current.reset()}
-                      className="w-full"
-                  >
-                      <CarouselContent className="-ml-1">
-                          {projects.slice(0, 5).map((project, i) => (
-                          <CarouselItem key={project.id} className="pl-1 basis-full sm:basis-1/2 lg:basis-1/3">
-                              <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                                  <ProjectCard project={project} isBlurred={!user && !loading} />
-                              </div>
-                          </CarouselItem>
-                          ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="left-[-50px] z-20" />
-                      <CarouselNext className="right-[-50px] z-20" />
-                  </Carousel>
-                </div>
+                <Carousel 
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    plugins={[plugin.current]}
+                    onMouseEnter={() => plugin.current.stop()}
+                    onMouseLeave={() => plugin.current.reset()}
+                    className="w-full max-w-6xl mx-auto"
+                >
+                    <CarouselContent className="-ml-4">
+                        {projects.slice(0, 5).map((project, i) => (
+                        <CarouselItem key={project.id} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                            <div className="p-1 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                                <ProjectCard project={project} isBlurred={!user && !loading} />
+                            </div>
+                        </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-[-50px] z-20" />
+                    <CarouselNext className="right-[-50px] z-20" />
+                </Carousel>
               )}
               
               <div className="text-center mt-12 animate-fade-in-up">
@@ -447,3 +445,5 @@ export default function Home() {
     </>
   );
 }
+
+    
