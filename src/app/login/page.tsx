@@ -82,6 +82,7 @@ function LoginContent() {
           toast({ title: "Login successful!" });
           router.push(redirectUrl);
       } else {
+          // This case should ideally not happen if registration is enforced
           await auth.signOut();
           toast({ title: "Login Failed", description: "No user record found.", variant: "destructive" });
       }
@@ -93,11 +94,12 @@ function LoginContent() {
               friendlyMessage = "No account found with this email address. Please sign up.";
               break;
           case 'auth/wrong-password':
-              friendlyMessage = "Incorrect password. Please try again.";
-              break;
           case 'auth/invalid-credential':
                friendlyMessage = "Incorrect email or password. Please try again.";
               break;
+          case 'auth/invalid-api-key':
+                friendlyMessage = "Firebase API key is invalid. Please check your configuration.";
+                break;
       }
       toast({
         title: "Login Failed",
@@ -134,7 +136,12 @@ function LoginContent() {
 
     } catch (error: any) {
       let friendlyMessage = "An unexpected error occurred during Google Sign-In. Please try again.";
-      // You can add more specific error handling if needed
+      if (error.code === 'auth/popup-closed-by-user') {
+        friendlyMessage = "The sign-in window was closed. Please try again.";
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        // Do nothing, user cancelled.
+        return;
+      }
       toast({
         title: "Google Sign-In Failed",
         description: friendlyMessage,
