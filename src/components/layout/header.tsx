@@ -68,8 +68,9 @@ export function Header() {
   const showTransparentHeader = isHomePage && !isScrolled;
 
   const headerClasses = cn(
-    "sticky top-0 z-50 w-full transition-colors duration-300",
-    showTransparentHeader ? "bg-transparent" : "bg-transparent"
+    "w-full transition-colors duration-300 z-50",
+    isHomePage ? 'fixed top-0' : 'sticky top-0 border-b',
+    showTransparentHeader ? "bg-transparent" : "bg-background/80 backdrop-blur-sm"
   );
   
   const contentColorClass = showTransparentHeader ? (theme === 'dark' ? "text-white" : "text-primary") : "text-primary";

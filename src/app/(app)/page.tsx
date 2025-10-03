@@ -166,35 +166,33 @@ export default function Home() {
 
   return (
     <>
-      <div className="relative h-screen w-full">
-        {/* Hero Section */}
-        <section id="home" className="absolute inset-0 flex items-center justify-center text-center overflow-hidden">
-          <HeroBackground />
-          <div className="container mx-auto px-4 relative z-20">
-            <div className="max-w-4xl mx-auto">
-              <h1 className="font-headline text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
-                PROJECT HUB
-              </h1>
-              <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
-                Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
-              </p>
-               <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-                 <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
-                    Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-md px-2 py-1 text-sm font-code mx-2 font-bold">&lt;Or&gt;</span> get your idea developed by us.
-                 </p>
-               </div>
-              <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
-                <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                  <Link href="/about">Learn More</Link>
-                </Button>
-              </div>
+      {/* Hero Section */}
+      <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
+        <HeroBackground />
+        <div className="container mx-auto px-4 relative z-20">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="font-headline text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+              PROJECT HUB
+            </h1>
+            <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
+              Your central marketplace for high-quality, ready-to-use projects. Complete your final year project now, with our extensive collection of innovative and well-documented project solutions.
+            </p>
+             <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
+               <p className="text-md md:text-lg text-primary max-w-3xl mx-auto">
+                  Choose from ready-to-use projects <span className="inline-block bg-accent text-accent-foreground rounded-md px-2 py-1 text-sm font-code mx-2 font-bold">&lt;Or&gt;</span> get your idea developed by us.
+               </p>
+             </div>
+            <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.4s' }}>
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                <Link href="/about">Learn More</Link>
+              </Button>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       <div className="relative z-10 bg-background">
         {/* Features Section */}

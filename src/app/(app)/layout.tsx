@@ -2,6 +2,7 @@
 'use client';
 import { Header } from '@/components/layout/header';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export default function AppLayout({
   children,
@@ -18,7 +19,7 @@ export default function AppLayout({
   return (
     <>
       {showHeader && <Header />}
-      <main className={isHomePage ? '' : 'flex-1'}>{children}</main>
+      <main className={cn(isHomePage ? '' : 'pt-16')}>{children}</main>
     </>
   );
 }
