@@ -32,34 +32,36 @@ function AdminDashboardLayout({ children }: { children: ReactNode }) {
 
     return (
         <SidebarProvider>
-            <Sidebar>
-                <SidebarHeader>
-                    <h2 className="text-lg font-semibold">Admin Panel</h2>
-                </SidebarHeader>
-                <SidebarContent>
-                    <SidebarMenu>
-                        {navItems.map(item => (
-                            <SidebarMenuItem key={item.label}>
-                                <Link href={item.href}>
-                                    <SidebarMenuButton isActive={pathname === item.href}>
-                                        <item.icon className="h-4 w-4" />
-                                        <span>{item.label}</span>
-                                    </SidebarMenuButton>
-                                </Link>
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                </SidebarContent>
-                <SidebarFooter>
-                    <Button variant="ghost" onClick={handleSignOut}>Sign Out</Button>
-                </SidebarFooter>
-            </Sidebar>
-            <main className="flex-1 p-4 md:p-8 overflow-auto">
-                <div className="md:hidden mb-4">
-                    <SidebarTrigger />
-                </div>
-                {children}
-            </main>
+            <div className="flex h-screen bg-muted/40">
+                <Sidebar>
+                    <SidebarHeader>
+                        <h2 className="text-lg font-semibold">Admin Panel</h2>
+                    </SidebarHeader>
+                    <SidebarContent>
+                        <SidebarMenu>
+                            {navItems.map(item => (
+                                <SidebarMenuItem key={item.label}>
+                                    <Link href={item.href}>
+                                        <SidebarMenuButton isActive={pathname === item.href}>
+                                            <item.icon className="h-4 w-4" />
+                                            <span>{item.label}</span>
+                                        </SidebarMenuButton>
+                                    </Link>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarContent>
+                    <SidebarFooter>
+                        <Button variant="ghost" onClick={handleSignOut}>Sign Out</Button>
+                    </SidebarFooter>
+                </Sidebar>
+                <main className="flex-1 p-4 md:p-8 overflow-auto">
+                    <div className="md:hidden mb-4">
+                        <SidebarTrigger />
+                    </div>
+                    {children}
+                </main>
+            </div>
         </SidebarProvider>
     );
 }
