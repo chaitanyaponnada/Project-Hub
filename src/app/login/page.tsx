@@ -247,7 +247,7 @@ export default function LoginPage() {
             <AlertDialogHeader>
             <AlertDialogTitle>Password Reset Email Sent</AlertDialogTitle>
             <AlertDialogDescription>
-                If an account with that email exists, a reset link has been sent. Please <span className="underline decoration-destructive text-destructive-foreground font-semibold">check spam</span> if you don't see it in your inbox.
+                If an account with that email exists, a reset link has been sent. Please <span className="font-semibold text-foreground">check spam</span> if you don't see it in your inbox.
             </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogAction onClick={() => setShowResetConfirmation(false)}>OK</AlertDialogAction>
