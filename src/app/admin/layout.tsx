@@ -3,7 +3,7 @@
 
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Loader2 } from 'lucide-react';
 import { isAdmin } from '@/lib/firebase-services';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
@@ -21,10 +21,52 @@ const navItems = [
     { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
 ];
 
+function AdminDashboardLayout({ children }: { children: ReactNode }) {
+    const pathname = usePathname();
+    const router = useRouter();
+
+    const handleSignOut = async () => {
+        await signOut(auth);
+        router.push('/login');
+    };
+
+    return (
+        <SidebarProvider>
+            <Sidebar>
+                <SidebarHeader>
+                    <h2 className="text-lg font-semibold">Admin Panel</h2>
+                </SidebarHeader>
+                <SidebarContent>
+                    <SidebarMenu>
+                        {navItems.map(item => (
+                            <SidebarMenuItem key={item.label}>
+                                <Link href={item.href}>
+                                    <SidebarMenuButton isActive={pathname === item.href}>
+                                        <item.icon className="h-4 w-4" />
+                                        <span>{item.label}</span>
+                                    </SidebarMenuButton>
+                                </Link>
+                            </SidebarMenuItem>
+                        ))}
+                    </SidebarMenu>
+                </SidebarContent>
+                <SidebarFooter>
+                    <Button variant="ghost" onClick={handleSignOut}>Sign Out</Button>
+                </SidebarFooter>
+            </Sidebar>
+            <main className="flex-1 p-4 md:p-8 overflow-auto">
+                <div className="md:hidden mb-4">
+                    <SidebarTrigger />
+                </div>
+                {children}
+            </main>
+        </SidebarProvider>
+    );
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [checkingAdmin, setCheckingAdmin] = useState(true);
 
@@ -43,12 +85,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     }
   }, [user, loading, router]);
-  
-  const handleSignOut = async () => {
-    await signOut(auth);
-    router.push('/login');
-  };
-
 
   if (loading || checkingAdmin) {
     return (
@@ -66,36 +102,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )
   }
 
-  return (
-    <SidebarProvider>
-        <Sidebar>
-            <SidebarHeader>
-                <h2 className="text-lg font-semibold">Admin Panel</h2>
-            </SidebarHeader>
-            <SidebarContent>
-                <SidebarMenu>
-                    {navItems.map(item => (
-                        <SidebarMenuItem key={item.label}>
-                            <Link href={item.href}>
-                                <SidebarMenuButton isActive={pathname === item.href}>
-                                    <item.icon className="h-4 w-4" />
-                                    <span>{item.label}</span>
-                                </SidebarMenuButton>
-                            </Link>
-                        </SidebarMenuItem>
-                    ))}
-                </SidebarMenu>
-            </SidebarContent>
-            <SidebarFooter>
-                <Button variant="ghost" onClick={handleSignOut}>Sign Out</Button>
-            </SidebarFooter>
-        </Sidebar>
-        <main className="flex-1 p-4 md:p-8 overflow-auto">
-            <div className="md:hidden mb-4">
-                 <SidebarTrigger />
-            </div>
-            {children}
-        </main>
-    </SidebarProvider>
-  );
+  return <AdminDashboardLayout>{children}</AdminDashboardLayout>;
 }
