@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { ShoppingBag, Loader2, Trash2, CreditCard } from "lucide-react";
+import { ShoppingBag, Loader2, Trash2, CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 export default function CartPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, handlePayUCheckout, isCheckingOut } = useCart();
+  const { cartItems, removeFromCart, totalPrice, cartCount, clearCart, handleDummyCheckout, isCheckingOut } = useCart();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -90,7 +90,7 @@ export default function CartPage() {
                         </div>
                         <div className="flex justify-between">
                             <p className="text-muted-foreground">Taxes</p>
-                            <p className="font-semibold">Calculated at checkout</p>
+                            <p className="font-semibold">N/A</p>
                         </div>
                         <Separator />
                         <div className="flex justify-between text-lg font-bold">
@@ -99,7 +99,7 @@ export default function CartPage() {
                         </div>
                          
                         <div className="w-full">
-                           <Button onClick={handlePayUCheckout} disabled={isCheckingOut} className="w-full" size="lg">
+                           <Button onClick={handleDummyCheckout} disabled={isCheckingOut} className="w-full" size="lg">
                                 {isCheckingOut ? (
                                     <>
                                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -107,8 +107,8 @@ export default function CartPage() {
                                     </>
                                 ) : (
                                     <>
-                                        <CreditCard className="mr-2 h-5 w-5" />
-                                        Checkout with PayU
+                                        <CheckCircle className="mr-2 h-5 w-5" />
+                                        Proceed to Checkout
                                     </>
                                 )}
                             </Button>

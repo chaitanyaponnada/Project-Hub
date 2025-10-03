@@ -21,7 +21,7 @@ interface CartContextType {
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   addPurchasedItems: (items: CartItem[]) => void;
-  handlePayUCheckout: () => void;
+  handleDummyCheckout: () => void;
   isCheckingOut: boolean;
   setIsCheckingOut: (isCheckingOut: boolean) => void;
   cartCount: number;
@@ -80,7 +80,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addPurchasedItems = async (items: CartItem[]) => {
       if (!user || items.length === 0) return;
       
-      setIsCheckingOut(true);
       const batch = writeBatch(db);
 
       const purchasesDocRef = doc(db, 'purchases', user.uid);
@@ -110,9 +109,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         });
         
         await batch.commit();
-        clearCart();
       }
-      setIsCheckingOut(false);
   };
 
   const addToCart = (project: Project) => {
@@ -132,18 +129,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const buyNow = async (project: Project) => {
-    if (!user) {
+     if (!user) {
       router.push('/login?redirect=/projects/' + project.id);
       return;
     }
     
-    const existingItem = cartItems.find(item => item.id === project.id);
-    if (!existingItem) {
-        const newCartItems = [...cartItems, { ...project, quantity: 1 }];
-        await updateFirestoreCart(newCartItems);
-    }
-    
-    router.push('/cart');
+    setIsCheckingOut(true);
+    toast({ title: 'Processing Purchase', description: 'Please wait...' });
+
+    setTimeout(async () => {
+      await addPurchasedItems([{ ...project, quantity: 1 }]);
+      setIsCheckingOut(false);
+      router.push('/checkout?status=success');
+      toast({ title: 'Purchase Successful!', description: `${project.title} has been added to your profile.` });
+    }, 1500);
   };
 
   const removeFromCart = (projectId: string) => {
@@ -160,7 +159,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handlePayUCheckout = async () => {
+  const handleDummyCheckout = async () => {
       if (!user) {
         toast({ title: "Please log in", description: "You need to be logged in to check out.", variant: "destructive" });
         return;
@@ -171,54 +170,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setIsCheckingOut(true);
+      toast({ title: 'Processing Purchase', description: 'Please wait...' });
 
-      const txnid = "txn" + Date.now();
-      const productinfo = cartItems.map(item => item.title).join(', ');
-      
-      try {
-        const res = await fetch("/api/payu/initiate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            txnid,
-            amount: totalPrice.toFixed(2),
-            firstname: user.displayName || 'Customer',
-            email: user.email,
-            phone: user.phoneNumber || '9999999999', // PayU requires a phone number
-            productinfo,
-          }),
-        });
-
-        if (!res.ok) {
-            throw new Error("Failed to initiate payment");
+      // Simulate network delay
+      setTimeout(async () => {
+        try {
+          await addPurchasedItems(cartItems);
+          clearCart();
+          router.push('/checkout?status=success');
+          toast({ title: 'Purchase Successful!', description: 'Your projects are now in your profile.' });
+        } catch (error) {
+           toast({ title: 'Purchase Failed', description: 'An error occurred during checkout.', variant: 'destructive' });
+        } finally {
+            setIsCheckingOut(false);
         }
-
-        const data = await res.json();
-        
-        // This function will programmatically create and submit the form to PayU
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = "https://test.payu.in/_payment"; // Test URL
-
-        for (let key in data) {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = key;
-            input.value = data[key];
-            form.appendChild(input);
-        }
-
-        document.body.appendChild(form);
-        form.submit();
-        
-        // Add purchased items after successful redirection
-        await addPurchasedItems(cartItems);
-
-      } catch (error) {
-        console.error("PayU checkout error:", error);
-        toast({ title: "Checkout Error", description: "Could not connect to the payment gateway. Please try again.", variant: "destructive" });
-        setIsCheckingOut(false);
-      }
+      }, 2000);
   };
 
 
@@ -226,7 +192,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, handlePayUCheckout, isCheckingOut, setIsCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, handleDummyCheckout, isCheckingOut, setIsCheckingOut }}>
       {children}
     </CartContext.Provider>
   );
