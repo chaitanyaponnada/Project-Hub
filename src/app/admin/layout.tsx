@@ -1,17 +1,16 @@
-
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, PanelLeft, LayoutDashboard, Package, Users, MessageSquare, CreditCard, LogOut } from 'lucide-react';
 import { isAdmin } from '@/lib/firebase-services';
-import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { LayoutDashboard, Package, Users, MessageSquare, CreditCard } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 
 const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -21,8 +20,7 @@ const navItems = [
     { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
 ];
 
-// This component contains the actual UI and is wrapped by SidebarProvider
-function AdminDashboardLayout({ children }: { children: ReactNode }) {
+function AdminNav({ onLinkClick }: { onLinkClick?: () => void }) {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -32,38 +30,75 @@ function AdminDashboardLayout({ children }: { children: ReactNode }) {
     };
 
     return (
-        <SidebarProvider>
-            <div className="flex h-screen bg-muted/40">
-                <Sidebar>
-                    <SidebarHeader>
-                        <h2 className="text-lg font-semibold">Admin Panel</h2>
-                    </SidebarHeader>
-                    <SidebarContent>
-                        <SidebarMenu>
-                            {navItems.map(item => (
-                                <SidebarMenuItem key={item.label}>
-                                    <Link href={item.href}>
-                                        <SidebarMenuButton isActive={pathname === item.href}>
-                                            <item.icon className="h-4 w-4" />
-                                            <span>{item.label}</span>
-                                        </SidebarMenuButton>
-                                    </Link>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarContent>
-                    <SidebarFooter>
-                        <Button variant="ghost" onClick={handleSignOut}>Sign Out</Button>
-                    </SidebarFooter>
-                </Sidebar>
-                <main className="flex-1 p-4 md:p-8 overflow-auto">
-                    <div className="md:hidden mb-4">
-                        <SidebarTrigger />
+        <div className="flex h-full flex-col">
+            <div className="flex h-16 items-center border-b px-6">
+                 <Link className="flex items-center gap-2 font-semibold" href="/">
+                    <Package className="h-6 w-6" />
+                    <span>Project Hub</span>
+                </Link>
+            </div>
+            <nav className="flex-1 overflow-auto py-6">
+                <div className="flex flex-col gap-4 px-4">
+                    {navItems.map(item => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={onLinkClick}
+                            className={cn(
+                                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                                pathname === item.href && "bg-muted text-primary"
+                            )}
+                        >
+                            <item.icon className="h-4 w-4" />
+                            {item.label}
+                        </Link>
+                    ))}
+                </div>
+            </nav>
+             <div className="mt-auto p-4 border-t">
+                <Button variant="ghost" className="w-full justify-start" onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                </Button>
+            </div>
+        </div>
+    )
+}
+
+function AdminDashboardLayout({ children }: { children: ReactNode }) {
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+    return (
+        <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+            <div className="hidden border-r bg-muted/40 md:block">
+                <AdminNav />
+            </div>
+            <div className="flex flex-col">
+                <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+                    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                        <SheetTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="shrink-0 md:hidden"
+                            >
+                                <PanelLeft className="h-5 w-5" />
+                                <span className="sr-only">Toggle navigation menu</span>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="flex flex-col p-0">
+                            <AdminNav onLinkClick={() => setIsSheetOpen(false)} />
+                        </SheetContent>
+                    </Sheet>
+                    <div className="w-full flex-1">
+                       {/* Can add search or other header elements here */}
                     </div>
+                </header>
+                <main className="flex-1 p-4 sm:p-6">
                     {children}
                 </main>
             </div>
-        </SidebarProvider>
+        </div>
     );
 }
 
@@ -102,8 +137,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <AdminDashboardLayout>{children}</AdminDashboardLayout>;
   }
 
-  // Fallback for non-admin users before redirect happens,
-  // or for the brief moment before the check completes.
+  // This return is for the brief moment before the redirect happens, 
+  // or if the user is not an admin.
   return (
      <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
