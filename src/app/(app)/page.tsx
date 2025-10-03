@@ -184,10 +184,10 @@ export default function Home() {
     <>
       <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
           <HeroBackground />
-          <div className="relative z-20 pt-16">
+          <div className="relative z-20 pt-16 px-4">
           <div className="max-w-4xl mx-auto">
               <h1 className={cn(
-                  "text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
+                  "text-5xl sm:text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
                   headlineFonts[currentFontIndex],
                   isGlitching ? 'glitch' : ''
               )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
@@ -202,7 +202,7 @@ export default function Home() {
               <p className="text-md md:text-lg text-primary max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
                 Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
               </p>
-              <div className="flex justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
+              <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
               <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                   <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
               </Button>
@@ -286,7 +286,7 @@ export default function Home() {
                     plugins={[plugin.current]}
                     onMouseEnter={() => plugin.current.stop()}
                     onMouseLeave={() => plugin.current.reset()}
-                    className="w-full max-w-6xl mx-auto"
+                    className="w-full max-w-sm sm:max-w-xl md:max-w-4xl lg:max-w-6xl mx-auto"
                 >
                     <CarouselContent className="-ml-4">
                         {projects.slice(0, 5).map((project, i) => (
@@ -297,8 +297,8 @@ export default function Home() {
                         </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="left-[-50px] z-20" />
-                    <CarouselNext className="right-[-50px] z-20" />
+                    <CarouselPrevious className="left-0 sm:left-[-50px] z-20" />
+                    <CarouselNext className="right-0 sm:right-[-50px] z-20" />
                 </Carousel>
               )}
               

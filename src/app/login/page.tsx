@@ -32,6 +32,7 @@ import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { NodeGarden } from "@/components/node-garden";
 import { getUserById } from "@/lib/firebase-services";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -48,6 +49,7 @@ export default function LoginPage() {
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const isMobile = useIsMobile();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -129,7 +131,7 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-      <NodeGarden />
+      {!isMobile && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link

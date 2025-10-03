@@ -9,6 +9,7 @@ import { getUsers } from '@/lib/firebase-services';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function AdminUsersPage() {
     const [users, setUsers] = useState<any[]>([]);
@@ -41,42 +42,44 @@ export default function AdminUsersPage() {
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
                 ) : (
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>User</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Date Joined</TableHead>
-                                <TableHead>Role</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {users.map(user => (
-                                <TableRow key={user.uid}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <Avatar>
-                                                <AvatarImage src={user.photoURL} />
-                                                <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
-                                            </Avatar>
-                                            <span className="font-medium">{user.displayName || 'N/A'}</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>
-                                        {user.createdAt?.toDate ? format(user.createdAt.toDate(), 'PPP') : 'N/A'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {user.isAdmin ? (
-                                            <span className="flex items-center gap-1 font-semibold text-primary"><ShieldCheck size={16}/> Admin</span>
-                                        ) : (
-                                            'User'
-                                        )}
-                                    </TableCell>
+                    <ScrollArea className="w-full whitespace-nowrap">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>User</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Date Joined</TableHead>
+                                    <TableHead>Role</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {users.map(user => (
+                                    <TableRow key={user.uid}>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <Avatar>
+                                                    <AvatarImage src={user.photoURL} />
+                                                    <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                                                </Avatar>
+                                                <span className="font-medium">{user.displayName || 'N/A'}</span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>
+                                            {user.createdAt?.toDate ? format(user.createdAt.toDate(), 'PPP') : 'N/A'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {user.isAdmin ? (
+                                                <span className="flex items-center gap-1 font-semibold text-primary"><ShieldCheck size={16}/> Admin</span>
+                                            ) : (
+                                                'User'
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </ScrollArea>
                 )}
                  {users.length === 0 && !isLoading && (
                     <div className="text-center py-12">

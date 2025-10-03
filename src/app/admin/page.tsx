@@ -132,7 +132,7 @@ export default function AdminDashboard() {
                 <CardHeader>
                     <CardTitle>Revenue Overview</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pl-2">
                     <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={salesData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -176,4 +176,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-

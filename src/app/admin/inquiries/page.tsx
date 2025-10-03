@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Loader2 } from 'lucide-react';
 import { getInquiries } from '@/lib/firebase-services';
 import { format } from 'date-fns';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function AdminInquiriesPage() {
     const [inquiries, setInquiries] = useState<any[]>([]);
@@ -35,31 +36,33 @@ export default function AdminInquiriesPage() {
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
                 ) : (
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>From</TableHead>
-                                <TableHead>Contact</TableHead>
-                                <TableHead>Message</TableHead>
-                                <TableHead>Received</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {inquiries.map(inquiry => (
-                                <TableRow key={inquiry.id}>
-                                    <TableCell className="font-medium">{inquiry.name}</TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <a href={`mailto:${inquiry.email}`} className="text-primary underline">{inquiry.email}</a>
-                                            {inquiry.phone && <span className="text-muted-foreground">{inquiry.phone}</span>}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="max-w-sm whitespace-pre-wrap">{inquiry.message}</TableCell>
-                                    <TableCell>{inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP p') : 'N/A'}</TableCell>
+                    <ScrollArea className="w-full whitespace-nowrap">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>From</TableHead>
+                                    <TableHead>Contact</TableHead>
+                                    <TableHead>Message</TableHead>
+                                    <TableHead>Received</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {inquiries.map(inquiry => (
+                                    <TableRow key={inquiry.id}>
+                                        <TableCell className="font-medium">{inquiry.name}</TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col">
+                                                <a href={`mailto:${inquiry.email}`} className="text-primary underline">{inquiry.email}</a>
+                                                {inquiry.phone && <span className="text-muted-foreground">{inquiry.phone}</span>}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="max-w-sm whitespace-pre-wrap">{inquiry.message}</TableCell>
+                                        <TableCell>{inquiry.receivedAt ? format(inquiry.receivedAt.toDate(), 'PPP p') : 'N/A'}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </ScrollArea>
                 )}
                  {inquiries.length === 0 && !isLoading && (
                     <div className="text-center py-12">

@@ -33,6 +33,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
 import { addUserToUsersCollection } from "@/lib/firebase-services";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -48,6 +49,7 @@ export default function RegisterPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const isMobile = useIsMobile();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,7 +93,7 @@ export default function RegisterPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-      <NodeGarden />
+      {!isMobile && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
