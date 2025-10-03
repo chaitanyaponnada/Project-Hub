@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push('/login');
+        router.push('/login?redirect=/admin');
       } else {
         isAdmin(user.uid).then(adminStatus => {
           if (!adminStatus) {
@@ -102,7 +102,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <AdminDashboardLayout>{children}</AdminDashboardLayout>;
   }
 
-  // Fallback for non-admin users before redirect happens
+  // Fallback for non-admin users before redirect happens,
+  // or for the brief moment before the check completes.
   return (
      <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
