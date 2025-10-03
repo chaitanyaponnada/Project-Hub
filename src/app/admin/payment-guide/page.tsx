@@ -69,7 +69,7 @@ export default function PaymentGuidePage() {
                 <CheckCircle className="text-green-500"/>
                 <span>Integration Complete</span>
             </CardTitle>
-          </Header>
+          </CardHeader>
           <CardContent>
             <p className="text-secondary-foreground">The application is now fully configured for a custom PayU integration. Once you add your credentials to the `.env` file, the payment flow will be active and ready for testing.</p>
           </CardContent>
