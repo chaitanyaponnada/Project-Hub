@@ -30,6 +30,7 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/aut
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { NodeGarden } from "@/components/node-garden";
 import { getUserById } from "@/lib/firebase-services";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -50,6 +51,7 @@ export default function LoginPage() {
   const [isResetting, setIsResetting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [showResetConfirmation, setShowResetConfirmation] = useState(false);
   const isMobile = useIsMobile();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -114,26 +116,20 @@ export default function LoginPage() {
     setIsResetting(true);
     try {
         await sendPasswordResetEmail(auth, resetEmail);
-        toast({
-            title: "Password Reset Email Sent",
-            description: "If an account with that email exists, a reset link has been sent.",
-        });
-        setResetEmail("");
-        setIsResetDialogOpen(false); // Close dialog on success
+        setShowResetConfirmation(true);
     } catch (error: any) {
         console.error("Password reset error:", error);
         // For security, show a generic success message even on failure to prevent email enumeration
-        toast({
-            title: "Password Reset Attempted",
-            description: "If an account with that email exists, a reset link has been sent.",
-        });
-        setIsResetDialogOpen(false); // Also close dialog on error
+        setShowResetConfirmation(true);
     } finally {
         setIsResetting(false);
+        setResetEmail("");
+        setIsResetDialogOpen(false);
     }
   }
 
   return (
+    <>
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
       {!isMobile && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
@@ -245,5 +241,18 @@ export default function LoginPage() {
         </Form>
       </Card>
     </div>
+    
+    <AlertDialog open={showResetConfirmation} onOpenChange={setShowResetConfirmation}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Password Reset Email Sent</AlertDialogTitle>
+            <AlertDialogDescription>
+                If an account with that email exists, a reset link has been sent. Please <span className="underline decoration-destructive text-destructive-foreground font-semibold">check spam</span> if you don't see it in your inbox.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogAction onClick={() => setShowResetConfirmation(false)}>OK</AlertDialogAction>
+        </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
