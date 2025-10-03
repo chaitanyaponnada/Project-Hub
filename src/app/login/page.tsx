@@ -28,7 +28,7 @@ import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { NodeGarden } from "@/components/node-garden";
@@ -54,6 +54,13 @@ function LoginContent() {
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [showResetConfirmation, setShowResetConfirmation] = useState(false);
   const isMobile = useIsMobile();
+  const [showNodeGarden, setShowNodeGarden] = useState(false);
+
+  useEffect(() => {
+    // Only show NodeGarden on the client-side and on non-mobile devices
+    // to prevent hydration errors.
+    setShowNodeGarden(!isMobile);
+  }, [isMobile]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -174,7 +181,7 @@ function LoginContent() {
   return (
     <>
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-      {!isMobile && <NodeGarden />}
+      {showNodeGarden && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link
@@ -330,3 +337,5 @@ export default function LoginPage() {
     </Suspense>
   )
 }
+
+    

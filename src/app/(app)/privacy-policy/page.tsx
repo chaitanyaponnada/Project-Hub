@@ -34,7 +34,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="py-20">
         <div className="container mx-auto px-4 max-w-4xl prose prose-lg dark:prose-invert">
-          {lastUpdated && <p><em>Last updated: {lastUpdated}</em></p>}
+          {lastUpdated ? <p><em>Last updated: {lastUpdated}</em></p> : <div className="h-6 w-48 bg-muted rounded-md animate-pulse mb-4" />}
           
           <h2>1. Introduction</h2>
           <p>Project Hub ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services (collectively, the "Service").</p>
@@ -82,3 +82,5 @@ export default function PrivacyPolicyPage() {
     </div>
   );
 }
+
+    

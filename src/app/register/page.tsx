@@ -29,7 +29,7 @@ import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
 import { addUserToUsersCollection, getUserById } from "@/lib/firebase-services";
@@ -52,6 +52,13 @@ export default function RegisterPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const isMobile = useIsMobile();
+  const [showNodeGarden, setShowNodeGarden] = useState(false);
+
+  useEffect(() => {
+    // Only show NodeGarden on the client-side and on non-mobile devices
+    // to prevent hydration errors.
+    setShowNodeGarden(!isMobile);
+  }, [isMobile]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -126,7 +133,7 @@ export default function RegisterPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-      {!isMobile && <NodeGarden />}
+      {showNodeGarden && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
