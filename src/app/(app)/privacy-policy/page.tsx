@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ArrowLeft } from 'lucide-react';
@@ -10,7 +11,7 @@ export default function PrivacyPolicyPage() {
   const [lastUpdated, setLastUpdated] = useState('');
 
   useEffect(() => {
-    // Set date string only on the client-side
+    // Set date string only on the client-side to avoid hydration mismatch
     setLastUpdated(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
   }, []);
 

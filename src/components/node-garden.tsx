@@ -13,23 +13,28 @@ interface NodeStyle {
 
 export const NodeGarden = () => {
     const [styles, setStyles] = useState<NodeStyle[]>([]);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        // This code now runs only on the client, after the initial render.
-        const generateStyles = () => {
-            return Array.from({ length: 50 }).map(() => ({
-                '--size': `${Math.random() * 5 + 2}px`,
-                '--x': `${Math.random() * 100}%`,
-                '--y': `${Math.random() * 100}%`,
-                '--duration': `${Math.random() * 10 + 10}s`,
-                '--delay': `${Math.random() * -10}s`,
-            }));
-        };
-        setStyles(generateStyles());
+        setIsClient(true);
     }, []);
 
-    // Render nothing on the server, and only render on the client once styles are generated.
-    if (styles.length === 0) {
+    useEffect(() => {
+        if (isClient) {
+            const generateStyles = () => {
+                return Array.from({ length: 50 }).map(() => ({
+                    '--size': `${Math.random() * 5 + 2}px`,
+                    '--x': `${Math.random() * 100}%`,
+                    '--y': `${Math.random() * 100}%`,
+                    '--duration': `${Math.random() * 10 + 10}s`,
+                    '--delay': `${Math.random() * -10}s`,
+                }));
+            };
+            setStyles(generateStyles());
+        }
+    }, [isClient]);
+
+    if (!isClient) {
         return null;
     }
 
