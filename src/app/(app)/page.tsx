@@ -96,6 +96,17 @@ export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
 
+  const headlineFonts = ['font-headline', 'font-roboto-slab', 'font-orbitron', 'font-press-start', 'font-bebas-neue', 'font-pacifico'];
+  const [currentFontIndex, setCurrentFontIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFontIndex((prevIndex) => (prevIndex + 1) % headlineFonts.length);
+    }, 10000); // Change font every 10 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const plugin = useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
@@ -171,7 +182,10 @@ export default function Home() {
         <HeroBackground />
         <div className="container mx-auto px-4 relative z-20">
           <div className="max-w-4xl mx-auto">
-            <h1 className="font-headline text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+            <h1 className={cn(
+              "text-7xl md:text-9xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
+              headlineFonts[currentFontIndex]
+            )} style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
               PROJECT HUB
             </h1>
             <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto mb-8 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
@@ -194,7 +208,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="relative z-10 bg-background">
+      <div className="relative z-10 bg-background pt-16">
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
            <div className="container mx-auto px-4 relative z-20">
@@ -447,3 +461,5 @@ export default function Home() {
     </>
   );
 }
+
+    

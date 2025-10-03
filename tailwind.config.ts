@@ -21,6 +21,11 @@ export default {
         body: ['Montserrat', 'sans-serif'],
         headline: ['Montserrat', 'sans-serif'],
         code: ['monospace'],
+        'roboto-slab': ['"Roboto Slab"', 'serif'],
+        'orbitron': ['Orbitron', 'sans-serif'],
+        'press-start': ['"Press Start 2P"', 'cursive'],
+        'bebas-neue': ['"Bebas Neue"', 'sans-serif'],
+        'pacifico': ['Pacifico', 'cursive'],
       },
       colors: {
         background: 'hsl(var(--background))',
