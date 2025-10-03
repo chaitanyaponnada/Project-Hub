@@ -69,7 +69,7 @@ export function Header() {
 
   const headerClasses = cn(
     "sticky top-0 z-50 w-full border-b transition-colors duration-300",
-    showTransparentHeader ? "bg-transparent border-transparent" : "bg-background/80 backdrop-blur-xl border-border"
+    showTransparentHeader ? "bg-transparent border-transparent" : "bg-transparent border-border"
   );
   
   const contentColorClass = showTransparentHeader ? (theme === 'dark' ? "text-white" : "text-primary") : "text-primary";
