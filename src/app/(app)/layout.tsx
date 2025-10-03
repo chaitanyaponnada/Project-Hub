@@ -13,11 +13,12 @@ export default function AppLayout({
   const noHeaderPaths = ['/login', '/register'];
 
   const showHeader = !noHeaderPaths.includes(pathname) && !pathname.startsWith('/admin');
+  const isHomePage = pathname === '/';
 
   return (
     <>
       {showHeader && <Header />}
-      <main className="flex-1">{children}</main>
+      <main className={isHomePage ? '' : 'flex-1'}>{children}</main>
     </>
   );
 }

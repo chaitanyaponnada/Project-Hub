@@ -166,8 +166,9 @@ export default function Home() {
 
   return (
     <>
+      <div className="relative h-screen w-full">
         {/* Hero Section */}
-        <section id="home" className="relative py-24 md:py-32 text-center overflow-hidden">
+        <section id="home" className="absolute inset-0 flex items-center justify-center text-center overflow-hidden">
           <HeroBackground />
           <div className="container mx-auto px-4 relative z-20">
             <div className="max-w-4xl mx-auto">
@@ -193,7 +194,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+      </div>
 
+      <div className="relative z-10 bg-background">
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
            <div className="container mx-auto px-4 relative z-20">
@@ -442,8 +445,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+      </div>
     </>
   );
 }
-
-    
