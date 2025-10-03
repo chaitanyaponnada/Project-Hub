@@ -27,13 +27,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Code, Loader2, Eye, EyeOff } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NodeGarden } from "@/components/node-garden";
-import { addUserToUsersCollection } from "@/lib/firebase-services";
+import { addUserToUsersCollection, getUserById } from "@/lib/firebase-services";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -48,6 +49,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const isMobile = useIsMobile();
 
@@ -88,6 +90,37 @@ export default function RegisterPage() {
       });
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setIsGoogleLoading(true);
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      const userDoc = await getUserById(user.uid);
+      
+      if (!userDoc) {
+        await addUserToUsersCollection(user);
+      }
+
+      toast({ title: "Account created successfully!" });
+      router.push("/");
+
+    } catch (error: any) {
+      let friendlyMessage = "An unexpected error occurred during Google Sign-In. Please try again.";
+       if (error.code === 'auth/account-exists-with-different-credential') {
+          friendlyMessage = 'An account already exists with this email address. Please sign in using the original method.';
+      }
+      toast({
+        title: "Google Sign-In Failed",
+        description: friendlyMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsGoogleLoading(false);
     }
   }
 
@@ -181,11 +214,29 @@ export default function RegisterPage() {
               />
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create Account
               </Button>
               
+               <div className="relative w-full">
+                  <Separator />
+                  <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+                      OR CONTINUE WITH
+                  </span>
+              </div>
+
+              <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
+                   {isGoogleLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                   ) : (
+                    <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                      <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8 0 120.8 109.8 8 244 8c66.8 0 126 25.5 169.1 65.5l-69.2 67.3c-24.6-23.5-58.9-38.1-99.9-38.1-82.6 0-149.7 67.5-149.7 150.3s67.1 150.3 149.7 150.3c95.2 0 132.3-73.3 135.8-109.5H244V261.8h244z"></path>
+                    </svg>
+                   )}
+                  Google
+              </Button>
+
               <div className="text-center text-sm">
                 Already have an account?{" "}
                 <Link href="/login" className="underline text-primary hover:text-primary/80">
@@ -199,3 +250,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+    
