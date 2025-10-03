@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -120,6 +121,12 @@ export default function RegisterPage() {
       let friendlyMessage = "An unexpected error occurred during Google Sign-In. Please try again.";
        if (error.code === 'auth/account-exists-with-different-credential') {
           friendlyMessage = 'An account already exists with this email address. Please sign in using the original method.';
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        friendlyMessage = "The sign-in window was closed. Please try again.";
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        // Do nothing, user cancelled.
+        setIsGoogleLoading(false);
+        return;
       }
       toast({
         title: "Google Sign-In Failed",

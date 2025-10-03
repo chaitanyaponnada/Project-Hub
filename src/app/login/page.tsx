@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -147,6 +148,7 @@ function LoginContent() {
         friendlyMessage = "The sign-in window was closed. Please try again.";
       } else if (error.code === 'auth/cancelled-popup-request') {
         // Do nothing, user cancelled.
+        setIsGoogleLoading(false);
         return;
       }
       toast({
