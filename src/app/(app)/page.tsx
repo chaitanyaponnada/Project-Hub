@@ -214,7 +214,41 @@ export default function Home() {
           </div>
       </section>
 
-      <div className="relative z-10 bg-background">
+       <div className="relative z-10 bg-background">
+        <section className="bg-gradient-to-r from-gray-50 to-white dark:from-gray-900/10 dark:to-background py-20 px-10 md:px-20 overflow-hidden">
+          <div className="container mx-auto">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <div className="animate-fade-in-left">
+                <h2 className="font-poppins text-5xl md:text-6xl font-bold uppercase leading-tight text-foreground/90 with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
+                  Your Idea, We Develop
+                </h2>
+              </div>
+              <div className="animate-fade-in-right text-right">
+                <p className="font-noto-sans-telugu text-5xl md:text-6xl font-medium text-gradient-red-orange glowing-text-pulse">
+                  మీ ఐడియా ని మేము డెవలప్ చేస్తాము
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-gradient-to-r from-white to-gray-100 dark:from-background dark:to-gray-900/20 py-20 px-10 md:px-20 overflow-hidden">
+          <div className="container mx-auto">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <div className="animate-fade-in-left">
+                <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-foreground/90 tracking-wide" style={{textShadow: '0 0 10px hsl(var(--accent)/0.3)'}}>
+                  మీ వ్యాపార సమస్యలకు మేము టెక్నాలజీతో పరిష్కారాలను అందిస్తాము
+                </p>
+              </div>
+              <div className="animate-fade-in-right text-right">
+                <h2 className="font-headline text-5xl md:text-6xl font-bold uppercase leading-tight text-foreground/90 with-gradient-underline-2 relative inline-block pb-2">
+                  Your Business Problems, We Build Tech Solutions
+                </h2>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
            <div className="container mx-auto px-4 relative z-20">
@@ -467,3 +501,5 @@ export default function Home() {
     </>
   );
 }
+
+    

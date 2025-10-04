@@ -26,6 +26,8 @@ export default {
         'press-start': ['"Press Start 2P"', 'cursive'],
         'bebas-neue': ['"Bebas Neue"', 'sans-serif'],
         'pacifico': ['Pacifico', 'cursive'],
+        'poppins': ['Poppins', 'sans-serif'],
+        'noto-sans-telugu': ['"Noto Sans Telugu"', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -128,7 +130,7 @@ export default {
          'fade-in-right': {
             '0%': {
                 opacity: '0',
-                transform: 'translateX(-20px)'
+                transform: 'translateX(-50px)'
             },
             '100%': {
                 opacity: '1',
@@ -138,7 +140,7 @@ export default {
         'fade-in-left': {
             '0%': {
                 opacity: '0',
-                transform: 'translateX(20px)'
+                transform: 'translateX(50px)'
             },
             '100%': {
                 opacity: '1',
@@ -162,13 +164,15 @@ export default {
         'fade-in': 'fade-in 0.5s ease-in-out forwards',
         'fade-in-down': 'fade-in-down 0.5s ease-in-out forwards',
         'fade-in-up': 'fade-in-up 0.5s ease-in-out forwards',
-        'fade-in-right': 'fade-in-right 0.6s ease-in-out forwards',
-        'fade-in-left': 'fade-in-left 0.6s ease-in-out forwards',
+        'fade-in-right': 'fade-in-right 0.8s ease-in-out forwards',
+        'fade-in-left': 'fade-in-left 0.8s ease-in-out forwards',
         'zoom-in-fade-in': 'zoom-in-fade-in 0.8s ease-out forwards',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
+
+    
 
     
