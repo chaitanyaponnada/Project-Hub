@@ -164,14 +164,16 @@ export default {
         'fade-in': 'fade-in 0.5s ease-in-out forwards',
         'fade-in-down': 'fade-in-down 0.5s ease-in-out forwards',
         'fade-in-up': 'fade-in-up 0.5s ease-in-out forwards',
-        'fade-in-right': 'fade-in-right 0.8s ease-in-out forwards',
-        'fade-in-left': 'fade-in-left 0.8s ease-in-out forwards',
+        'fade-in-right': 'fade-in-right 0.8s ease-out forwards',
+        'fade-in-left': 'fade-in-left 0.8s ease-out forwards',
         'zoom-in-fade-in': 'zoom-in-fade-in 0.8s ease-out forwards',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
+
+    
 
     
 

@@ -221,11 +221,11 @@ export default function Home() {
               <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div className="animate-fade-in-left">
                   <h2 className="font-poppins text-5xl md:text-6xl font-bold uppercase leading-tight with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
-                    Your Idea, We Develop
+                    Your idea<br/>we develop
                   </h2>
                 </div>
                 <div className="animate-fade-in-right text-right">
-                  <p className="font-noto-sans-telugu text-5xl md:text-6xl font-medium text-gradient-red-orange glowing-text-pulse">
+                  <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
                     మీ ఐడియా ని మేము డెవలప్ చేస్తాము
                   </p>
                 </div>
@@ -237,7 +237,7 @@ export default function Home() {
             <div className="container mx-auto">
               <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div className="animate-fade-in-left">
-                  <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold tracking-wide" style={{textShadow: '0 0 10px hsl(var(--accent)/0.3)'}}>
+                  <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold tracking-wide text-destructive">
                     మీ వ్యాపార సమస్యలకు మేము టెక్నాలజీతో పరిష్కారాలను అందిస్తాము
                   </p>
                 </div>
@@ -504,5 +504,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
