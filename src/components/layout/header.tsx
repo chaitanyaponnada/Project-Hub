@@ -181,10 +181,6 @@ export function Header() {
                         <Code className="h-7 w-7 text-primary" />
                         <span className="font-headline text-xl font-bold text-primary">Project Hub</span>
                     </Link>
-                    <Button variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
-                        <X className="h-6 w-6" />
-                        <span className="sr-only">Close menu</span>
-                    </Button>
                 </div>
                 <div className="flex-1 mt-6">
                   <nav className="flex flex-col items-start gap-4 text-lg">
