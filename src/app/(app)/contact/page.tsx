@@ -93,12 +93,6 @@ export default function ContactPage() {
     <div className="container mx-auto px-4 py-12 md:py-20 animate-fade-in">
         <div className="max-w-2xl mx-auto">
             <header className="text-center mb-12 animate-fade-in-down relative">
-                 <div className="absolute top-0 left-0">
-                    <Button variant="outline" size="icon" onClick={() => router.back()}>
-                        <ArrowLeft className="h-4 w-4" />
-                        <span className="sr-only">Back</span>
-                    </Button>
-                </div>
                 <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">Contact Us</h1>
                 <p className="text-lg text-muted-foreground mt-2">
                     Have a question or feedback? Drop us a line!

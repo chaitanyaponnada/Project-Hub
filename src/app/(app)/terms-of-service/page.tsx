@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ArrowLeft } from 'lucide-react';
@@ -10,12 +11,6 @@ export default function TermsOfServicePage() {
   return (
     <div className="bg-background animate-fade-in">
       <section className="py-24 md:py-32 bg-muted/30 relative">
-         <div className="absolute top-8 left-8">
-          <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" />
-            <span className="sr-only">Back</span>
-          </Button>
-        </div>
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4">Terms of Service</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">

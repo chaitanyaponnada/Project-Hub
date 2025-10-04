@@ -14,12 +14,6 @@ export default function AboutPage() {
     <div className="bg-background animate-fade-in">
       {/* Hero Section */}
       <section className="py-24 md:py-32 text-center bg-muted/30 relative">
-        <div className="absolute top-8 left-8">
-          <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" />
-             <span className="sr-only">Back</span>
-          </Button>
-        </div>
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 animate-fade-in-down">About Project Hub</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
