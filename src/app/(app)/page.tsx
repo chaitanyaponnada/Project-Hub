@@ -232,23 +232,6 @@ export default function Home() {
               </div>
             </div>
           </section>
-
-          <section className="relative py-20 px-10 md:px-20 overflow-hidden text-white">
-            <div className="container mx-auto">
-              <div className="grid md:grid-cols-2 gap-16 items-center">
-                <div className="animate-fade-in-left">
-                  <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold tracking-wide text-destructive">
-                    మీ వ్యాపార సమస్యలకు మేము టెక్నాలజీతో పరిష్కారాలను అందిస్తాము
-                  </p>
-                </div>
-                <div className="animate-fade-in-right text-right">
-                  <h2 className="font-headline text-5xl md:text-6xl font-bold uppercase leading-tight with-gradient-underline-2 relative inline-block pb-2">
-                    Your Business Problems, We Build Tech Solutions
-                  </h2>
-                </div>
-              </div>
-            </div>
-          </section>
       </div>
 
        <div className="relative z-10 bg-background">
