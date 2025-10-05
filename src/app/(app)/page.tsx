@@ -223,7 +223,7 @@ export default function Home() {
                   <h2 className="font-poppins text-5xl md:text-6xl font-bold uppercase leading-tight with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
                     Your idea<br/>we develop
                   </h2>
-                  <p className="text-xl text-muted-foreground mt-4">With Experts</p>
+                  <p className="text-xl text-muted-foreground mt-4">with our team</p>
                 </div>
                 <div className="animate-fade-in-right text-right">
                   <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
@@ -493,3 +493,4 @@ export default function Home() {
 
     
 
+    
