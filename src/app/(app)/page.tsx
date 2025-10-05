@@ -220,8 +220,8 @@ export default function Home() {
             <div className="container mx-auto">
               <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div className="animate-fade-in-left">
-                  <h2 className="font-poppins text-5xl md:text-6xl font-bold uppercase leading-tight with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
-                    Your idea<br/>we develop
+                  <h2 className="font-headline text-5xl md:text-6xl font-bold leading-tight with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
+                    Your Idea<br/>We Develop
                   </h2>
                   <p className="text-xl text-muted-foreground mt-4">with our team</p>
                 </div>
@@ -466,7 +466,7 @@ export default function Home() {
                                 <Button type="submit" disabled={isLoading} size="lg">
                                     {isLoading ? (
                                         <>
-                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                             Sending...
                                         </>
                                     ) : (
