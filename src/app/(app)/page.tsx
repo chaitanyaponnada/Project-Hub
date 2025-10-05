@@ -196,11 +196,11 @@ export default function Home() {
             </h1>
             
             <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-              <p className="text-md md:text-lg text-foreground max-w-3xl mx-auto">
+              <p className="text-md md:text-lg dark:text-white text-black max-w-3xl mx-auto">
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg text-foreground max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
+            <p className="text-md md:text-lg dark:text-white text-black max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
@@ -215,7 +215,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-gradient-to-r from-gray-50 to-white dark:bg-gradient-to-r dark:from-gray-900 dark:to-black">
+      <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-gradient-to-r from-gray-50 to-white dark:bg-black">
         <div className="container mx-auto">
             <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-left">
