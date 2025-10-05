@@ -183,57 +183,55 @@ export default function Home() {
 
   return (
     <>
-      <div className="relative">
+      <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
           <HeroBackground />
-          <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
-              <div className="relative z-20 pt-16 px-4">
-              <div className="max-w-4xl mx-auto">
-                  <h1 className={cn(
-                      "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
-                      headlineFonts[currentFontIndex],
-                      isGlitching ? 'glitch' : ''
-                  )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
-                  PROJECT HUB
-                  </h1>
-                  
-                  <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-                    <p className="text-md md:text-lg text-white max-w-3xl mx-auto">
-                        Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
-                    </p>
-                  </div>
-                  <p className="text-md md:text-lg text-white max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
-                    Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
-                  </p>
-                  <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
-                  <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                      <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
-                  </Button>
-                  <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                      <Link href="/contact">Contact Us</Link>
-                  </Button>
-                  </div>
+          <div className="relative z-20 pt-16 px-4">
+          <div className="max-w-4xl mx-auto">
+              <h1 className={cn(
+                  "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
+                  headlineFonts[currentFontIndex],
+                  isGlitching ? 'glitch' : ''
+              )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+              PROJECT HUB
+              </h1>
+              
+              <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
+                <p className="text-md md:text-lg text-white max-w-3xl mx-auto">
+                    Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
+                </p>
               </div>
+              <p className="text-md md:text-lg text-white max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
+                Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                  <Link href="/contact">Contact Us</Link>
+              </Button>
               </div>
-          </section>
+          </div>
+          </div>
+      </section>
 
-          <section className="relative py-20 px-10 md:px-20 overflow-hidden text-white bg-gradient-to-r from-gray-50 to-white dark:bg-gradient-to-r dark:from-gray-900 dark:to-black">
-            <div className="container mx-auto">
-              <div className="grid md:grid-cols-2 gap-16 items-center">
-                <div className="animate-fade-in-left">
-                  <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-tight with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
-                    Your Idea<br/>We Develop
-                  </h2>
-                  <p className="text-xl text-muted-foreground mt-4">with our team</p>
-                </div>
-                <div className="animate-fade-in-right text-right">
-                  <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
-                    మీ ఐడియా ని మేము డెవలప్ చేస్తాము
-                  </p>
-                </div>
-              </div>
+      <section className="relative py-20 px-10 md:px-20 overflow-hidden text-white bg-gradient-to-r from-gray-50 to-white dark:bg-gradient-to-r dark:from-gray-900 dark:to-black">
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="animate-fade-in-left">
+              <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-tight with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
+                Your Idea<br/>We Develop
+              </h2>
+              <p className="text-xl text-muted-foreground mt-4">with our team</p>
             </div>
-          </section>
-      </div>
+            <div className="animate-fade-in-right text-right">
+              <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
+                మీ ఐడియా ని మేము డెవలప్ చేస్తాము
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
        <div className="relative z-10 bg-background">
         {/* Features Section */}
@@ -495,3 +493,6 @@ export default function Home() {
 
     
 
+
+
+    
