@@ -200,7 +200,7 @@ export default function Home() {
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg text-white max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
+            <p className="text-md md:text-lg text-primary-foreground max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
