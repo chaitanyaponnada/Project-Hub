@@ -68,7 +68,7 @@ export function Header() {
   const showTransparentHeader = isHomePage && !isScrolled;
 
   const headerClasses = cn(
-    "w-full transition-colors duration-300 z-50",
+    "w-full transition-colors duration-300 z-50 animate-slide-down-fade",
     isHomePage ? 'fixed top-0' : 'sticky top-0 border-b',
     showTransparentHeader ? "bg-transparent" : "bg-background/80 backdrop-blur-sm"
   );
@@ -100,7 +100,7 @@ export function Header() {
   );
 
   return (
-    <header className={headerClasses}>
+    <header className={headerClasses} data-aos="fade-down">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2 mr-auto">
           <Code className={cn("h-7 w-7", contentColorClass)} />
