@@ -217,30 +217,6 @@
     @apply bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent;
   }
 
-  .with-gradient-underline-1::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #ef4444, #f97316);
-    background-size: 200% 200%;
-    animation: gradient-move 4s ease infinite;
-  }
-  
-  .with-gradient-underline-2::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #f97316, #ec4899);
-    background-size: 200% 200%;
-    animation: gradient-move 4s ease infinite;
-  }
-
 
   @property --angle {
     syntax: '<angle>';
@@ -345,12 +321,6 @@
       90% { clip: rect(59px, 9999px, 48px, 0); }
       95% { clip: rect(122px, 9999px, 98px, 0); }
       100% { clip: rect(102px, 9999px, 100px, 0); }
-  }
-
-  @keyframes gradient-move {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
   }
 
 }
