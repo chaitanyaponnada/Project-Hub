@@ -188,7 +188,7 @@ export default function Home() {
           <h2 className="font-poppins text-5xl md:text-6xl font-extrabold leading-tight text-foreground">
             <div data-aos="fade-down" data-aos-delay="200">Your Idea</div>
             <div data-aos="fade-down" data-aos-delay="300">We Develop</div>
-            <div data-aos="fade-down" data-aos-delay="400" className="font-montserrat font-extrabold">with our <span className="text-destructive">team</span></div>
+            <div data-aos="fade-down" data-aos-delay="400">with our <span className="text-destructive">team</span></div>
           </h2>
         </div>
         <div data-aos="fade-left" data-aos-delay="500">
@@ -214,15 +214,15 @@ export default function Home() {
             PROJECT HUB
             </h1>
             
-            <div className="glowing-border-container" data-aos="fade-up" data-aos-delay="300">
+            <div className="glowing-border-container" data-aos="zoom-in" data-aos-delay="300">
               <p className="text-md md:text-lg text-white dark:text-white">
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg text-white dark:text-white max-w-3xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="400">
+            <p className="text-md md:text-lg text-white dark:text-white max-w-3xl mx-auto mt-4" data-aos="zoom-in" data-aos-delay="400">
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8" data-aos="fade-up" data-aos-delay="500">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8" data-aos="zoom-in" data-aos-delay="500">
             <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
             </Button>
@@ -492,3 +492,5 @@ export default function Home() {
     </>
   );
 }
+
+    
