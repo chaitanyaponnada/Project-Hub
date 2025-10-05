@@ -157,6 +157,11 @@ export default {
             transform: 'scale(1)',
           },
         },
+        'gradient-move': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -167,6 +172,7 @@ export default {
         'fade-in-right': 'fade-in-right 0.8s ease-out forwards',
         'fade-in-left': 'fade-in-left 0.8s ease-out forwards',
         'zoom-in-fade-in': 'zoom-in-fade-in 0.8s ease-out forwards',
+        'gradient-move': 'gradient-move 4s ease infinite',
       },
     },
   },

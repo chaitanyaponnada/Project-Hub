@@ -225,7 +225,7 @@ export default function Home() {
                <p className="text-2xl text-muted-foreground mt-4">with our team</p>
             </div>
             <div className="animate-fade-in-right text-right">
-              <p className="font-noto-sans-telugu text-6xl md:text-7xl font-bold text-destructive glowing-text-pulse">
+              <p className="font-noto-sans-telugu text-6xl md:text-7xl font-bold text-destructive">
                 మీ ఐడియా ని మేము డెవలప్ చేస్తాము
               </p>
             </div>

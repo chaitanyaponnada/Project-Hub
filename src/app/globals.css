@@ -216,10 +216,6 @@
   .text-gradient-red-orange {
     @apply bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent;
   }
-  
-  .glowing-text-pulse {
-    animation: pulse-glow 3s infinite ease-in-out;
-  }
 
   .with-gradient-underline-1::after {
     content: '';
@@ -349,15 +345,6 @@
       90% { clip: rect(59px, 9999px, 48px, 0); }
       95% { clip: rect(122px, 9999px, 98px, 0); }
       100% { clip: rect(102px, 9999px, 100px, 0); }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% {
-      text-shadow: 0 0 10px hsl(var(--destructive)/0.5), 0 0 20px hsl(var(--destructive)/0.3);
-    }
-    50% {
-      text-shadow: 0 0 20px hsl(var(--destructive)/0.7), 0 0 40px hsl(var(--destructive)/0.5);
-    }
   }
 
   @keyframes gradient-move {
