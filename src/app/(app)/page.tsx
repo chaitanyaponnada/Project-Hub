@@ -222,7 +222,7 @@ export default function Home() {
               <h2 className="font-headline text-6xl md:text-7xl font-extrabold leading-tight text-foreground animate-fade-in-down" style={{animationDelay: '0.2s'}}>
                 Your Idea<br/>We Develop
               </h2>
-               <p className="font-headline text-4xl md:text-5xl font-extrabold text-muted-foreground mt-4 animate-fade-in-down" style={{animationDelay: '0.4s'}}>with our team</p>
+               <p className="font-headline text-4xl md:text-5xl font-extrabold text-muted-foreground mt-4 animate-fade-in-down" style={{animationDelay: '0.4s'}}>with our <span className="text-destructive">team</span></p>
             </div>
             <div className="animate-fade-in-left text-right">
               <p className="font-noto-sans-telugu text-6xl md:text-7xl font-bold text-destructive animate-fade-in-down" style={{animationDelay: '0.6s'}}>
@@ -488,3 +488,4 @@ export default function Home() {
 }
 
     
+
