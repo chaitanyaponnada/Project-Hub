@@ -82,7 +82,7 @@ const HeroBackground = () => {
           <source src={videoSrc} type="video/mp4" />
         </video>
       )}
-      <div className="absolute inset-0 bg-black/30"></div>
+      
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   );
@@ -184,40 +184,40 @@ export default function Home() {
   return (
     <>
       <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
-          <HeroBackground />
-          <div className="relative z-20 pt-16 px-4">
-          <div className="max-w-4xl mx-auto">
-              <h1 className={cn(
-                  "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
-                  headlineFonts[currentFontIndex],
-                  isGlitching ? 'glitch' : ''
-              )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
-              PROJECT HUB
-              </h1>
-              
-              <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-                <p className="text-md md:text-lg text-white max-w-3xl mx-auto">
-                    Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
-                </p>
-              </div>
-              <p className="text-md md:text-lg text-white max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
-                Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
+        <HeroBackground />
+        <div className="relative z-20 pt-16 px-4">
+        <div className="max-w-4xl mx-auto">
+            <h1 className={cn(
+                "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
+                headlineFonts[currentFontIndex],
+                isGlitching ? 'glitch' : ''
+            )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+            PROJECT HUB
+            </h1>
+            
+            <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
+              <p className="text-md md:text-lg text-white max-w-3xl mx-auto">
+                  Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                  <Link href="/contact">Contact Us</Link>
-              </Button>
-              </div>
-          </div>
-          </div>
+            </div>
+            <p className="text-md md:text-lg text-white max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
+              Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
+            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                <Link href="/contact">Contact Us</Link>
+            </Button>
+            </div>
+        </div>
+        </div>
       </section>
 
       <section className="relative py-20 px-10 md:px-20 overflow-hidden text-white bg-gradient-to-r from-gray-50 to-white dark:bg-gradient-to-r dark:from-gray-900 dark:to-black">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-left">
               <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-tight with-gradient-underline-1 relative inline-block pb-2" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
                 Your Idea<br/>We Develop
@@ -232,8 +232,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-       <div className="relative z-10 bg-background">
+      
+      <div className="relative z-10 bg-background">
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
            <div className="container mx-auto px-4 relative z-20">
@@ -494,5 +494,7 @@ export default function Home() {
     
 
 
+
+    
 
     
