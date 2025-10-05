@@ -181,6 +181,23 @@ export default function Home() {
     }
   }
 
+  const IdeaSection = () => (
+    <div className="container mx-auto py-12">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center text-center md:text-left">
+        <div className="animate-fade-in-right">
+          <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-tight text-foreground animate-fade-in-down" style={{animationDelay: '0.2s'}}>
+            Your Idea We Develop with our <span className="text-destructive">team</span>
+          </h2>
+        </div>
+        <div className="animate-fade-in-left md:text-right">
+          <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive animate-fade-in-down" style={{animationDelay: '0.6s'}}>
+            మీ ఐడియా ని మేము డెవలప్ చేస్తాము
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
@@ -196,11 +213,11 @@ export default function Home() {
             </h1>
             
             <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-              <p className="text-md md:text-lg dark:text-white text-black max-w-3xl mx-auto">
+              <p className="text-md md:text-lg text-white dark:text-white max-w-3xl mx-auto">
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg dark:text-white text-black max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
+            <p className="text-md md:text-lg text-white dark:text-white max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
@@ -215,28 +232,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-muted/30 dark:bg-black">
-        <div className="container mx-auto">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="animate-fade-in-right">
-              <h2 className="font-headline text-6xl md:text-7xl font-extrabold leading-tight text-foreground animate-fade-in-down" style={{animationDelay: '0.2s'}}>
-                Your Idea We Develop with our <span className="text-destructive">team</span>
-              </h2>
-            </div>
-            <div className="animate-fade-in-left text-right">
-              <p className="font-noto-sans-telugu text-6xl md:text-7xl font-bold text-destructive animate-fade-in-down" style={{animationDelay: '0.6s'}}>
-                మీ ఐడియా ని మేము డెవలప్ చేస్తాము
-              </p>
-            </div>
-          </div>
-        </div>
+      <section className="relative py-10 px-4 md:px-8 overflow-hidden bg-muted/30 dark:bg-black">
+        <IdeaSection />
       </section>
       
       <div className="relative z-10 bg-background">
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
            <div className="container mx-auto px-4 relative z-20">
-            <div className="text-center mb-12 animate-fade-in-up">
+            <IdeaSection />
+            <div className="text-center mb-12 animate-fade-in-up mt-12">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
             </div>
@@ -284,7 +289,8 @@ export default function Home() {
         {/* Projects Section */}
         <section id="projects" className="py-20 section-gradient">
             <div className="container mx-auto px-4 relative z-20">
-              <header className="mb-12 text-center animate-fade-in-up">
+              <IdeaSection />
+              <header className="mb-12 text-center animate-fade-in-up mt-12">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
@@ -333,6 +339,8 @@ export default function Home() {
         {/* About Section */}
         <section id="about" className="py-20 bg-muted/30 section-gradient">
             <div className="container mx-auto px-4 relative z-20">
+              <IdeaSection />
+              <div className="mt-12">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div className="animate-fade-in-right">
                   <h3 className="font-headline text-3xl font-bold text-primary mb-4">Our Mission</h3>
@@ -357,13 +365,15 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+              </div>
             </div>
         </section>
 
         {/* FAQ Section */}
         <section id="faq" className="py-20 section-gradient">
           <div className="container mx-auto px-4 relative z-20">
-            <div className="text-center mb-12 animate-fade-in-up">
+             <IdeaSection />
+            <div className="text-center mb-12 animate-fade-in-up mt-12">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
               <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
             </div>
@@ -385,7 +395,8 @@ export default function Home() {
         {/* Contact Section */}
         <section id="contact" className="py-20 bg-muted/30 section-gradient">
           <div className="container mx-auto px-4 relative z-20">
-            <div className="text-center mb-12 animate-fade-in-up">
+            <IdeaSection />
+            <div className="text-center mb-12 animate-fade-in-up mt-12">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
               <p className="text-lg text-muted-foreground mt-2">
@@ -489,5 +500,7 @@ export default function Home() {
     
 
 
+
+    
 
     
