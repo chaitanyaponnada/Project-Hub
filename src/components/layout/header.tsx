@@ -80,10 +80,12 @@ export function Header() {
 
   const NavLinks = ({ className }: { className?: string }) => (
     <nav className={cn("hidden md:flex items-center gap-8 text-sm font-medium", className)}>
-      {navLinks.map((link) => (
+      {navLinks.map((link, index) => (
         <Link
           key={link.href}
           href={link.href}
+          data-aos="fade-down"
+          data-aos-delay={100 * (index + 1)}
           className={cn(
               "nav-link relative",
               navLinkColorClass, 
@@ -100,9 +102,9 @@ export function Header() {
   );
 
   return (
-    <header className={headerClasses} data-aos="fade-down">
+    <header className={headerClasses}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 mr-auto">
+        <Link href="/" className="flex items-center gap-2 mr-auto" data-aos="fade-down">
           <Code className={cn("h-7 w-7", contentColorClass)} />
           <span className={cn("font-headline text-xl font-bold", contentColorClass)}>Project Hub</span>
         </Link>
@@ -110,7 +112,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <NavLinks />
 
-          <Button variant="ghost" size="icon" className={cn("relative", navLinkColorClass)} asChild>
+          <Button variant="ghost" size="icon" className={cn("relative", navLinkColorClass)} asChild data-aos="fade-down" data-aos-delay="500">
             <Link href="/cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
@@ -125,7 +127,7 @@ export function Header() {
           {user ? (
              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                   <Button variant="ghost" className="relative h-8 w-8 rounded-full" data-aos="fade-down" data-aos-delay="600">
                     <Avatar className="h-8 w-8">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
                         <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
@@ -159,6 +161,8 @@ export function Header() {
                 size="sm" 
                 asChild 
                 className={cn("hidden sm:flex", showTransparentHeader && theme === 'dark' && "border-white/50 text-white bg-transparent hover:bg-white hover:text-primary")}
+                data-aos="fade-down" 
+                data-aos-delay="600"
             >
                <Link href="/login">
                   <User className="mr-2 h-4 w-4" />
