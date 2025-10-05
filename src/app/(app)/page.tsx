@@ -219,13 +219,13 @@ export default function Home() {
         <div className="container mx-auto">
             <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-left">
-              <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-tight with-gradient-underline-1 relative inline-block pb-2 text-foreground" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
+              <h2 className="font-headline text-6xl md:text-7xl font-extrabold leading-tight with-gradient-underline-1 relative inline-block pb-2 text-foreground" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
                 Your Idea<br/>We Develop
               </h2>
-               <p className="text-xl text-muted-foreground mt-4">with our team</p>
+               <p className="text-2xl text-muted-foreground mt-4">with our team</p>
             </div>
             <div className="animate-fade-in-right text-right">
-              <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
+              <p className="font-noto-sans-telugu text-6xl md:text-7xl font-bold text-destructive glowing-text-pulse">
                 మీ ఐడియా ని మేము డెవలప్ చేస్తాము
               </p>
             </div>
@@ -486,3 +486,5 @@ export default function Home() {
     </>
   );
 }
+
+    
