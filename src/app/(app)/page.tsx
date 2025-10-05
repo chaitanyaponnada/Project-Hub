@@ -215,14 +215,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-gradient-to-r from-gray-50 to-white dark:bg-black">
+      <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-white dark:bg-black">
         <div className="container mx-auto">
             <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-left">
               <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-tight with-gradient-underline-1 relative inline-block pb-2 text-foreground" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
                 Your Idea<br/>We Develop
               </h2>
-              <p className="text-xl text-muted-foreground mt-4">with our team</p>
+               <p className="text-xl text-muted-foreground mt-4">with our team</p>
             </div>
             <div className="animate-fade-in-right text-right">
               <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
