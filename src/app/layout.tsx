@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Footer } from '@/components/layout/footer';
 import { FirebaseErrorListener } from '@/components/firebase-error-listener';
+import { AnimationProvider } from '@/components/animation-provider';
 
 export const metadata: Metadata = {
   title: 'Project Hub',
@@ -25,7 +26,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Roboto+Slab:wght@400;700&family=Orbitron:wght@400;700&family=Press+Start+2P&family=Bebas+Neue&family=Pacifico&family=Poppins:wght@700&family=Noto+Sans+Telugu:wght@400;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Roboto+Slab:wght@400;700&family=Orbitron:wght@400;700&family=Press+Start+2P&family=Bebas+Neue&family=Pacifico&family=Poppins:wght@700;800&family=Noto+Sans+Telugu:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body
         className={cn(
@@ -38,17 +39,19 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <div id="root-container" className="flex min-h-screen flex-col">
-                <AuthProvider>
-                    <CartProvider>
-                      <FirebaseErrorListener />
-                      {children}
-                      <Toaster />
-                      <ThemeToggle />
-                      <Footer />
-                    </CartProvider>
-                </AuthProvider>
-            </div>
+            <AnimationProvider>
+              <div id="root-container" className="flex min-h-screen flex-col">
+                  <AuthProvider>
+                      <CartProvider>
+                        <FirebaseErrorListener />
+                        {children}
+                        <Toaster />
+                        <ThemeToggle />
+                        <Footer />
+                      </CartProvider>
+                  </AuthProvider>
+              </div>
+            </AnimationProvider>
         </ThemeProvider>
       </body>
     </html>

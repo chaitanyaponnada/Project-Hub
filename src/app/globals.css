@@ -213,11 +213,6 @@
       animation: glitch-anim-1 1s linear infinite reverse;
   }
 
-  .text-gradient-red-orange {
-    @apply bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent;
-  }
-
-
   @property --angle {
     syntax: '<angle>';
     initial-value: 0deg;
@@ -323,23 +318,6 @@
       100% { clip: rect(102px, 9999px, 100px, 0); }
   }
 
-}
-
-@layer utilities {
-    @keyframes zoom-in-fade-in {
-      from {
-        opacity: 0;
-        transform: scale(0.5);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .animate-zoom-in-fade-in {
-        animation: zoom-in-fade-in 0.8s ease-out forwards;
-    }
 }
 
 @keyframes gradient {

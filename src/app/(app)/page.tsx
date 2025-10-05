@@ -184,15 +184,15 @@ export default function Home() {
   const IdeaSection = () => (
     <div className="container mx-auto py-12">
       <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center text-center md:text-left">
-        <div className="animate-fade-in-right">
-          <h2 className="font-poppins text-5xl md:text-6xl font-extrabold leading-tight text-foreground animate-fade-in-down" style={{animationDelay: '0.2s'}}>
+        <div data-aos="fade-right">
+          <h2 className="font-poppins text-5xl md:text-6xl font-extrabold leading-tight text-foreground" data-aos="fade-down" data-aos-delay="200">
             <div>Your Idea</div>
             <div>We Develop</div>
-            <div>with our <span className="text-destructive">team</span></div>
+            <div className="font-montserrat font-extrabold">with our <span className="text-destructive">team</span></div>
           </h2>
         </div>
-        <div className="animate-fade-in-left md:text-right">
-          <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive animate-fade-in-down" style={{animationDelay: '0.6s'}}>
+        <div data-aos="fade-left" data-aos-delay="400" className="md:text-right">
+          <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
             మీ ఐడియా ని మేము డెవలప్ చేస్తాము
           </p>
         </div>
@@ -207,22 +207,22 @@ export default function Home() {
         <div className="relative z-20 pt-16 px-4">
         <div className="max-w-4xl mx-auto">
             <h1 className={cn(
-                "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 animate-zoom-in-fade-in transition-all duration-1000",
+                "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 transition-all duration-1000",
                 headlineFonts[currentFontIndex],
                 isGlitching ? 'glitch' : ''
-            )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+            )} data-text="PROJECT HUB" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }} data-aos="zoom-in">
             PROJECT HUB
             </h1>
             
-            <div className="glowing-border-container animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
-              <p className="text-md md:text-lg dark:text-white text-primary-foreground max-w-3xl mx-auto">
+            <div className="glowing-border-container" data-aos="fade-up" data-aos-delay="300">
+              <p className="text-md md:text-lg text-white dark:text-white">
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg dark:text-white text-primary-foreground max-w-3xl mx-auto mt-4 animate-fade-in-down" style={{ animationDelay: '0.4s' }}>
+            <p className="text-md md:text-lg text-white dark:text-white max-w-3xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="400">
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up mt-8" style={{ animationDelay: '0.5s' }}>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8" data-aos="fade-up" data-aos-delay="500">
             <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
             </Button>
@@ -242,12 +242,12 @@ export default function Home() {
         {/* Features Section */}
         <section className="py-20 bg-muted/30 section-gradient">
            <div className="container mx-auto px-4 relative z-20">
-            <div className="text-center mb-12 animate-fade-in-up">
+            <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-              <div className="p-2 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <div data-aos="fade-up" data-aos-delay="100">
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
                     <Zap className="h-8 w-8" />
@@ -256,7 +256,7 @@ export default function Home() {
                   <p className="text-muted-foreground">Save time with complete, well-documented projects that you can use instantly.</p>
                 </Card>
               </div>
-              <div className="p-2 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <div data-aos="fade-up" data-aos-delay="300">
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
                     <Code className="h-8 w-8" />
@@ -265,7 +265,7 @@ export default function Home() {
                   <p className="text-muted-foreground">Learn from best practices with clean, efficient, and professionally written code.</p>
                 </Card>
               </div>
-              <div className="p-2 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+              <div data-aos="fade-up" data-aos-delay="500">
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
                     <Feather className="h-8 w-8" />
@@ -274,7 +274,7 @@ export default function Home() {
                   <p className="text-muted-foreground">Build a standout portfolio that impresses recruiters and showcases your talent.</p>
                 </Card>
               </div>
-              <div className="p-2 animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+              <div data-aos="fade-up" data-aos-delay="700">
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
                     <Lightbulb className="h-8 w-8" />
@@ -288,8 +288,8 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="py-20 section-gradient animate-fade-in-up">
-            <div className="container mx-auto px-4 relative z-20">
+        <section id="projects" className="py-20 section-gradient">
+            <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
               <header className="mb-12 text-center">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -315,7 +315,7 @@ export default function Home() {
                     <CarouselContent className="-ml-4">
                         {projects.slice(0, 5).map((project, i) => (
                         <CarouselItem key={project.id} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                            <div className="p-1" style={{ animationDelay: `${i * 0.1}s` }}>
+                            <div className="p-1">
                                 <ProjectCard project={project} isBlurred={!user && !loading} />
                             </div>
                         </CarouselItem>
@@ -337,10 +337,10 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-20 bg-muted/30 section-gradient animate-fade-in-up">
-            <div className="container mx-auto px-4 relative z-20">
+        <section id="about" className="py-20 bg-muted/30 section-gradient">
+            <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
                <div className="grid md:grid-cols-2 gap-16 items-center">
-                <div className="animate-fade-in-right">
+                <div data-aos="fade-right">
                   <h3 className="font-headline text-3xl font-bold text-primary mb-4">Our Mission</h3>
                   <p className="text-muted-foreground text-lg mb-6">
                     Our mission is to bridge the gap between academic learning and practical application. We believe that hands-on experience is crucial for success in the tech industry. Project Hub provides a curated marketplace of projects to help students learn, grow, and build a portfolio that stands out.
@@ -355,7 +355,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="animate-fade-in-left aspect-[4/3] relative flex items-center justify-center">
+                <div className="aspect-[4/3] relative flex items-center justify-center" data-aos="fade-left">
                   <NodeGarden />
                   <div className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none">
                       <Code className="h-16 w-16 text-primary mb-4" />
@@ -367,13 +367,13 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="py-20 section-gradient animate-fade-in-up">
-          <div className="container mx-auto px-4 relative z-20">
+        <section id="faq" className="py-20 section-gradient">
+          <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
             <div className="text-center mb-12">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
               <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
             </div>
-            <div className="max-w-3xl mx-auto" style={{ animationDelay: '0.2s' }}>
+            <div className="max-w-3xl mx-auto">
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq: any, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="border-b">
@@ -389,8 +389,8 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 bg-muted/30 section-gradient animate-fade-in-up">
-          <div className="container mx-auto px-4 relative z-20">
+        <section id="contact" className="py-20 bg-muted/30 section-gradient">
+          <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
             <div className="text-center mb-12">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
@@ -398,7 +398,7 @@ export default function Home() {
                 <span className="text-highlight">If you have a desired idea</span>, or if you need any help, feel free to contact us.
               </p>
             </div>
-            <div className="max-w-2xl mx-auto" style={{ animationDelay: '0.2s' }}>
+            <div className="max-w-2xl mx-auto">
               <Card>
                   <CardHeader>
                       <CardTitle className="font-headline text-2xl">Send a Message</CardTitle>
