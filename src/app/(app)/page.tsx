@@ -183,10 +183,12 @@ export default function Home() {
 
   const IdeaSection = () => (
     <div className="container mx-auto py-12">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center text-center md:text-left">
+      <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center text-center md:text-left">
         <div className="animate-fade-in-right">
           <h2 className="font-poppins text-5xl md:text-6xl font-extrabold leading-tight text-foreground animate-fade-in-down" style={{animationDelay: '0.2s'}}>
-            Your Idea We Develop with our <span className="text-destructive">team</span>
+            <div>Your Idea</div>
+            <div>We Develop</div>
+            <div>with our <span className="text-destructive">team</span></div>
           </h2>
         </div>
         <div className="animate-fade-in-left md:text-right">
@@ -489,3 +491,5 @@ export default function Home() {
     </>
   );
 }
+
+    
