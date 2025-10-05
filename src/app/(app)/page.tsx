@@ -25,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect, useRef } from "react";
 import { ProjectCard } from "@/components/project-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+import Autoplay from 'embla-carousel-autoplay';
 import { useTheme } from "next-themes";
 import { NodeGarden } from "@/components/node-garden";
 import { Input } from "@/components/ui/input";
@@ -185,13 +185,13 @@ export default function Home() {
     <div className="container mx-auto py-12">
       <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center text-center md:text-left">
         <div data-aos="fade-right">
-          <h2 className="font-poppins text-5xl md:text-6xl font-extrabold leading-tight text-foreground" data-aos="fade-down" data-aos-delay="200">
-            <div>Your Idea</div>
-            <div>We Develop</div>
-            <div className="font-montserrat font-extrabold">with our <span className="text-destructive">team</span></div>
+          <h2 className="font-poppins text-5xl md:text-6xl font-extrabold leading-tight text-foreground">
+            <div data-aos="fade-down" data-aos-delay="200">Your Idea</div>
+            <div data-aos="fade-down" data-aos-delay="300">We Develop</div>
+            <div data-aos="fade-down" data-aos-delay="400" className="font-montserrat font-extrabold">with our <span className="text-destructive">team</span></div>
           </h2>
         </div>
-        <div data-aos="fade-left" data-aos-delay="400" className="md:text-right">
+        <div data-aos="fade-left" data-aos-delay="500">
           <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
             మీ ఐడియా ని మేము డెవలప్ చేస్తాము
           </p>
@@ -256,7 +256,7 @@ export default function Home() {
                   <p className="text-muted-foreground">Save time with complete, well-documented projects that you can use instantly.</p>
                 </Card>
               </div>
-              <div data-aos="fade-up" data-aos-delay="300">
+              <div data-aos="fade-up" data-aos-delay="200">
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
                     <Code className="h-8 w-8" />
@@ -265,7 +265,7 @@ export default function Home() {
                   <p className="text-muted-foreground">Learn from best practices with clean, efficient, and professionally written code.</p>
                 </Card>
               </div>
-              <div data-aos="fade-up" data-aos-delay="500">
+              <div data-aos="fade-up" data-aos-delay="300">
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
                     <Feather className="h-8 w-8" />
@@ -274,7 +274,7 @@ export default function Home() {
                   <p className="text-muted-foreground">Build a standout portfolio that impresses recruiters and showcases your talent.</p>
                 </Card>
               </div>
-              <div data-aos="fade-up" data-aos-delay="700">
+              <div data-aos="fade-up" data-aos-delay="400">
                 <Card className="p-8 h-full transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="inline-block p-4 bg-primary text-primary-foreground rounded-full mb-4">
                     <Lightbulb className="h-8 w-8" />
@@ -290,7 +290,7 @@ export default function Home() {
         {/* Projects Section */}
         <section id="projects" className="py-20 section-gradient">
             <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
-              <header className="mb-12 text-center">
+              <header className="mb-12 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
@@ -311,6 +311,7 @@ export default function Home() {
                     onMouseEnter={() => plugin.current.stop()}
                     onMouseLeave={() => plugin.current.reset()}
                     className="w-full max-w-sm sm:max-w-xl md:max-w-4xl lg:max-w-6xl mx-auto"
+                    data-aos="fade-up" data-aos-delay="200"
                 >
                     <CarouselContent className="-ml-4">
                         {projects.slice(0, 5).map((project, i) => (
@@ -326,7 +327,7 @@ export default function Home() {
                 </Carousel>
               )}
               
-              <div className="text-center mt-12">
+              <div className="text-center mt-12" data-aos="fade-up" data-aos-delay="300">
                 <Button asChild size="lg" variant="outline">
                   <Link href="/projects">
                     View All Projects <ArrowRight className="ml-2" />
@@ -338,14 +339,14 @@ export default function Home() {
 
         {/* About Section */}
         <section id="about" className="py-20 bg-muted/30 section-gradient">
-            <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
+            <div className="container mx-auto px-4 relative z-20">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div data-aos="fade-right">
-                  <h3 className="font-headline text-3xl font-bold text-primary mb-4">Our Mission</h3>
-                  <p className="text-muted-foreground text-lg mb-6">
+                  <h3 className="font-headline text-3xl font-bold text-primary mb-4" data-aos="fade-right" data-aos-delay="100">Our Mission</h3>
+                  <p className="text-muted-foreground text-lg mb-6" data-aos="fade-right" data-aos-delay="200">
                     Our mission is to bridge the gap between academic learning and practical application. We believe that hands-on experience is crucial for success in the tech industry. Project Hub provides a curated marketplace of projects to help students learn, grow, and build a portfolio that stands out.
                   </p>
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4" data-aos="fade-right" data-aos-delay="300">
                     <div className="p-3 bg-accent text-accent-foreground rounded-full mt-1">
                       <Target className="h-6 w-6" />
                     </div>
@@ -355,7 +356,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="aspect-[4/3] relative flex items-center justify-center" data-aos="fade-left">
+                <div className="aspect-[4/3] relative flex items-center justify-center" data-aos="fade-left" data-aos-delay="200">
                   <NodeGarden />
                   <div className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none">
                       <Code className="h-16 w-16 text-primary mb-4" />
@@ -368,12 +369,12 @@ export default function Home() {
 
         {/* FAQ Section */}
         <section id="faq" className="py-20 section-gradient">
-          <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
-            <div className="text-center mb-12">
+          <div className="container mx-auto px-4 relative z-20">
+            <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
               <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
             </div>
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="200">
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq: any, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="border-b">
@@ -390,15 +391,15 @@ export default function Home() {
 
         {/* Contact Section */}
         <section id="contact" className="py-20 bg-muted/30 section-gradient">
-          <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
-            <div className="text-center mb-12">
+          <div className="container mx-auto px-4 relative z-20">
+            <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
               <p className="text-lg text-muted-foreground mt-2">
                 <span className="text-highlight">If you have a desired idea</span>, or if you need any help, feel free to contact us.
               </p>
             </div>
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
               <Card>
                   <CardHeader>
                       <CardTitle className="font-headline text-2xl">Send a Message</CardTitle>
@@ -491,3 +492,5 @@ export default function Home() {
     </>
   );
 }
+
+    
