@@ -218,14 +218,14 @@ export default function Home() {
       <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-muted/30 dark:bg-black">
         <div className="container mx-auto">
             <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="animate-fade-in-left">
-              <h2 className="font-headline text-6xl md:text-7xl font-extrabold leading-tight relative inline-block pb-2 text-foreground" style={{textShadow: '0 0 15px hsl(var(--primary)/0.2)'}}>
+            <div className="animate-fade-in-right">
+              <h2 className="font-headline text-6xl md:text-7xl font-extrabold leading-tight text-foreground animate-fade-in-down" style={{animationDelay: '0.2s'}}>
                 Your Idea<br/>We Develop
               </h2>
-               <p className="text-2xl text-muted-foreground mt-4">with our team</p>
+               <p className="font-headline text-4xl md:text-5xl font-extrabold text-muted-foreground mt-4 animate-fade-in-down" style={{animationDelay: '0.4s'}}>with our team</p>
             </div>
-            <div className="animate-fade-in-right text-right">
-              <p className="font-noto-sans-telugu text-6xl md:text-7xl font-bold text-destructive">
+            <div className="animate-fade-in-left text-right">
+              <p className="font-noto-sans-telugu text-6xl md:text-7xl font-bold text-destructive animate-fade-in-down" style={{animationDelay: '0.6s'}}>
                 మీ ఐడియా ని మేము డెవలప్ చేస్తాము
               </p>
             </div>
