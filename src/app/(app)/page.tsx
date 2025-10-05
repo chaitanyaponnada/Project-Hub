@@ -215,7 +215,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-white dark:bg-black">
+      <section className="relative py-20 px-10 md:px-20 overflow-hidden bg-muted/30 dark:bg-black">
         <div className="container mx-auto">
             <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-left">
