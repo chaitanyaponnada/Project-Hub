@@ -110,7 +110,7 @@ export function Header() {
           <span className={cn("font-headline text-xl font-bold", contentColorClass)}>Project Hub</span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3" data-aos="fade-down" data-aos-once="true" data-aos-delay="300">
           <NavLinks />
 
           <Button variant="ghost" size="icon" className={cn("relative", navLinkColorClass)} asChild data-aos="fade-down" data-aos-once="true" data-aos-delay="500">
@@ -227,3 +227,5 @@ export function Header() {
     </header>
   );
 }
+
+    
