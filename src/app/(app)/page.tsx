@@ -215,7 +215,7 @@ export default function Home() {
             </h1>
             
             <div className="glowing-border-container" data-aos="zoom-in" data-aos-delay="300">
-              <p className="text-md md:text-lg text-white dark:text-white">
+              <p className="text-md md:text-lg text-foreground dark:text-white">
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
@@ -494,4 +494,5 @@ export default function Home() {
 }
 
     
+
 
