@@ -185,14 +185,14 @@ export default function Home() {
     <div className="container mx-auto py-12">
       <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center text-center md:text-left">
         <div data-aos="fade-right">
-          <h2 className="font-poppins text-5xl md:text-6xl font-extrabold leading-tight text-foreground">
+          <h2 className="font-poppins text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-foreground">
             <div data-aos="fade-down" data-aos-delay="200">Your Idea</div>
             <div data-aos="fade-down" data-aos-delay="300">We Develop</div>
             <div data-aos="fade-down" data-aos-delay="400">with our <span className="text-destructive">team</span></div>
           </h2>
         </div>
         <div data-aos="fade-left" data-aos-delay="500">
-          <p className="font-noto-sans-telugu text-5xl md:text-6xl font-bold text-destructive">
+          <p className="font-noto-sans-telugu text-4xl sm:text-5xl md:text-6xl font-bold text-destructive">
             మీ ఐడియా ని మేము డెవలప్ చేస్తాము
           </p>
         </div>
@@ -219,7 +219,7 @@ export default function Home() {
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg text-foreground dark:text-white max-w-3xl mx-auto mt-4" data-aos="zoom-in" data-aos-delay="400">
+            <p className="text-md md:text-lg text-foreground max-w-3xl mx-auto mt-4" data-aos="zoom-in" data-aos-delay="400">
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8" data-aos="zoom-in" data-aos-delay="500">
@@ -496,3 +496,6 @@ export default function Home() {
     
 
 
+
+
+    

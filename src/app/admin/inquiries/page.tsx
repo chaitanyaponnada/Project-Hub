@@ -36,7 +36,7 @@ export default function AdminInquiriesPage() {
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
                 ) : (
-                    <ScrollArea className="w-full whitespace-nowrap">
+                    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -73,3 +73,5 @@ export default function AdminInquiriesPage() {
         </Card>
     )
 }
+
+    

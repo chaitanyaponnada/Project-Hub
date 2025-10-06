@@ -17,7 +17,7 @@ const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/projects', label: 'Projects', icon: Package },
     { href: '/admin/users', label: 'Users', icon: Users },
-    { href: 'src/app/admin/inquiries/page.tsx', label: 'Inquiries', icon: MessageSquare },
+    { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
     { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
 ];
 
@@ -96,7 +96,7 @@ function AdminDashboardLayout({ children }: { children: ReactNode }) {
                        {/* Can add search or other header elements here */}
                     </div>
                 </header>
-                <main className="flex-1 p-4 sm:p-6">
+                <main className="flex-1 p-4 sm:p-6 overflow-x-auto">
                     {children}
                 </main>
             </div>
@@ -124,7 +124,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     // If user is logged in, check for admin privileges
     isAdmin(user.uid).then(adminStatus => {
-      if (!adminStatus) {
+      if (!adminStatus && pathname !== '/admin/unauthorized') {
         // If not an admin, redirect to an unauthorized page
         router.push('/admin/unauthorized');
       }
@@ -133,6 +133,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     });
 
   }, [user, loading, router, pathname]);
+  
+  if (pathname === '/admin/unauthorized') {
+    return <>{children}</>;
+  }
 
   if (loading || checkingAdmin) {
     return (
@@ -153,3 +157,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+
+    
