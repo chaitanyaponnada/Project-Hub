@@ -5,9 +5,11 @@ import type { Project } from '@/lib/placeholder-data';
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
-import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, collection, writeBatch, serverTimestamp, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
+import { errorEmitter } from '@/lib/error-emitter';
+import { FirestorePermissionError } from '@/lib/errors';
 
 interface CartItem extends Project {
   quantity: number;
@@ -40,11 +42,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Fetch cart and purchased items from Firestore on user change
   useEffect(() => {
-    if (loading) {
-      return; // Wait until auth state is determined
-    }
-
-    if (!user) {
+    if (loading || !user) {
       setCartItems([]);
       setPurchasedProjectIds([]);
       return;
@@ -57,15 +55,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setCartItems([]);
       }
+    }, (error) => {
+        console.error("Cart snapshot error:", error);
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+            path: cartDocRef.path,
+            operation: 'get'
+        }));
     });
 
     const salesColRef = collection(db, 'sales');
-    const unsubscribePurchases = onSnapshot(salesColRef, (snapshot) => {
-        const userSales = snapshot.docs
-            .map(doc => doc.data())
-            .filter(sale => sale.userId === user.uid);
+    const userSalesQuery = query(salesColRef, where("userId", "==", user.uid));
+    const unsubscribePurchases = onSnapshot(userSalesQuery, (snapshot) => {
+        const userSales = snapshot.docs.map(doc => doc.data());
         setPurchasedProjectIds(userSales.map(sale => sale.projectId));
+    }, (error) => {
+        console.error("Purchases snapshot error:", error);
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+            path: salesColRef.path, // The collection path
+            operation: 'list' // This is a list operation
+        }));
     });
+
 
     return () => {
         unsubscribeCart();
@@ -76,7 +86,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const updateFirestoreCart = async (newCartItems: CartItem[]) => {
     if (!user) return;
     const cartDocRef = doc(db, 'carts', user.uid);
-    await setDoc(cartDocRef, { items: newCartItems }, { merge: true });
+    setDoc(cartDocRef, { items: newCartItems }, { merge: true })
+        .catch(async (serverError) => {
+            const permissionError = new FirestorePermissionError({
+                path: cartDocRef.path,
+                operation: 'write',
+                requestResourceData: { items: newCartItems },
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        });
   };
   
   const addItemsToSales = async (items: CartItem[]) => {
@@ -90,7 +108,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       if (itemsToAdd.length > 0) {
         itemsToAdd.forEach(item => {
             const saleDocRef = doc(salesColRef);
-            batch.set(saleDocRef, {
+            const saleData = {
                 id: saleDocRef.id,
                 projectId: item.id,
                 projectTitle: item.title,
@@ -102,10 +120,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 userEmail: user.email,
                 userPhotoURL: user.photoURL,
                 purchasedAt: serverTimestamp()
-            });
+            };
+            batch.set(saleDocRef, saleData);
         });
         
-        await batch.commit();
+        batch.commit().catch(async (serverError) => {
+            const permissionError = new FirestorePermissionError({
+                path: salesColRef.path,
+                operation: 'create',
+                requestResourceData: itemsToAdd.map(item => ({ projectId: item.id, price: item.price })) // Example data
+            });
+            errorEmitter.emit('permission-error', permissionError);
+            // Revert optimistic UI changes if needed
+            throw serverError; // rethrow to be caught by caller
+        });
       }
   };
 
@@ -134,12 +162,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setIsCheckingOut(true);
     toast({ title: 'Processing Purchase', description: 'Please wait...' });
 
-    setTimeout(async () => {
-      await addItemsToSales([{ ...project, quantity: 1 }]);
-      setIsCheckingOut(false);
-      router.push('/checkout?status=success');
-      toast({ title: 'Purchase Successful!', description: `${project.title} has been added to your profile.` });
-    }, 1500);
+    try {
+        await addItemsToSales([{ ...project, quantity: 1 }]);
+        router.push('/checkout?status=success');
+        toast({ title: 'Purchase Successful!', description: `${project.title} has been added to your profile.` });
+    } catch(e) {
+        toast({ title: 'Purchase Failed', description: 'Could not complete the purchase. Please check your permissions.', variant: 'destructive' });
+    } finally {
+        setIsCheckingOut(false);
+    }
   };
 
   const removeFromCart = (projectId: string) => {
