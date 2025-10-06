@@ -134,7 +134,7 @@ export default function AdminUsersPage() {
                                         <div>
                                             <p className="font-medium">{sale.projectTitle}</p>
                                             <p className="text-sm text-muted-foreground">
-                                                {sale.purchasedAt ? format(sale.purchasedAt.toDate(), 'PPP') : 'N/A'}
+                                                {sale.purchasedAt?.toDate ? format(sale.purchasedAt.toDate(), 'PPP') : 'N/A'}
                                             </p>
                                         </div>
                                         <p className="font-semibold text-primary">Rs. {sale.price.toFixed(2)}</p>

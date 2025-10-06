@@ -99,7 +99,7 @@ export default function ProfilePage() {
                                     <div className="space-y-4">
                                         {purchases.map(item => (
                                             <Card key={item.id} className="flex flex-col sm:flex-row items-center p-4">
-                                                <div className="relative h-32 w-full sm:h-24 sm:w-24 rounded-md overflow-hidden mr-0 sm:mr-4 mb-4 sm:mb-0">
+                                                <div className="relative h-32 w-full sm:h-24 sm:w-24 rounded-md overflow-hidden mr-0 sm:mr-4 mb-4 sm:mb-0 flex-shrink-0">
                                                     <Image src={item.projectImageUrl || "https://placehold.co/600x400"} alt={item.projectTitle} fill className="object-cover" />
                                                 </div>
                                                 <div className="flex-1 text-center sm:text-left">
@@ -108,7 +108,7 @@ export default function ProfilePage() {
                                                         Purchased on {item.purchasedAt?.toDate ? format(item.purchasedAt.toDate(), 'PPP') : 'N/A'}
                                                     </p>
                                                 </div>
-                                                <Button asChild className="mt-4 sm:mt-0">
+                                                <Button asChild className="mt-4 sm:mt-0 sm:ml-4 flex-shrink-0">
                                                     <a href={item.projectDownloadUrl} target="_blank" rel="noopener noreferrer">
                                                         <Download className="mr-2 h-4 w-4" />
                                                         Download Files

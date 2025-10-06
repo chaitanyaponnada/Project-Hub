@@ -1,6 +1,6 @@
 
 import { db, auth, storage } from './firebase';
-import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp, addDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp, addDoc, onSnapshot, writeBatch } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { User } from 'firebase/auth';
 import type { Project } from './placeholder-data';
@@ -127,7 +127,21 @@ export const updateProject = (
  * @param projectId The ID of the project to delete.
  */
 export const deleteProject = async (projectId: string) => {
-    await deleteDoc(doc(db, 'projects', projectId));
+    const batch = writeBatch(db);
+    
+    // 1. Delete the project document
+    const projectRef = doc(db, 'projects', projectId);
+    batch.delete(projectRef);
+
+    // 2. Find and delete related sales records
+    const salesQuery = query(collection(db, 'sales'), where('projectId', '==', projectId));
+    const salesSnapshot = await getDocs(salesQuery);
+    salesSnapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+    });
+
+    // Commit the batch
+    await batch.commit();
 };
 
 
@@ -208,6 +222,7 @@ export const getInquiries = async () => {
  * @param userId The user's ID.
  */
 export const getInquiriesByUserId = async (userId: string) => {
+    if (!userId) return [];
     const inquiriesCol = collection(db, 'inquiries');
     const q = query(inquiriesCol, where("userId", "==", userId), orderBy("receivedAt", "desc"));
     const inquirySnapshot = await getDocs(q);
@@ -229,6 +244,7 @@ export const getSales = async () => {
  * @param userId The user's ID.
  */
 export const getSalesByUserId = async (userId: string) => {
+    if (!userId) return [];
     const salesCol = collection(db, 'sales');
     const q = query(salesCol, where("userId", "==", userId), orderBy("purchasedAt", "desc"));
     const salesSnapshot = await getDocs(q);
