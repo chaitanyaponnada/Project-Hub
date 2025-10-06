@@ -4,16 +4,21 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, User, ShieldCheck } from 'lucide-react';
-import { getUsers } from '@/lib/firebase-services';
+import { Loader2, User, ShieldCheck, Eye } from 'lucide-react';
+import { getUsers, getSalesByUserId } from '@/lib/firebase-services';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 export default function AdminUsersPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedUser, setSelectedUser] = useState<any | null>(null);
+    const [userSales, setUserSales] = useState<any[]>([]);
+    const [loadingSales, setLoadingSales] = useState(false);
     
     useEffect(() => {
         const fetchUsers = async () => {
@@ -24,6 +29,19 @@ export default function AdminUsersPage() {
         };
         fetchUsers();
     }, []);
+    
+    useEffect(() => {
+        if (selectedUser) {
+            const fetchUserSales = async () => {
+                setLoadingSales(true);
+                const sales = await getSalesByUserId(selectedUser.uid);
+                setUserSales(sales);
+                setLoadingSales(false);
+            };
+            fetchUserSales();
+        }
+    }, [selectedUser]);
+
 
     const getInitials = (name?: string | null) => {
         if (!name) return <User className="h-4 w-4" />;
@@ -31,10 +49,11 @@ export default function AdminUsersPage() {
     }
 
     return (
+        <>
         <Card>
             <CardHeader>
                 <CardTitle>Users</CardTitle>
-                <CardDescription>List of all registered users.</CardDescription>
+                <CardDescription>List of all registered users. Click "View Details" to see their purchase history.</CardDescription>
             </CardHeader>
             <CardContent>
                 {isLoading ? (
@@ -50,6 +69,7 @@ export default function AdminUsersPage() {
                                     <TableHead>Email</TableHead>
                                     <TableHead>Date Joined</TableHead>
                                     <TableHead>Role</TableHead>
+                                    <TableHead>Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -75,6 +95,12 @@ export default function AdminUsersPage() {
                                                 'User'
                                             )}
                                         </TableCell>
+                                        <TableCell>
+                                            <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>
+                                                <Eye className="mr-2 h-4 w-4" />
+                                                View Details
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -88,7 +114,42 @@ export default function AdminUsersPage() {
                 )}
             </CardContent>
         </Card>
+        
+        <Dialog open={!!selectedUser} onOpenChange={() => setSelectedUser(null)}>
+            <DialogContent className="max-w-lg">
+                <DialogHeader>
+                    <DialogTitle>Purchase History for {selectedUser?.displayName}</DialogTitle>
+                    <DialogDescription>{selectedUser?.email}</DialogDescription>
+                </DialogHeader>
+                 <div className="mt-4">
+                    {loadingSales ? (
+                        <div className="flex items-center justify-center h-24">
+                            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                        </div>
+                    ) : userSales.length > 0 ? (
+                        <ScrollArea className="h-[300px] pr-4">
+                            <div className="space-y-4">
+                                {userSales.map(sale => (
+                                    <div key={sale.id} className="flex justify-between items-center p-3 bg-muted rounded-md">
+                                        <div>
+                                            <p className="font-medium">{sale.projectTitle}</p>
+                                            <p className="text-sm text-muted-foreground">
+                                                {sale.purchasedAt ? format(sale.purchasedAt.toDate(), 'PPP') : 'N/A'}
+                                            </p>
+                                        </div>
+                                        <p className="font-semibold text-primary">Rs. {sale.price.toFixed(2)}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </ScrollArea>
+                    ) : (
+                         <div className="text-center text-muted-foreground py-12">
+                            <p>This user has not purchased any projects.</p>
+                        </div>
+                    )}
+                </div>
+            </DialogContent>
+        </Dialog>
+        </>
     )
 }
-
-    

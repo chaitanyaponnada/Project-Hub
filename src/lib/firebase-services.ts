@@ -224,4 +224,13 @@ export const getSales = async () => {
     return salesSnapshot.docs.map(doc => doc.data());
 };
 
-    
+/**
+ * Fetches all sales for a specific user.
+ * @param userId The user's ID.
+ */
+export const getSalesByUserId = async (userId: string) => {
+    const salesCol = collection(db, 'sales');
+    const q = query(salesCol, where("userId", "==", userId), orderBy("purchasedAt", "desc"));
+    const salesSnapshot = await getDocs(q);
+    return salesSnapshot.docs.map(doc => doc.data());
+};

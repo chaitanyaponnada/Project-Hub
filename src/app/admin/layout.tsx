@@ -4,7 +4,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Loader2, PanelLeft, LayoutDashboard, Package, Users, MessageSquare, CreditCard, LogOut } from 'lucide-react';
+import { Loader2, PanelLeft, LayoutDashboard, Package, Users, MessageSquare, CreditCard, LogOut, ClipboardList } from 'lucide-react';
 import { isAdmin } from '@/lib/firebase-services';
 import Link from 'next/link';
 import { signOut } from 'firebase/auth';
@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/projects', label: 'Projects', icon: Package },
+    { href: '/admin/sales', label: 'Sales', icon: ClipboardList },
     { href: '/admin/users', label: 'Users', icon: Users },
     { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
     { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
