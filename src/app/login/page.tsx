@@ -54,13 +54,12 @@ function LoginContent() {
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [showResetConfirmation, setShowResetConfirmation] = useState(false);
   const isMobile = useIsMobile();
-  const [showNodeGarden, setShowNodeGarden] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Only show NodeGarden on the client-side and on non-mobile devices
-    // to prevent hydration errors.
-    setShowNodeGarden(!isMobile);
-  }, [isMobile]);
+    // Component has mounted, so we are on the client.
+    setIsClient(true);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -182,7 +181,7 @@ function LoginContent() {
   return (
     <>
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-      {showNodeGarden && <NodeGarden />}
+      {isClient && !isMobile && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link
@@ -338,3 +337,5 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+
+    

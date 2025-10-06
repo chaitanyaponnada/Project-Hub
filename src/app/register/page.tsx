@@ -53,13 +53,12 @@ export default function RegisterPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const isMobile = useIsMobile();
-  const [showNodeGarden, setShowNodeGarden] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Only show NodeGarden on the client-side and on non-mobile devices
-    // to prevent hydration errors.
-    setShowNodeGarden(!isMobile);
-  }, [isMobile]);
+    // Component has mounted, so we are on the client.
+    setIsClient(true);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -140,7 +139,7 @@ export default function RegisterPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
-      {showNodeGarden && <NodeGarden />}
+      {isClient && !isMobile && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
@@ -245,4 +244,24 @@ export default function RegisterPage() {
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                    ) : (
                     <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                      <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8 0 120.8 109.8 8 244 8c66.8 0 126 25.5 169.1 65.5l-69.2 67.3c-24.6-23.5-58.
+                      <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8 0 120.8 109.8 8 244 8c66.8 0 126 25.5 169.1 65.5l-69.2 67.3c-24.6-23.5-58.9-38.1-99.9-38.1-82.6 0-149.7 67.5-149.7 150.3s67.1 150.3 149.7 150.3c95.2 0 132.3-73.3 135.8-109.5H244V261.8h244z"></path>
+                    </svg>
+                   )}
+                  Google
+              </Button>
+
+              <div className="text-center text-sm">
+                Already have an account?{" "}
+                <Link href="/login" className="underline text-primary hover:text-primary/80">
+                  Sign in
+                </Link>
+              </div>
+            </CardFooter>
+          </form>
+        </Form>
+      </Card>
+    </div>
+  );
+}
+
+    
