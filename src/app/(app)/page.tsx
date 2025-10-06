@@ -219,7 +219,7 @@ export default function Home() {
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg text-white dark:text-white max-w-3xl mx-auto mt-4" data-aos="zoom-in" data-aos-delay="400">
+            <p className="text-md md:text-lg text-foreground dark:text-white max-w-3xl mx-auto mt-4" data-aos="zoom-in" data-aos-delay="400">
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8" data-aos="zoom-in" data-aos-delay="500">
@@ -494,3 +494,4 @@ export default function Home() {
 }
 
     
+
