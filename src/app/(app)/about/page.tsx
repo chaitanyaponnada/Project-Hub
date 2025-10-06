@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Users, Target, Code, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { NodeGarden } from '@/components/node-garden';
 
 export default function AboutPage() {
   const router = useRouter();
@@ -47,18 +48,12 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-            <div className="animate-fade-in-left">
-              <Card className="overflow-hidden shadow-lg">
-                <div className="relative aspect-[4/3]">
-                  <Image
-                    src="https://picsum.photos/seed/about1/800/600"
-                    alt="Team working on a project"
-                    fill
-                    className="object-cover"
-                    data-ai-hint="team collaboration"
-                  />
+            <div className="aspect-[4/3] relative flex items-center justify-center" data-aos="fade-left" data-aos-delay="200">
+                <NodeGarden />
+                <div className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none">
+                    <Code className="h-16 w-16 text-primary mb-4" />
+                    <h3 className="font-headline text-4xl font-bold text-primary">Project Hub</h3>
                 </div>
-              </Card>
             </div>
           </div>
         </div>
