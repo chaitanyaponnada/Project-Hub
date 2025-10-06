@@ -4,24 +4,24 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2, Package, Download, MessageSquare, User as UserIcon } from "lucide-react";
+import { Loader2, Package, Download, MessageSquare } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCart } from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { getInquiriesByUserId } from "@/lib/firebase-services";
+import { getInquiriesByUserId, getSalesByUserId } from "@/lib/firebase-services";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { format } from 'date-fns';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { Project, Sale } from "@/lib/placeholder-data";
 
 export default function ProfilePage() {
     const { user, loading } = useAuth();
-    const { purchasedItems } = useCart();
     const router = useRouter();
     const [isClient, setIsClient] = useState(false);
     const [inquiries, setInquiries] = useState<any[]>([]);
-    const [loadingInquiries, setLoadingInquiries] = useState(true);
+    const [purchases, setPurchases] = useState<Sale[]>([]);
+    const [loadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
         setIsClient(true);
@@ -32,13 +32,17 @@ export default function ProfilePage() {
     
     useEffect(() => {
         if (user) {
-            const fetchInquiries = async () => {
-                setLoadingInquiries(true);
-                const userInquiries = await getInquiriesByUserId(user.uid);
+            const fetchData = async () => {
+                setLoadingData(true);
+                const [userInquiries, userPurchases] = await Promise.all([
+                    getInquiriesByUserId(user.uid),
+                    getSalesByUserId(user.uid)
+                ]);
                 setInquiries(userInquiries);
-                setLoadingInquiries(false);
+                setPurchases(userPurchases as Sale[]);
+                setLoadingData(false);
             };
-            fetchInquiries();
+            fetchData();
         }
     }, [user]);
 
@@ -87,19 +91,25 @@ export default function ProfilePage() {
                                 <CardTitle>My Purchased Projects</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                {purchasedItems.length > 0 ? (
+                                {loadingData ? (
+                                     <div className="flex items-center justify-center h-32">
+                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : purchases.length > 0 ? (
                                     <div className="space-y-4">
-                                        {purchasedItems.map(item => (
+                                        {purchases.map(item => (
                                             <Card key={item.id} className="flex flex-col sm:flex-row items-center p-4">
                                                 <div className="relative h-32 w-full sm:h-24 sm:w-24 rounded-md overflow-hidden mr-0 sm:mr-4 mb-4 sm:mb-0">
-                                                    <Image src={item.imageUrls[0]} alt={item.title} fill className="object-cover" />
+                                                    <Image src={item.projectImageUrl || "https://placehold.co/600x400"} alt={item.projectTitle} fill className="object-cover" />
                                                 </div>
                                                 <div className="flex-1 text-center sm:text-left">
-                                                    <h3 className="font-semibold text-lg">{item.title}</h3>
-                                                    <p className="text-muted-foreground text-sm">{item.category}</p>
+                                                    <h3 className="font-semibold text-lg">{item.projectTitle}</h3>
+                                                     <p className="text-muted-foreground text-sm">
+                                                        Purchased on {item.purchasedAt?.toDate ? format(item.purchasedAt.toDate(), 'PPP') : 'N/A'}
+                                                    </p>
                                                 </div>
                                                 <Button asChild className="mt-4 sm:mt-0">
-                                                    <a href={item.downloadUrl} target="_blank" rel="noopener noreferrer">
+                                                    <a href={item.projectDownloadUrl} target="_blank" rel="noopener noreferrer">
                                                         <Download className="mr-2 h-4 w-4" />
                                                         Download Files
                                                     </a>
@@ -125,7 +135,7 @@ export default function ProfilePage() {
                                 <CardTitle>My Inquiries</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                {loadingInquiries ? (
+                                {loadingData ? (
                                     <div className="flex items-center justify-center h-32">
                                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                                     </div>

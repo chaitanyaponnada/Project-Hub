@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Zap, Ban, Bolt } from "lucide-react";
+import { ShoppingCart, CheckCircle, Download, Loader2, ArrowLeft, FileCheck2, Bolt } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -28,10 +28,10 @@ export default function ProjectDetailsPage() {
   const [loadingProject, setLoadingProject] = useState(true);
   
   const { user, loading: authLoading } = useAuth();
-  const { cartItems, addToCart, buyNow, purchasedItems } = useCart();
+  const { cartItems, addToCart, buyNow, purchasedProjectIds } = useCart();
   
   const isInCart = useMemo(() => cartItems.some(item => item.id === project?.id), [cartItems, project]);
-  const isPurchased = useMemo(() => purchasedItems.some(item => item.id === project?.id), [purchasedItems, project]);
+  const isPurchased = useMemo(() => purchasedProjectIds.includes(project?.id || ''), [purchasedProjectIds, project]);
 
   useEffect(() => {
     if (!authLoading && !user) {

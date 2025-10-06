@@ -15,12 +15,11 @@ interface CartItem extends Project {
 
 interface CartContextType {
   cartItems: CartItem[];
-  purchasedItems: CartItem[];
+  purchasedProjectIds: string[];
   addToCart: (project: Project) => void;
   buyNow: (project: Project) => void;
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
-  addPurchasedItems: (items: CartItem[]) => void;
   handleDummyCheckout: () => void;
   isCheckingOut: boolean;
   setIsCheckingOut: (isCheckingOut: boolean) => void;
@@ -33,7 +32,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
+  const [purchasedProjectIds, setPurchasedProjectIds] = useState<string[]>([]);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -43,7 +42,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!user) {
       setCartItems([]);
-      setPurchasedItems([]);
+      setPurchasedProjectIds([]);
       return;
     }
 
@@ -56,13 +55,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
     });
 
-    const purchasesDocRef = doc(db, 'purchases', user.uid);
-     const unsubscribePurchases = onSnapshot(purchasesDocRef, (doc) => {
-      if (doc.exists()) {
-        setPurchasedItems(doc.data().items || []);
-      } else {
-        setPurchasedItems([]);
-      }
+    const salesColRef = collection(db, 'sales');
+    const unsubscribePurchases = onSnapshot(collection(salesColRef), (snapshot) => {
+        const userSales = snapshot.docs
+            .map(doc => doc.data())
+            .filter(sale => sale.userId === user.uid);
+        setPurchasedProjectIds(userSales.map(sale => sale.projectId));
     });
 
     return () => {
@@ -77,28 +75,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     await setDoc(cartDocRef, { items: newCartItems }, { merge: true });
   };
   
-  const addPurchasedItems = async (items: CartItem[]) => {
+  const addItemsToSales = async (items: CartItem[]) => {
       if (!user || items.length === 0) return;
       
       const batch = writeBatch(db);
+      const salesColRef = collection(db, 'sales');
 
-      const purchasesDocRef = doc(db, 'purchases', user.uid);
-      const docSnap = await getDoc(purchasesDocRef);
-      const existingItems = docSnap.exists() ? docSnap.data().items : [];
-      
-      const itemsToAdd = items.filter(item => !existingItems.some((p: Project) => p.id === item.id));
+      const itemsToAdd = items.filter(item => !purchasedProjectIds.includes(item.id));
 
       if (itemsToAdd.length > 0) {
-        const newItems = [...existingItems, ...itemsToAdd.map(({...item}) => item)];
-        batch.set(purchasesDocRef, { items: newItems }, { merge: true });
-
-        const salesColRef = collection(db, 'sales');
         itemsToAdd.forEach(item => {
             const saleDocRef = doc(salesColRef);
             batch.set(saleDocRef, {
                 id: saleDocRef.id,
                 projectId: item.id,
                 projectTitle: item.title,
+                projectImageUrl: item.imageUrls[0],
+                projectDownloadUrl: item.downloadUrl,
                 price: item.price,
                 userId: user.uid,
                 userName: user.displayName,
@@ -138,7 +131,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     toast({ title: 'Processing Purchase', description: 'Please wait...' });
 
     setTimeout(async () => {
-      await addPurchasedItems([{ ...project, quantity: 1 }]);
+      await addItemsToSales([{ ...project, quantity: 1 }]);
       setIsCheckingOut(false);
       router.push('/checkout?status=success');
       toast({ title: 'Purchase Successful!', description: `${project.title} has been added to your profile.` });
@@ -175,7 +168,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       // Simulate network delay
       setTimeout(async () => {
         try {
-          await addPurchasedItems(cartItems);
+          await addItemsToSales(cartItems);
           clearCart();
           router.push('/checkout?status=success');
           toast({ title: 'Purchase Successful!', description: 'Your projects are now in your profile.' });
@@ -192,7 +185,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedItems, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, addPurchasedItems, handleDummyCheckout, isCheckingOut, setIsCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedProjectIds, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, handleDummyCheckout, isCheckingOut, setIsCheckingOut }}>
       {children}
     </CartContext.Provider>
   );

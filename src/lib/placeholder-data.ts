@@ -15,6 +15,21 @@ export type Project = {
   createdAt?: any;
 };
 
+export type Sale = {
+    id: string;
+    projectId: string;
+    projectTitle: string;
+    projectImageUrl: string;
+    projectDownloadUrl: string;
+    price: number;
+    userId: string;
+    userName: string;
+    userEmail: string;
+    userPhotoURL: string;
+    purchasedAt: any;
+}
+
+
 export const categories = [
   "Web Development",
   "Mobile App Development",
