@@ -56,7 +56,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setCartItems([]);
       }
     }, (error) => {
-        console.error("Cart snapshot error:", error);
         errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: cartDocRef.path,
             operation: 'get'
@@ -65,15 +64,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const salesColRef = collection(db, 'sales');
     const userSalesQuery = query(salesColRef, where("userId", "==", user.uid));
+    
     const unsubscribePurchases = onSnapshot(userSalesQuery, (snapshot) => {
         const userSales = snapshot.docs.map(doc => doc.data());
         setPurchasedProjectIds(userSales.map(sale => sale.projectId));
-    }, (error) => {
-        console.error("Purchases snapshot error:", error);
-        errorEmitter.emit('permission-error', new FirestorePermissionError({
-            path: salesColRef.path, // The collection path
-            operation: 'list' // This is a list operation
-        }));
+    }, async (serverError) => {
+        const permissionError = new FirestorePermissionError({
+            path: salesColRef.path,
+            operation: 'list'
+        });
+        errorEmitter.emit('permission-error', permissionError);
     });
 
 
