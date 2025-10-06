@@ -103,7 +103,7 @@ export function Header() {
   );
 
   return (
-    <header className={headerClasses} data-aos="slide-down-fade" data-aos-once="true">
+    <header className={headerClasses} data-aos="slide-down" data-aos-once="true">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2 mr-auto" data-aos="fade-down" data-aos-once="true">
           <Code className={cn("h-7 w-7", contentColorClass)} />
@@ -227,5 +227,3 @@ export function Header() {
     </header>
   );
 }
-
-    
