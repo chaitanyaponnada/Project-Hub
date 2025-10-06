@@ -35,11 +35,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [purchasedProjectIds, setPurchasedProjectIds] = useState<string[]>([]);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   // Fetch cart and purchased items from Firestore on user change
   useEffect(() => {
+    if (loading) {
+      return; // Wait until auth state is determined
+    }
+
     if (!user) {
       setCartItems([]);
       setPurchasedProjectIds([]);
@@ -56,7 +60,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
 
     const salesColRef = collection(db, 'sales');
-    const unsubscribePurchases = onSnapshot(collection(salesColRef), (snapshot) => {
+    const unsubscribePurchases = onSnapshot(salesColRef, (snapshot) => {
         const userSales = snapshot.docs
             .map(doc => doc.data())
             .filter(sale => sale.userId === user.uid);
@@ -67,7 +71,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         unsubscribeCart();
         unsubscribePurchases();
     }
-  }, [user]);
+  }, [user, loading]);
 
   const updateFirestoreCart = async (newCartItems: CartItem[]) => {
     if (!user) return;
