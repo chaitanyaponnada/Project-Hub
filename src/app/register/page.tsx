@@ -240,29 +240,9 @@ export default function RegisterPage() {
                   </span>
               </div>
 
-              <Button className="w-full bg-white text-black hover:bg-gray-100" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
+              <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
                    {isGoogleLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                    ) : (
                     <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                      <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8 0 120.8 109.8 8 244 8c66.8 0 126 25.5 169.1 65.5l-69.2 67.3c-24.6-23.5-58.9-38.1-99.9-38.1-82.6 0-149.7 67.5-149.7 150.3s67.1 150.3 149.7 150.3c95.2 0 132.3-73.3 135.8-109.5H244V261.8h244z"></path>
-                    </svg>
-                   )}
-                  Google
-              </Button>
-
-              <div className="text-center text-sm">
-                Already have an account?{" "}
-                <Link href="/login" className="underline text-primary hover:text-primary/80">
-                  Sign in
-                </Link>
-              </div>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
-    </div>
-  );
-}
-
-    
+                      <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8 0 120.8 109.8 8 244 8c66.8 0 126 25.5 169.1 65.5l-69.2 67.3c-24.6-23.5-58.
