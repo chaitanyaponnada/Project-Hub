@@ -395,8 +395,8 @@ export default function Home() {
                 </div>
             ) : reviews.length > 0 ? (
                 <div className="relative space-y-4" data-aos="fade-up" data-aos-delay="200">
-                    <MarqueeRow reviews={reviews.slice(0, Math.ceil(reviews.length / 2))} />
-                    <MarqueeRow reviews={reviews.slice(Math.ceil(reviews.length / 2))} direction="right" />
+                    <MarqueeRow reviews={reviews.slice(0, Math.floor(reviews.length / 2))} />
+                    <MarqueeRow reviews={reviews.slice(Math.floor(reviews.length / 2))} direction="right" />
                 </div>
             ) : (
                 <div className="text-center text-muted-foreground" data-aos="fade-up" data-aos-delay="200">
@@ -562,3 +562,5 @@ export default function Home() {
     </>
   );
 }
+
+    
