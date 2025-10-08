@@ -68,7 +68,7 @@ export default function AdminReviewsPage() {
   const filteredReviews = useMemo(() => {
     return reviews.filter(review =>
       review.reviewerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      review.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (review.projectName && review.projectName.toLowerCase().includes(searchTerm.toLowerCase())) ||
       review.reviewText.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [reviews, searchTerm]);

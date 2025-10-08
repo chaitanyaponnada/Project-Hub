@@ -14,7 +14,7 @@ import { Loader2 } from 'lucide-react';
 import type { Review } from '@/lib/placeholder-data';
 import { addReview, updateReview } from '@/lib/firebase-services';
 import { useState } from 'react';
-import { Slider } from '../ui/slider';
+import { Slider } from '@/components/ui/slider';
 
 const formSchema = z.object({
   reviewerName: z.string().min(2, 'Name must be at least 2 characters.'),

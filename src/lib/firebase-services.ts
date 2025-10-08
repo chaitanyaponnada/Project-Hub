@@ -268,7 +268,7 @@ export const getReviews = async (): Promise<Review[]> => {
             operation: 'list',
         });
         errorEmitter.emit('permission-error', permissionError);
-        throw serverError; // Propagate error to stop execution
+        return []; // Return empty array on permission error
     }
 };
 
@@ -291,8 +291,8 @@ export const getReviewById = async (id: string): Promise<Review | null> => {
 export const addReview = async (reviewData: Omit<Review, 'id' | 'createdAt'>) => {
     const reviewRef = doc(collection(db, 'reviews'));
     const dataToSave = {
-        id: reviewRef.id,
         ...reviewData,
+        id: reviewRef.id,
         createdAt: serverTimestamp()
     };
     try {

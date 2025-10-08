@@ -4,46 +4,61 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper function to check if a user is an admin
-    function isAdmin(userId) {
-      return exists(/databases/$(database)/documents/users/$(userId)) &&
-             get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == true;
+    // Helper functions
+    function isAuth() {
+      return request.auth != null;
     }
 
-    // projects: Publicly readable, admin writable
-    match /projects/{projectId} {
-      allow read: if true;
-      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    function isOwner(userId) {
+      return request.auth.uid == userId;
     }
     
-    // users: Users can create their own doc, read their own doc, and admins can read/write any.
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    function isUser() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    
+    // USERS
     match /users/{userId} {
-      allow read, update: if request.auth != null && (request.auth.uid == userId || isAdmin(request.auth.uid));
-      allow create: if request.auth != null; // Any authenticated user can create their user doc.
-      allow delete: if false; // Nobody can delete user documents
+      allow read, update: if isOwner(userId) || isAdmin();
+      allow create: if isAuth(); // Allow user creation on signup
+      allow delete: if isAdmin();
     }
     
-    // carts: Users can read/write their own cart. Admins can read any cart.
-    match /carts/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    
-    // purchases: Users can read/write their own purchases. Admins can read any.
-    match /purchases/{userId} {
-       allow read, write: if request.auth != null && request.auth.uid == userId;
+    // PROJECTS
+    match /projects/{projectId} {
+      allow read: if isAuth(); // Allow authenticated users to see projects
+      allow create, update, delete: if isAdmin();
     }
 
-    // inquiries: Authenticated users can create. Users can read their own. Admins can read all.
-    match /inquiries/{inquiryId} {
-        allow create: if request.auth != null;
-        allow read: if request.auth != null && (request.resource.data.userId == request.auth.uid || isAdmin(request.auth.uid));
-        allow write: if request.auth != null && isAdmin(request.auth.uid);
+    // REVIEWS
+    match /reviews/{reviewId} {
+      allow read: if true; // Everyone can read reviews
+      allow create, update, delete: if isAdmin();
     }
     
-    // sales: Read-only for admins
+    // CARTS
+    match /carts/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // SALES
     match /sales/{saleId} {
-        allow read: if request.auth != null && isAdmin(request.auth.uid);
-        allow write: if false; // Can only be written via backend logic (or batch writes from trusted code).
+      // Allow user to create a sale record for themselves upon checkout
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      // Allow owner to read their own sales, and admin to read all sales
+      allow read: if (isAuth() && isOwner(resource.data.userId)) || isAdmin();
+      allow list: if isAdmin(); // Only admins can list all sales
+      allow update, delete: if isAdmin();
+    }
+    
+    // INQUIRIES
+    match /inquiries/{inquiryId} {
+        allow create: if true; // Anyone can send an inquiry
+        allow read, list, update, delete: if isAdmin();
     }
   }
 }
