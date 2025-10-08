@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ProjectCard } from "@/components/project-card"
-import { categories } from "@/lib/placeholder-data"
+import { categories, projectTypes } from "@/lib/placeholder-data"
 import { Search, Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth";
 import type { Project } from "@/lib/placeholder-data";
@@ -25,6 +25,7 @@ function ProjectsContent() {
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [category, setCategory] = useState(searchParams.get('category') || 'all');
+  const [projectType, setProjectType] = useState(searchParams.get('type') || 'all');
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -58,28 +59,47 @@ function ProjectsContent() {
     if (currentCategory !== 'all') {
       results = results.filter(p => p.category.toLowerCase().replace(" ", "-") === currentCategory);
     }
+
+    const currentProjectType = searchParams.get('type') || 'all';
+    if (currentProjectType !== 'all') {
+      results = results.filter(p => p.projectType.toLowerCase().replace(" ", "-") === currentProjectType);
+    }
     
     setFilteredProjects(results);
     setSearchTerm(currentSearch);
     setCategory(currentCategory);
+    setProjectType(currentProjectType);
 
   }, [searchParams, projects]);
 
+  const updateURLParams = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) params.set('q', searchTerm);
+    if (category !== 'all') params.set('category', category);
+    if (projectType !== 'all') params.set('type', projectType);
+    router.push(`/projects?${params.toString()}`);
+  }
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const params = new URLSearchParams(searchParams);
-    params.set('q', searchTerm);
-    router.push(`/projects?${params.toString()}`);
+    updateURLParams();
   };
 
   const handleCategoryChange = (value: string) => {
+    const newCategory = value;
+    setCategory(newCategory);
     const params = new URLSearchParams(searchParams);
-    if (value === 'all') {
-      params.delete('category');
-    } else {
-      params.set('category', value);
-    }
-    setCategory(value);
+    if (newCategory === 'all') params.delete('category');
+    else params.set('category', newCategory);
+    router.push(`/projects?${params.toString()}`);
+  };
+
+  const handleProjectTypeChange = (value: string) => {
+    const newProjectType = value;
+    setProjectType(newProjectType);
+    const params = new URLSearchParams(searchParams);
+    if (newProjectType === 'all') params.delete('type');
+    else params.set('type', newProjectType.toLowerCase().replace(" ", "-"));
     router.push(`/projects?${params.toString()}`);
   };
 
@@ -102,8 +122,8 @@ function ProjectsContent() {
         </p>
       </header>
       
-      <form onSubmit={handleSearch} className="mb-8 flex flex-col md:flex-row gap-4 animate-fade-in-up">
-        <div className="relative flex-1">
+      <form onSubmit={handleSearch} className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 animate-fade-in-up">
+        <div className="relative md:col-span-2">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input 
             name="search"
@@ -114,7 +134,7 @@ function ProjectsContent() {
           />
         </div>
         <Select value={category} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="w-full md:w-[200px]">
+          <SelectTrigger>
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent>
@@ -126,7 +146,19 @@ function ProjectsContent() {
             ))}
           </SelectContent>
         </Select>
-        <Button type="submit">Search</Button>
+        <Select value={projectType} onValueChange={handleProjectTypeChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Filter by type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Types</SelectItem>
+            {projectTypes.map((type) => (
+              <SelectItem key={type} value={type.toLowerCase().replace(" ", "-")}>
+                {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </form>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -155,4 +187,3 @@ export default function ProjectsPage() {
     </Suspense>
   )
 }
-

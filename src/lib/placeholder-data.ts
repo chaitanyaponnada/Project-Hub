@@ -4,6 +4,7 @@ export type Project = {
   title: string;
   description: string;
   category: string;
+  projectType: string;
   technologies: string[];
   price: number;
   originalPrice?: number;
@@ -52,6 +53,8 @@ export const categories = [
   "Robotics",
   "Game Development",
 ];
+
+export const projectTypes = ["Major Project", "Mini Project"];
 
 export const defaultTags = [
     "Selling Fast",

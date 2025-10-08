@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2, Trash2 } from 'lucide-react';
 import type { Project } from '@/lib/placeholder-data';
-import { categories, defaultTags } from '@/lib/placeholder-data';
+import { categories, defaultTags, projectTypes } from '@/lib/placeholder-data';
 import { addProject, updateProject } from '@/lib/firebase-services';
 import { useState } from 'react';
 
@@ -21,6 +21,7 @@ const formSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters.'),
   description: z.string().min(20, 'Description must be at least 20 characters.'),
   category: z.string().min(2, 'Category is required.'),
+  projectType: z.string().min(2, 'Project type is required.'),
   price: z.coerce.number().min(0, 'Price must be a positive number.'),
   originalPrice: z.coerce.number().optional().or(z.literal('')),
   technologies: z.array(z.object({ value: z.string().min(1, "Technology cannot be empty.") })).min(1, "At least one technology is required."),
@@ -48,10 +49,12 @@ export function ProjectForm({ project }: ProjectFormProps) {
       tags: project.tags ? project.tags.map(value => ({ value })) : [],
       imageUrls: project.imageUrls.map(value => ({ value })),
       originalPrice: project.originalPrice || '',
+      projectType: project.projectType || '',
   } : {
     title: '',
     description: '',
     category: '',
+    projectType: '',
     price: 0,
     originalPrice: '',
     technologies: [{ value: '' }],
@@ -216,6 +219,28 @@ export function ProjectForm({ project }: ProjectFormProps) {
                     )}
                     />
                 <FormField
+                    control={form.control}
+                    name="projectType"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Project Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a project type" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {projectTypes.map((type) => (
+                                <SelectItem key={type} value={type}>{type}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
                   control={form.control}
                   name="downloadUrl"
                   render={({ field }) => (
@@ -245,5 +270,3 @@ export function ProjectForm({ project }: ProjectFormProps) {
     </Form>
   );
 }
-
-    

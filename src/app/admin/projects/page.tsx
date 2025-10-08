@@ -117,6 +117,7 @@ export default function AdminProjectsPage() {
             <TableHeader>
                 <TableRow>
                 <TableHead>Title</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Actions</TableHead>
@@ -126,6 +127,9 @@ export default function AdminProjectsPage() {
                 {filteredProjects.map((project) => (
                 <TableRow key={project.id}>
                     <TableCell className="font-medium">{project.title}</TableCell>
+                     <TableCell>
+                      <Badge variant="outline">{project.projectType}</Badge>
+                    </TableCell>
                     <TableCell>
                     <Badge variant="outline">{project.category}</Badge>
                     </TableCell>

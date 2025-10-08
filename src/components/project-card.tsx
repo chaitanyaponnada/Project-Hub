@@ -34,7 +34,10 @@ export function ProjectCard({ project, isBlurred = false }: ProjectCardProps) {
         )}
       </CardHeader>
       <CardContent className="flex-1 p-4">
-        <Badge variant="secondary" className="mb-2 text-xs">{project.category}</Badge>
+        <div className="flex justify-between items-center mb-2">
+            <Badge variant="secondary" className="text-xs">{project.category}</Badge>
+            <Badge variant="outline" className="text-xs">{project.projectType}</Badge>
+        </div>
         <CardTitle className="font-headline text-lg mb-2 leading-tight">
           {project.title}
         </CardTitle>
