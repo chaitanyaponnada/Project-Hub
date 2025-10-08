@@ -29,6 +29,15 @@ export type Sale = {
     purchasedAt: any;
 }
 
+export type Review = {
+  id: string;
+  rating: number;
+  reviewerImageUrl: string;
+  reviewerName: string;
+  reviewText: string;
+  projectName: string;
+};
+
 
 export const categories = [
   "Web Development",
@@ -115,5 +124,48 @@ export const faqs = [
   {
     question: "How long does it take to develop and deliver a custom project?",
     answer: "The timeline for a custom project depends on its complexity and your specific requirements. After our initial discussion, we'll provide a detailed project plan with key milestones and a final delivery date. We are committed to timely delivery without compromising on quality."
+  }
+];
+
+export const reviews: Review[] = [
+  {
+    id: "review-1",
+    rating: 5,
+    reviewerImageUrl: "https://i.pravatar.cc/150?img=1",
+    reviewerName: "Alex Johnson",
+    reviewText: "Incredible value! The code was clean and the documentation was so easy to follow. Saved me weeks of work.",
+    projectName: "AI Shopping Assistant"
+  },
+  {
+    id: "review-2",
+    rating: 5,
+    reviewerImageUrl: "https://i.pravatar.cc/150?img=2",
+    reviewerName: "Priya Sharma",
+    reviewText: "The mobile fitness planner project was exactly what I needed for my portfolio. Highly recommended for students.",
+    projectName: "Mobile Fitness Planner"
+  },
+  {
+    id: "review-3",
+    rating: 4,
+    reviewerImageUrl: "https://i.pravatar.cc/150?img=3",
+    reviewerName: "David Lee",
+    reviewText: "A solid foundation for my sentiment analysis tool. The API was well-structured and easy to integrate.",
+    projectName: "Sentiment Analysis API"
+  },
+  {
+    id: "review-4",
+    rating: 5,
+    reviewerImageUrl: "https://i.pravatar.cc/150?img=4",
+    reviewerName: "Maria Garcia",
+    reviewText: "Project Hub is a lifesaver for B.Tech students. The quality of projects is top-notch. Will be back for more!",
+    projectName: "AI Shopping Assistant"
+  },
+  {
+    id: "review-5",
+    rating: 4,
+    reviewerImageUrl: "https://i.pravatar.cc/150?img=5",
+    reviewerName: "Chen Wei",
+    reviewText: "Great starting point. I was able to customize the fitness app easily and add my own features.",
+    projectName: "Mobile Fitness Planner"
   }
 ];

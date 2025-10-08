@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Code, Feather, Zap, Target, Loader2, Send, Lightbulb } from "lucide-react";
-import { categories, faqs } from "@/lib/placeholder-data";
-import type { Project } from "@/lib/placeholder-data";
+import { categories, faqs, reviews } from "@/lib/placeholder-data";
+import type { Project, Review } from "@/lib/placeholder-data";
 import { useAuth } from "@/hooks/use-auth";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect, useRef } from "react";
 import { ProjectCard } from "@/components/project-card";
+import { ReviewCard } from "@/components/review-card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from 'embla-carousel-autoplay';
 import { useTheme } from "next-themes";
@@ -115,6 +116,10 @@ export default function Home() {
 
   const plugin = useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
+  
+  const reviewsPlugin = useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
   );
 
   useEffect(() => {
@@ -336,9 +341,45 @@ export default function Home() {
               </div>
             </div>
         </section>
+        
+        {/* Reviews Section */}
+        <section id="reviews" className="py-20 bg-muted/30 section-gradient">
+            <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
+              <header className="mb-12 text-center" data-aos="fade-up">
+                <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">What Our Customers Say</h2>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Real feedback from students and developers who use our projects.
+                </p>
+              </header>
+              
+              <Carousel 
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    plugins={[reviewsPlugin.current]}
+                    onMouseEnter={() => reviewsPlugin.current.stop()}
+                    onMouseLeave={() => reviewsPlugin.current.reset()}
+                    className="w-full max-w-sm sm:max-w-xl md:max-w-4xl lg:max-w-6xl mx-auto"
+                    data-aos="fade-up" data-aos-delay="200"
+                >
+                    <CarouselContent className="-ml-4">
+                        {reviews.map((review) => (
+                        <CarouselItem key={review.id} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                            <div className="p-1">
+                                <ReviewCard review={review} />
+                            </div>
+                        </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-0 sm:left-[-50px] z-20" />
+                    <CarouselNext className="right-0 sm:right-[-50px] z-20" />
+                </Carousel>
+            </div>
+        </section>
 
         {/* About Section */}
-        <section id="about" className="py-20 bg-muted/30 section-gradient">
+        <section id="about" className="py-20 section-gradient">
             <div className="container mx-auto px-4 relative z-20">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div data-aos="fade-right">
@@ -368,7 +409,7 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="py-20 section-gradient">
+        <section id="faq" className="py-20 bg-muted/30 section-gradient">
           <div className="container mx-auto px-4 relative z-20">
             <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
@@ -390,7 +431,7 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 bg-muted/30 section-gradient">
+        <section id="contact" className="py-20 section-gradient">
           <div className="container mx-auto px-4 relative z-20">
             <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
@@ -492,12 +533,3 @@ export default function Home() {
     </>
   );
 }
-
-    
-
-
-
-
-    
-
-    
