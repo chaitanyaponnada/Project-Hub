@@ -128,7 +128,7 @@ export default function ProfilePage() {
                                     <div className="text-center p-12 border-dashed rounded-lg">
                                         <Package className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
                                         <h2 className="font-headline text-2xl font-semibold mb-2">No Projects Purchased</h2>
-                                        <p className="text-muted-foreground mb-6">Your purchased projects will appear here once you complete a checkout. Currently not available.</p>
+                                        <p className="text-muted-foreground mb-6">Your purchased projects will appear here. Currently not available.</p>
                                         <Button onClick={() => router.push('/projects')}>Browse Projects</Button>
                                     </div>
                                 )}
