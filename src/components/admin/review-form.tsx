@@ -57,22 +57,19 @@ export function ReviewForm({ review }: ReviewFormProps) {
   const onSubmit = async (data: ReviewFormValues) => {
     setIsLoading(true);
 
-    try {
-        if (review) {
-            await updateReview(review.id, data);
-            toast({ title: 'Review Updated', description: `The review has been successfully updated.` });
-        } else {
-            await addReview(data);
-            toast({ title: 'Review Added', description: `The new review has been successfully added.` });
-        }
-        router.push('/admin/reviews');
-        router.refresh();
-    } catch (error) {
-        toast({ title: 'Error', description: 'An unexpected error occurred.', variant: 'destructive' });
-        console.error("Error submitting review:", error);
-    } finally {
-        setIsLoading(false);
+    if (review) {
+        await updateReview(review.id, data);
+        toast({ title: 'Review Updated', description: `The review has been successfully updated.` });
+    } else {
+        await addReview(data);
+        toast({ title: 'Review Added', description: `The new review has been successfully added.` });
     }
+    router.push('/admin/reviews');
+    router.refresh();
+
+    // No need for a generic catch block here;
+    // let the FirebaseErrorListener handle specific permission errors.
+    setIsLoading(false);
   };
 
   return (
