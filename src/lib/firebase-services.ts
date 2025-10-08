@@ -226,8 +226,17 @@ export const getInquiriesByUserId = async (userId: string) => {
     if (!userId) return [];
     const inquiriesCol = collection(db, 'inquiries');
     const q = query(inquiriesCol, where("userId", "==", userId), orderBy("receivedAt", "desc"));
-    const inquirySnapshot = await getDocs(q);
-    return inquirySnapshot.docs.map(doc => doc.data());
+    try {
+        const inquirySnapshot = await getDocs(q);
+        return inquirySnapshot.docs.map(doc => doc.data());
+    } catch (serverError) {
+        const permissionError = new FirestorePermissionError({
+            path: inquiriesCol.path,
+            operation: 'list',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        return [];
+    }
 };
 
 /**
