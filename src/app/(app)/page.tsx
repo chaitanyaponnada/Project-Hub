@@ -90,6 +90,19 @@ const HeroBackground = () => {
   );
 };
 
+const MarqueeRow = ({ reviews, direction = 'left' }: { reviews: Review[], direction?: 'left' | 'right' }) => {
+    const animationClass = direction === 'left' ? 'animate-marquee-left' : 'animate-marquee-right';
+    return (
+        <div className={cn("flex space-x-4", animationClass)}>
+            {[...reviews, ...reviews].map((review, index) => (
+                <div key={`${review.id}-${index}`} className="flex-shrink-0 w-80">
+                    <ReviewCard review={review} />
+                </div>
+            ))}
+        </div>
+    );
+};
+
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -119,9 +132,6 @@ export default function Home() {
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
   
-  const reviewsPlugin = useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
-  );
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -344,7 +354,7 @@ export default function Home() {
         </section>
         
         {/* Reviews Section */}
-        <section id="reviews" className="py-20 md:py-32 bg-muted/30 section-gradient">
+        <section id="reviews" className="py-20 md:py-32 bg-muted/30 section-gradient overflow-hidden">
             <div className="container mx-auto px-4 relative" data-aos="fade-up">
               <header className="mb-16 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">What Our Customers Say</h2>
@@ -352,31 +362,12 @@ export default function Home() {
                   Real feedback from students and developers who use our projects.
                 </p>
               </header>
-              
-              <Carousel 
-                    opts={{
-                        align: "start",
-                        loop: true,
-                    }}
-                    plugins={[reviewsPlugin.current]}
-                    onMouseEnter={() => reviewsPlugin.current.stop()}
-                    onMouseLeave={() => reviewsPlugin.current.reset()}
-                    className="w-full max-w-sm sm:max-w-xl md:max-w-4xl lg:max-w-6xl mx-auto"
-                    data-aos="fade-up" data-aos-delay="200"
-                >
-                    <CarouselContent className="-ml-4">
-                        {reviews.map((review) => (
-                        <CarouselItem key={review.id} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                            <div className="p-1">
-                                <ReviewCard review={review} />
-                            </div>
-                        </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="left-0 sm:-left-12" />
-                    <CarouselNext className="right-0 sm:-right-12" />
-                </Carousel>
             </div>
+             <div className="relative space-y-4" data-aos="fade-up" data-aos-delay="200">
+                <MarqueeRow reviews={reviews.slice(0, 3)} />
+                <MarqueeRow reviews={reviews.slice(3, 5)} direction="right" />
+                <MarqueeRow reviews={reviews.slice(1, 4)} />
+             </div>
         </section>
 
         {/* About Section */}
@@ -534,5 +525,3 @@ export default function Home() {
     </>
   );
 }
-
-    
