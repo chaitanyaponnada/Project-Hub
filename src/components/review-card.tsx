@@ -30,26 +30,6 @@ export function ReviewCard({ review }: ReviewCardProps) {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 
-  const HighlightedReviewText = ({ text, highlight }: { text: string, highlight?: string }) => {
-    if (!highlight) {
-      return <>{text}</>;
-    }
-    const parts = text.split(new RegExp(`(${highlight})`, 'i'));
-    return (
-      <>
-        {parts.map((part, index) =>
-          part.toLowerCase() === highlight.toLowerCase() ? (
-            <span key={index} className="bg-primary/20 text-primary font-bold px-1 rounded-sm">
-              {part}
-            </span>
-          ) : (
-            part
-          )
-        )}
-      </>
-    );
-  };
-
   return (
     <Card className="h-full flex flex-col p-6 text-left transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
         <div className="flex items-start justify-between mb-4">
@@ -72,7 +52,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
              )}
              <p className="text-muted-foreground text-sm leading-relaxed">
                <span className="text-3xl font-bold text-primary/30 mr-1">“</span>
-               <HighlightedReviewText text={review.reviewText} highlight={review.highlightWord} />
+               {review.reviewText}
                <span className="text-3xl font-bold text-primary/30 ml-1">”</span>
             </p>
              <div className="flex items-center gap-2 text-xs text-muted-foreground pt-3 border-t border-dashed">

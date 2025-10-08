@@ -24,7 +24,6 @@ const formSchema = z.object({
   projectName: z.string().min(2, 'Project name is required.'),
   reviewText: z.string().min(10, 'Review text must be at least 10 characters.'),
   rating: z.number().min(1).max(5),
-  highlightWord: z.string().optional(),
   reviewTitle: z.string().optional(),
 });
 
@@ -41,7 +40,6 @@ export function ReviewForm({ review }: ReviewFormProps) {
 
   const defaultValues = review ? {
       ...review,
-      highlightWord: review.highlightWord || '',
       reviewTitle: review.reviewTitle || '',
   } : {
     reviewerName: '',
@@ -51,7 +49,6 @@ export function ReviewForm({ review }: ReviewFormProps) {
     projectName: '',
     reviewText: '',
     rating: 5,
-    highlightWord: '',
     reviewTitle: '',
   }
 
@@ -187,20 +184,6 @@ export function ReviewForm({ review }: ReviewFormProps) {
                       <FormControl>
                         <Textarea placeholder="The project was amazing..." {...field} rows={4} />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
-                  control={form.control}
-                  name="highlightWord"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Highlight Word (Optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., amazing" {...field} />
-                      </FormControl>
-                      <FormDescription>The first instance of this word will be highlighted in the review.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
