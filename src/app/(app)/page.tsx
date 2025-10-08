@@ -64,7 +64,6 @@ const HeroBackground = () => {
   if (!isClient) {
     return (
       <div className="absolute top-0 left-0 w-full h-full bg-background z-0">
-        <div className="absolute inset-0 bg-background/50"></div>
         <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
       </div>
     );
@@ -258,7 +257,7 @@ export default function Home() {
             </h1>
             
             <div className="glowing-border-container" data-aos="zoom-in" data-aos-delay="300">
-              <p className="text-md md:text-lg text-white">
+              <p className="text-md md:text-lg text-black dark:text-white">
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
