@@ -96,14 +96,14 @@ const MarqueeRow = ({ reviews, direction = 'left' }: { reviews: Review[], direct
       <div className="flex space-x-4">
         <div className={cn("flex-shrink-0 flex space-x-4", animationClass)}>
           {reviews.map((review, index) => (
-            <div key={`${review.id}-${index}-1`} className="w-[350px]">
+            <div key={`${review.id}-${index}-1`} className="w-[400px]">
               <ReviewCard review={review} />
             </div>
           ))}
         </div>
         <div className={cn("flex-shrink-0 flex space-x-4", animationClass)}>
           {reviews.map((review, index) => (
-            <div key={`${review.id}-${index}-2`} className="w-[350px]">
+            <div key={`${review.id}-${index}-2`} className="w-[400px]">
               <ReviewCard review={review} />
             </div>
           ))}
@@ -448,7 +448,9 @@ export default function Home() {
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq: any, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="border-b">
-                    <AccordionTrigger className={cn("font-semibold text-lg hover:no-underline text-left", faq.highlight && "text-destructive")}>{faq.question}</AccordionTrigger>
+                    <AccordionTrigger className={cn("text-lg hover:no-underline text-left", faq.highlight ? "text-destructive font-bold" : "font-semibold")}>
+                      {faq.question}
+                    </AccordionTrigger>
                     <AccordionContent className="text-muted-foreground text-base">
                       {faq.answer}
                     </AccordionContent>
