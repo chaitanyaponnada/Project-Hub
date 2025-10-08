@@ -366,7 +366,6 @@ export default function Home() {
              <div className="relative space-y-4" data-aos="fade-up" data-aos-delay="200">
                 <MarqueeRow reviews={reviews.slice(0, 3)} />
                 <MarqueeRow reviews={reviews.slice(3, 5)} direction="right" />
-                <MarqueeRow reviews={reviews.slice(1, 4)} />
              </div>
         </section>
 
