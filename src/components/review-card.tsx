@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MapPin, ShoppingBag } from "lucide-react";
 import type { Review } from "@/lib/placeholder-data";
+import { Badge } from "./ui/badge";
 
 interface ReviewCardProps {
   review: Review;
@@ -66,6 +67,9 @@ export function ReviewCard({ review }: ReviewCardProps) {
         </div>
 
         <CardContent className="flex-1 p-0 mt-2 space-y-3">
+             {review.reviewTitle && (
+                <Badge variant="secondary" className="text-sm font-semibold mb-2">{review.reviewTitle}</Badge>
+             )}
              <p className="text-muted-foreground text-sm leading-relaxed">
                <span className="text-3xl font-bold text-primary/30 mr-1">“</span>
                <HighlightedReviewText text={review.reviewText} highlight={review.highlightWord} />

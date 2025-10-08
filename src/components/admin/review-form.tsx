@@ -25,6 +25,7 @@ const formSchema = z.object({
   reviewText: z.string().min(10, 'Review text must be at least 10 characters.'),
   rating: z.number().min(1).max(5),
   highlightWord: z.string().optional(),
+  reviewTitle: z.string().optional(),
 });
 
 type ReviewFormValues = z.infer<typeof formSchema>;
@@ -40,7 +41,8 @@ export function ReviewForm({ review }: ReviewFormProps) {
 
   const defaultValues = review ? {
       ...review,
-      highlightWord: review.highlightWord || ''
+      highlightWord: review.highlightWord || '',
+      reviewTitle: review.reviewTitle || '',
   } : {
     reviewerName: '',
     reviewerDesignation: '',
@@ -49,7 +51,8 @@ export function ReviewForm({ review }: ReviewFormProps) {
     projectName: '',
     reviewText: '',
     rating: 5,
-    highlightWord: ''
+    highlightWord: '',
+    reviewTitle: '',
   }
 
   const form = useForm<ReviewFormValues>({
@@ -128,6 +131,24 @@ export function ReviewForm({ review }: ReviewFormProps) {
                     </FormItem>
                   )}
                 />
+                 <FormField
+                    control={form.control}
+                    name="rating"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Rating: {field.value}</FormLabel>
+                            <FormControl>
+                                <Slider
+                                    min={1}
+                                    max={5}
+                                    step={1}
+                                    defaultValue={[field.value]}
+                                    onValueChange={(value) => field.onChange(value[0])}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
             </div>
             <div className="space-y-6">
                  <FormField
@@ -143,6 +164,20 @@ export function ReviewForm({ review }: ReviewFormProps) {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="reviewTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Review Title (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Amazing!" {...field} />
+                      </FormControl>
+                       <FormDescription>A short, catchy title for the review.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                  <FormField
                   control={form.control}
                   name="reviewText"
@@ -150,7 +185,7 @@ export function ReviewForm({ review }: ReviewFormProps) {
                     <FormItem>
                       <FormLabel>Review Text</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="The project was amazing..." {...field} rows={5} />
+                        <Textarea placeholder="The project was amazing..." {...field} rows={4} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -169,24 +204,6 @@ export function ReviewForm({ review }: ReviewFormProps) {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-                <FormField
-                    control={form.control}
-                    name="rating"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Rating: {field.value}</FormLabel>
-                            <FormControl>
-                                <Slider
-                                    min={1}
-                                    max={5}
-                                    step={1}
-                                    defaultValue={[field.value]}
-                                    onValueChange={(value) => field.onChange(value[0])}
-                                />
-                            </FormControl>
-                        </FormItem>
-                    )}
                 />
             </div>
         </div>

@@ -39,6 +39,7 @@ export type Review = {
   reviewText: string;
   projectName: string;
   highlightWord?: string;
+  reviewTitle?: string;
   createdAt?: any;
   lastUpdatedAt?: any;
 };
