@@ -1,44 +1,81 @@
-
 rules_version = '2';
+
+// Helper functions to improve readability and reuse
+function isSignedIn() {
+  return request.auth != null;
+}
+
+function isOwner(userId) {
+  return isSignedIn() && request.auth.uid == userId;
+}
+
+function isAdmin() {
+  // An admin user has a custom claim { isAdmin: true } in their auth token.
+  // Or, we can check a field in their user document in Firestore.
+  // Checking the user document is more flexible as it doesn't require a custom function to set claims.
+  return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+}
+
+function isUserOrAdmin(userId) {
+    return isOwner(userId) || isAdmin();
+}
+
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isAdmin(userId) {
-      return exists(/databases/$(database)/documents/users/$(userId)) && get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == true;
-    }
-
+    // Rules for the 'users' collection
     match /users/{userId} {
-      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin(request.auth.uid));
-      allow create: if request.auth != null;
-      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin(request.auth.uid));
-      allow delete: if isAdmin(request.auth.uid);
+      // Allow read access for the owner of the document or an admin.
+      allow read: if isUserOrAdmin(userId);
+      // Allow a user to create their own document.
+      allow create: if isOwner(userId);
+      // Allow a user to update their own document, but not change their admin status.
+      allow update: if isOwner(userId) && request.resource.data.isAdmin == resource.data.isAdmin;
+      // Disallow deleting user documents.
+      allow delete: if false;
     }
     
+    // Rules for the 'projects' collection
     match /projects/{projectId} {
-      allow read;
-      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
+      // Anyone can read project data.
+      allow read: if true;
+      // Only admins can create, update, or delete projects.
+      allow write: if isAdmin();
     }
     
+    // Rules for the 'reviews' collection
     match /reviews/{reviewId} {
-      allow read;
-      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
-    }
-    
-    match /carts/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    
-    match /sales/{saleId} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin(request.auth.uid));
-      allow update, delete: if isAdmin(request.auth.uid);
+        // Anyone can read reviews.
+        allow read: if true;
+        // Only admins can create, update, or delete reviews.
+        allow write: if isAdmin();
     }
 
+    // Rules for user shopping carts
+    match /carts/{userId} {
+      // A user can only read, create, update, and delete their own cart.
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Rules for the 'sales' collection to track purchases
+    match /sales/{saleId} {
+        // A signed-in user can create a sale record for themselves.
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+        // A user can read their own sales records. Admins can read all sales records.
+        allow read: if isUserOrAdmin(resource.data.userId);
+        // Sales records should not be updated or deleted by clients to maintain integrity. Admins can delete via batch in functions if needed.
+        allow update, delete: if false;
+    }
+
+    // Rules for the 'inquiries' collection from the contact form
     match /inquiries/{inquiryId} {
-      allow create; // Anyone can submit an inquiry
-      allow read: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin(request.auth.uid));
-      allow update, delete: if isAdmin(request.auth.uid);
+      // Anyone can create an inquiry (submit the contact form).
+      allow create: if true;
+      // A user can read their own inquiry if they were logged in when they sent it. Admins can read all inquiries.
+      allow read: if (resource.data.userId != null && isUserOrAdmin(resource.data.userId)) || isAdmin();
+      // Only admins can update or delete inquiries.
+      allow update, delete: if isAdmin();
     }
   }
 }
