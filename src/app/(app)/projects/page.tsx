@@ -92,7 +92,7 @@ function ProjectsContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-16 md:py-24">
       <header className="mb-12 text-center animate-fade-in-down">
         <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-2">
           Project Marketplace
@@ -155,3 +155,4 @@ export default function ProjectsPage() {
     </Suspense>
   )
 }
+

@@ -30,7 +30,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
   }
 
   return (
-    <Card className="h-full flex flex-col p-6 text-left">
+    <Card className="h-[200px] flex flex-col p-6 text-left">
         <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
                 <Avatar className="h-14 w-14 border-2 border-primary/10">
@@ -49,10 +49,11 @@ export function ReviewCard({ review }: ReviewCardProps) {
             <StarRating rating={review.rating} />
         </div>
         <CardContent className="flex-1 p-0 mt-4">
-            <p className="text-muted-foreground text-sm line-clamp-2">
+            <p className="text-muted-foreground text-sm line-clamp-3">
                 "{review.reviewText}"
             </p>
         </CardContent>
     </Card>
   );
 }
+
