@@ -31,23 +31,27 @@ export function ReviewCard({ review }: ReviewCardProps) {
   }
 
   return (
-    <Card className="h-full flex flex-col p-6 text-center">
-        <CardContent className="flex-1 flex flex-col items-center justify-center p-0">
-            <StarRating rating={review.rating} />
-            <p className="mt-4 text-muted-foreground italic line-clamp-2 h-[40px]">
-                "{review.reviewText}"
-            </p>
-        </CardContent>
-        <div className="mt-6 flex flex-col items-center">
-            <Avatar className="h-14 w-14 mb-2">
+    <Card className="h-full flex flex-col p-6">
+        <div className="flex items-center gap-4">
+            <Avatar className="h-14 w-14">
                 <AvatarImage src={review.reviewerImageUrl} alt={review.reviewerName} />
                 <AvatarFallback>{getInitials(review.reviewerName)}</AvatarFallback>
             </Avatar>
-            <h4 className="font-semibold text-primary">{review.reviewerName}</h4>
-            <p className="text-sm text-muted-foreground">
-                Purchased: <span className="font-medium">{review.projectName}</span>
-            </p>
+            <div className="text-left">
+                <h4 className="font-semibold text-primary">{review.reviewerName}</h4>
+                 <p className="text-sm text-muted-foreground">
+                    Purchased: <span className="font-medium">{review.projectName}</span>
+                </p>
+            </div>
         </div>
+        <CardContent className="flex-1 flex flex-col items-start justify-center p-0 mt-4">
+            <StarRating rating={review.rating} />
+            <p className="mt-2 text-muted-foreground text-left">
+                "{review.reviewText}"
+            </p>
+        </CardContent>
     </Card>
   );
 }
+
+    

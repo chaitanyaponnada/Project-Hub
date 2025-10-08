@@ -93,17 +93,17 @@ const HeroBackground = () => {
 const MarqueeRow = ({ reviews, direction = 'left' }: { reviews: Review[], direction?: 'left' | 'right' }) => {
     const animationClass = direction === 'left' ? 'animate-marquee-left' : 'animate-marquee-right';
     return (
-      <div className={cn("flex space-x-4", animationClass)}>
-        <div className="flex-shrink-0 flex space-x-4">
+      <div className="flex space-x-4">
+        <div className={cn("flex-shrink-0 flex space-x-4", animationClass)}>
           {reviews.map((review, index) => (
-            <div key={`${review.id}-${index}-1`} className="w-80">
+            <div key={`${review.id}-${index}-1`} className="w-[350px]">
               <ReviewCard review={review} />
             </div>
           ))}
         </div>
-        <div className="flex-shrink-0 flex space-x-4">
+        <div className={cn("flex-shrink-0 flex space-x-4", animationClass)}>
           {reviews.map((review, index) => (
-            <div key={`${review.id}-${index}-2`} className="w-80">
+            <div key={`${review.id}-${index}-2`} className="w-[350px]">
               <ReviewCard review={review} />
             </div>
           ))}
@@ -265,7 +265,7 @@ export default function Home() {
       
       <div className="relative z-10 bg-background">
         {/* Features Section */}
-        <section className="py-16 md:py-24 section-gradient">
+        <section className="py-16 md:py-20 section-gradient">
            <div className="container mx-auto px-4 relative">
             <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
@@ -313,7 +313,7 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="py-16 md:py-24 section-gradient">
+        <section id="projects" className="py-16 md:py-20 section-gradient">
             <div className="container mx-auto px-4 relative" data-aos="fade-up">
               <header className="mb-12 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
@@ -363,7 +363,7 @@ export default function Home() {
         </section>
         
         {/* Reviews Section */}
-        <section id="reviews" className="py-16 md:py-24 bg-muted/30 section-gradient overflow-hidden">
+        <section id="reviews" className="py-16 md:py-20 bg-muted/30 section-gradient overflow-hidden">
             <div className="container mx-auto px-4 relative" data-aos="fade-up">
               <header className="mb-12 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">What Our Customers Say</h2>
@@ -379,7 +379,7 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-16 md:py-24 section-gradient">
+        <section id="about" className="py-16 md:py-20 section-gradient">
             <div className="container mx-auto px-4 relative">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div data-aos="fade-right">
@@ -409,7 +409,7 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="py-16 md:py-24 bg-muted/30 section-gradient">
+        <section id="faq" className="py-16 md:py-20 bg-muted/30 section-gradient">
           <div className="container mx-auto px-4 relative">
             <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
@@ -431,7 +431,7 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-16 md:py-24 section-gradient">
+        <section id="contact" className="py-16 md:py-20 section-gradient">
           <div className="container mx-auto px-4 relative">
             <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
