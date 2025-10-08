@@ -93,13 +93,22 @@ const HeroBackground = () => {
 const MarqueeRow = ({ reviews, direction = 'left' }: { reviews: Review[], direction?: 'left' | 'right' }) => {
     const animationClass = direction === 'left' ? 'animate-marquee-left' : 'animate-marquee-right';
     return (
-        <div className={cn("flex space-x-4", animationClass)}>
-            {[...reviews, ...reviews].map((review, index) => (
-                <div key={`${review.id}-${index}`} className="flex-shrink-0 w-80">
-                    <ReviewCard review={review} />
-                </div>
-            ))}
+      <div className={cn("flex space-x-4", animationClass)}>
+        <div className="flex-shrink-0 flex space-x-4">
+          {reviews.map((review, index) => (
+            <div key={`${review.id}-${index}-1`} className="w-80">
+              <ReviewCard review={review} />
+            </div>
+          ))}
         </div>
+        <div className="flex-shrink-0 flex space-x-4">
+          {reviews.map((review, index) => (
+            <div key={`${review.id}-${index}-2`} className="w-80">
+              <ReviewCard review={review} />
+            </div>
+          ))}
+        </div>
+      </div>
     );
 };
 
@@ -524,3 +533,5 @@ export default function Home() {
     </>
   );
 }
+
+    
