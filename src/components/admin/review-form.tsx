@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
@@ -24,6 +24,7 @@ const formSchema = z.object({
   projectName: z.string().min(2, 'Project name is required.'),
   reviewText: z.string().min(10, 'Review text must be at least 10 characters.'),
   rating: z.number().min(1).max(5),
+  highlightWord: z.string().optional(),
 });
 
 type ReviewFormValues = z.infer<typeof formSchema>;
@@ -38,7 +39,8 @@ export function ReviewForm({ review }: ReviewFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const defaultValues = review ? {
-      ...review
+      ...review,
+      highlightWord: review.highlightWord || ''
   } : {
     reviewerName: '',
     reviewerDesignation: '',
@@ -47,6 +49,7 @@ export function ReviewForm({ review }: ReviewFormProps) {
     projectName: '',
     reviewText: '',
     rating: 5,
+    highlightWord: ''
   }
 
   const form = useForm<ReviewFormValues>({
@@ -66,10 +69,6 @@ export function ReviewForm({ review }: ReviewFormProps) {
     }
     router.push('/admin/reviews');
     router.refresh();
-
-    // No need for a generic catch block here;
-    // let the FirebaseErrorListener handle specific permission errors.
-    setIsLoading(false);
   };
 
   return (
@@ -153,6 +152,20 @@ export function ReviewForm({ review }: ReviewFormProps) {
                       <FormControl>
                         <Textarea placeholder="The project was amazing..." {...field} rows={5} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="highlightWord"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Highlight Word (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., amazing" {...field} />
+                      </FormControl>
+                      <FormDescription>The first instance of this word will be highlighted in the review.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

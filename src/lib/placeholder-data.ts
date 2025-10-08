@@ -38,6 +38,7 @@ export type Review = {
   reviewerLocation: string;
   reviewText: string;
   projectName: string;
+  highlightWord?: string;
   createdAt?: any;
   lastUpdatedAt?: any;
 };
