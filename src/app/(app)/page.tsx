@@ -259,15 +259,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-10 px-4 md:px-8 bg-muted/30 dark:bg-black">
+      <section className="relative py-12 px-4 md:px-8 bg-muted/30 dark:bg-black">
         <IdeaSection />
       </section>
       
       <div className="relative z-10 bg-background">
         {/* Features Section */}
-        <section className="py-20 md:py-32 section-gradient">
+        <section className="py-16 md:py-24 section-gradient">
            <div className="container mx-auto px-4 relative">
-            <div className="text-center mb-16" data-aos="fade-up">
+            <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
             </div>
@@ -313,9 +313,9 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="py-20 md:py-32 section-gradient">
+        <section id="projects" className="py-16 md:py-24 section-gradient">
             <div className="container mx-auto px-4 relative" data-aos="fade-up">
-              <header className="mb-16 text-center" data-aos="fade-up">
+              <header className="mb-12 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
@@ -352,7 +352,7 @@ export default function Home() {
                 </Carousel>
               )}
               
-              <div className="text-center mt-16" data-aos="fade-up" data-aos-delay="300">
+              <div className="text-center mt-12" data-aos="fade-up" data-aos-delay="300">
                 <Button asChild size="lg" variant="outline">
                   <Link href="/projects">
                     View All Projects <ArrowRight className="ml-2" />
@@ -363,9 +363,9 @@ export default function Home() {
         </section>
         
         {/* Reviews Section */}
-        <section id="reviews" className="py-20 md:py-32 bg-muted/30 section-gradient overflow-hidden">
+        <section id="reviews" className="py-16 md:py-24 bg-muted/30 section-gradient overflow-hidden">
             <div className="container mx-auto px-4 relative" data-aos="fade-up">
-              <header className="mb-16 text-center" data-aos="fade-up">
+              <header className="mb-12 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">What Our Customers Say</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Real feedback from students and developers who use our projects.
@@ -379,7 +379,7 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-20 md:py-32 section-gradient">
+        <section id="about" className="py-16 md:py-24 section-gradient">
             <div className="container mx-auto px-4 relative">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div data-aos="fade-right">
@@ -409,9 +409,9 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="py-20 md:py-32 bg-muted/30 section-gradient">
+        <section id="faq" className="py-16 md:py-24 bg-muted/30 section-gradient">
           <div className="container mx-auto px-4 relative">
-            <div className="text-center mb-16" data-aos="fade-up">
+            <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
               <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
             </div>
@@ -431,9 +431,9 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 md:py-32 section-gradient">
+        <section id="contact" className="py-16 md:py-24 section-gradient">
           <div className="container mx-auto px-4 relative">
-            <div className="text-center mb-16" data-aos="fade-up">
+            <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
               <p className="text-lg text-muted-foreground mt-2">
@@ -533,5 +533,3 @@ export default function Home() {
     </>
   );
 }
-
-    
