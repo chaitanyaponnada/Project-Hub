@@ -64,6 +64,7 @@ const HeroBackground = () => {
   if (!isClient) {
     return (
       <div className="absolute top-0 left-0 w-full h-full bg-background z-0">
+        <div className="absolute inset-0 bg-background/50"></div>
         <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
       </div>
     );
@@ -83,7 +84,7 @@ const HeroBackground = () => {
           <source src={videoSrc} type="video/mp4" />
         </video>
       )}
-      
+      <div className="absolute inset-0 bg-black/30"></div>
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   );
@@ -209,7 +210,7 @@ export default function Home() {
     <>
       <section id="home" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
         <HeroBackground />
-        <div className="relative z-20 pt-16 px-4">
+        <div className="relative z-10 px-4">
         <div className="max-w-4xl mx-auto">
             <h1 className={cn(
                 "text-5xl sm:text-7xl md:text-8xl font-extrabold text-white mb-4 transition-all duration-1000",
@@ -220,18 +221,18 @@ export default function Home() {
             </h1>
             
             <div className="glowing-border-container" data-aos="zoom-in" data-aos-delay="300">
-              <p className="text-md md:text-lg text-foreground dark:text-white">
+              <p className="text-md md:text-lg text-white">
                   Choose from Ready to use projects <span className="text-destructive font-bold">&lt;Or&gt;</span> get your idea developed by us
               </p>
             </div>
-            <p className="text-md md:text-lg text-foreground max-w-3xl mx-auto mt-4" data-aos="zoom-in" data-aos-delay="400">
+            <p className="text-md md:text-lg text-white max-w-3xl mx-auto mt-4" data-aos="zoom-in" data-aos-delay="400">
               Your one-stop hub for innovative, high-quality academic projects with complete documentation and PPTs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8" data-aos="zoom-in" data-aos-delay="500">
             <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Link href="/projects">Explore Projects <ArrowRight className="ml-2" /></Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="bg-transparent border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+            <Button asChild size="lg" variant="outline" className="border-primary text-primary bg-white/10 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground">
                 <Link href="/contact">Contact Us</Link>
             </Button>
             </div>
@@ -245,9 +246,9 @@ export default function Home() {
       
       <div className="relative z-10 bg-background">
         {/* Features Section */}
-        <section className="py-20 bg-muted/30 section-gradient">
-           <div className="container mx-auto px-4 relative z-20">
-            <div className="text-center mb-12" data-aos="fade-up">
+        <section className="py-20 md:py-32 section-gradient">
+           <div className="container mx-auto px-4 relative">
+            <div className="text-center mb-16" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Why Choose Project Hub?</h2>
               <p className="text-lg text-muted-foreground mt-2">Everything you need in one place.</p>
             </div>
@@ -293,9 +294,9 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="py-20 section-gradient">
-            <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
-              <header className="mb-12 text-center" data-aos="fade-up">
+        <section id="projects" className="py-20 md:py-32 section-gradient">
+            <div className="container mx-auto px-4 relative" data-aos="fade-up">
+              <header className="mb-16 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Featured Projects</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Discover and acquire high-quality, ready-to-use projects for your academic and professional needs.
@@ -327,12 +328,12 @@ export default function Home() {
                         </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="left-0 sm:left-[-50px] z-20" />
-                    <CarouselNext className="right-0 sm:right-[-50px] z-20" />
+                    <CarouselPrevious className="left-0 sm:-left-12" />
+                    <CarouselNext className="right-0 sm:-right-12" />
                 </Carousel>
               )}
               
-              <div className="text-center mt-12" data-aos="fade-up" data-aos-delay="300">
+              <div className="text-center mt-16" data-aos="fade-up" data-aos-delay="300">
                 <Button asChild size="lg" variant="outline">
                   <Link href="/projects">
                     View All Projects <ArrowRight className="ml-2" />
@@ -343,9 +344,9 @@ export default function Home() {
         </section>
         
         {/* Reviews Section */}
-        <section id="reviews" className="py-20 bg-muted/30 section-gradient">
-            <div className="container mx-auto px-4 relative z-20" data-aos="fade-up">
-              <header className="mb-12 text-center" data-aos="fade-up">
+        <section id="reviews" className="py-20 md:py-32 bg-muted/30 section-gradient">
+            <div className="container mx-auto px-4 relative" data-aos="fade-up">
+              <header className="mb-16 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">What Our Customers Say</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Real feedback from students and developers who use our projects.
@@ -372,15 +373,15 @@ export default function Home() {
                         </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="left-0 sm:left-[-50px] z-20" />
-                    <CarouselNext className="right-0 sm:right-[-50px] z-20" />
+                    <CarouselPrevious className="left-0 sm:-left-12" />
+                    <CarouselNext className="right-0 sm:-right-12" />
                 </Carousel>
             </div>
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-20 section-gradient">
-            <div className="container mx-auto px-4 relative z-20">
+        <section id="about" className="py-20 md:py-32 section-gradient">
+            <div className="container mx-auto px-4 relative">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div data-aos="fade-right">
                   <h3 className="font-headline text-3xl font-bold text-primary mb-4" data-aos="fade-right" data-aos-delay="100">Our Mission</h3>
@@ -409,9 +410,9 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="py-20 bg-muted/30 section-gradient">
-          <div className="container mx-auto px-4 relative z-20">
-            <div className="text-center mb-12" data-aos="fade-up">
+        <section id="faq" className="py-20 md:py-32 bg-muted/30 section-gradient">
+          <div className="container mx-auto px-4 relative">
+            <div className="text-center mb-16" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
               <p className="text-lg text-muted-foreground mt-2">Find answers to common questions about our platform.</p>
             </div>
@@ -431,9 +432,9 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 section-gradient">
-          <div className="container mx-auto px-4 relative z-20">
-            <div className="text-center mb-12" data-aos="fade-up">
+        <section id="contact" className="py-20 md:py-32 section-gradient">
+          <div className="container mx-auto px-4 relative">
+            <div className="text-center mb-16" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
               <p className="text-lg text-muted-foreground mt-2">Have a question or feedback? Drop us a line!</p>
               <p className="text-lg text-muted-foreground mt-2">
@@ -533,3 +534,5 @@ export default function Home() {
     </>
   );
 }
+
+    
