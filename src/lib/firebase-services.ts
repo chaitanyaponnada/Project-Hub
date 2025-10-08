@@ -1,4 +1,5 @@
 
+
 import { db, auth, storage } from './firebase';
 import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp, addDoc, onSnapshot, writeBatch } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
@@ -279,8 +280,9 @@ export const getReviewById = async (id: string): Promise<Review | null> => {
  * Adds a new review to the 'reviews' collection.
  */
 export const addReview = async (reviewData: Omit<Review, 'id' | 'createdAt'>) => {
-    const reviewRef = collection(db, 'reviews');
-    await addDoc(reviewRef, {
+    const reviewRef = doc(collection(db, 'reviews'));
+    await setDoc(reviewRef, {
+        id: reviewRef.id,
         ...reviewData,
         createdAt: serverTimestamp()
     });
