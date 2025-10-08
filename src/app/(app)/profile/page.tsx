@@ -34,13 +34,20 @@ export default function ProfilePage() {
         if (user) {
             const fetchData = async () => {
                 setLoadingData(true);
-                const [userInquiries, userPurchases] = await Promise.all([
-                    getInquiriesByUserId(user.uid),
-                    getSalesByUserId(user.uid)
-                ]);
-                setInquiries(userInquiries);
-                setPurchases(userPurchases as Sale[]);
-                setLoadingData(false);
+                try {
+                    const [userInquiries, userPurchases] = await Promise.all([
+                        getInquiriesByUserId(user.uid),
+                        getSalesByUserId(user.uid)
+                    ]);
+                    setInquiries(userInquiries);
+                    setPurchases(userPurchases as Sale[]);
+                } catch (error) {
+                    console.error("Error fetching profile data:", error);
+                    setInquiries([]);
+                    setPurchases([]);
+                } finally {
+                    setLoadingData(false);
+                }
             };
             fetchData();
         }
@@ -121,7 +128,7 @@ export default function ProfilePage() {
                                     <div className="text-center p-12 border-dashed rounded-lg">
                                         <Package className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
                                         <h2 className="font-headline text-2xl font-semibold mb-2">No Projects Purchased</h2>
-                                        <p className="text-muted-foreground mb-6">Your purchased projects will appear here once you complete a checkout.</p>
+                                        <p className="text-muted-foreground mb-6">Your purchased projects will appear here once you complete a checkout. Currently not available.</p>
                                         <Button onClick={() => router.push('/projects')}>Browse Projects</Button>
                                     </div>
                                 )}
@@ -163,7 +170,7 @@ export default function ProfilePage() {
                                     <div className="text-center p-12 border-dashed rounded-lg">
                                         <MessageSquare className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
                                         <h2 className="font-headline text-2xl font-semibold mb-2">No Inquiries Sent</h2>
-                                        <p className="text-muted-foreground mb-6">Your questions to us will appear here.</p>
+                                        <p className="text-muted-foreground mb-6">Your questions to us will appear here. Currently not available.</p>
                                         <Button onClick={() => router.push('/contact')}>Ask a Question</Button>
                                     </div>
                                 )}
