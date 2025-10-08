@@ -259,8 +259,17 @@ export const getSalesByUserId = async (userId: string) => {
 export const getReviews = async (): Promise<Review[]> => {
     const reviewsCol = collection(db, 'reviews');
     const q = query(reviewsCol, orderBy("createdAt", "desc"));
-    const reviewSnapshot = await getDocs(q);
-    return reviewSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Review));
+    try {
+        const reviewSnapshot = await getDocs(q);
+        return reviewSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Review));
+    } catch(serverError) {
+        const permissionError = new FirestorePermissionError({
+            path: reviewsCol.path,
+            operation: 'list',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        throw serverError; // Propagate error to stop execution
+    }
 };
 
 /**
