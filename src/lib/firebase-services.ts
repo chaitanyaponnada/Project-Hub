@@ -3,7 +3,7 @@ import { db, auth, storage } from './firebase';
 import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp, addDoc, onSnapshot, writeBatch } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { User } from 'firebase/auth';
-import type { Project } from './placeholder-data';
+import type { Project, Review } from './placeholder-data';
 import { errorEmitter } from './error-emitter';
 import { FirestorePermissionError } from './errors';
 
@@ -249,4 +249,58 @@ export const getSalesByUserId = async (userId: string) => {
     const q = query(salesCol, where("userId", "==", userId), orderBy("purchasedAt", "desc"));
     const salesSnapshot = await getDocs(q);
     return salesSnapshot.docs.map(doc => doc.data());
+};
+
+// Review Management
+/**
+ * Fetches all reviews from Firestore, ordered by creation date.
+ */
+export const getReviews = async (): Promise<Review[]> => {
+    const reviewsCol = collection(db, 'reviews');
+    const q = query(reviewsCol, orderBy("createdAt", "desc"));
+    const reviewSnapshot = await getDocs(q);
+    return reviewSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Review));
+};
+
+/**
+ * Fetches a single review by its ID.
+ */
+export const getReviewById = async (id: string): Promise<Review | null> => {
+    const reviewDoc = doc(db, 'reviews', id);
+    const reviewSnapshot = await getDoc(reviewDoc);
+    if (reviewSnapshot.exists()) {
+        return { id: reviewSnapshot.id, ...reviewSnapshot.data() } as Review;
+    } else {
+        return null;
+    }
+};
+
+/**
+ * Adds a new review to the 'reviews' collection.
+ */
+export const addReview = async (reviewData: Omit<Review, 'id' | 'createdAt'>) => {
+    const reviewRef = collection(db, 'reviews');
+    await addDoc(reviewRef, {
+        ...reviewData,
+        createdAt: serverTimestamp()
+    });
+};
+
+/**
+ * Updates an existing review in Firestore.
+ */
+export const updateReview = async (reviewId: string, reviewData: Partial<Omit<Review, 'id' | 'createdAt'>>) => {
+    const reviewRef = doc(db, 'reviews', reviewId);
+    await updateDoc(reviewRef, {
+        ...reviewData,
+        lastUpdatedAt: serverTimestamp()
+    });
+};
+
+/**
+ * Deletes a review from Firestore.
+ */
+export const deleteReview = async (reviewId: string) => {
+    const reviewRef = doc(db, 'reviews', reviewId);
+    await deleteDoc(reviewRef);
 };

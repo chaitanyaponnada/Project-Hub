@@ -4,7 +4,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Loader2, PanelLeft, LayoutDashboard, Package, Users, MessageSquare, CreditCard, LogOut, ClipboardList } from 'lucide-react';
+import { Loader2, PanelLeft, LayoutDashboard, Package, Users, MessageSquare, CreditCard, LogOut, ClipboardList, Star } from 'lucide-react';
 import { isAdmin } from '@/lib/firebase-services';
 import Link from 'next/link';
 import { signOut } from 'firebase/auth';
@@ -19,6 +19,7 @@ const navItems = [
     { href: '/admin/sales', label: 'Sales', icon: ClipboardList },
     { href: '/admin/users', label: 'Users', icon: Users },
     { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+    { href: '/admin/reviews', label: 'Reviews', icon: Star },
     { href: '/admin/payment-guide', label: 'Payment Setup', icon: CreditCard },
 ];
 
@@ -49,7 +50,8 @@ function AdminNav({ onLinkClick }: { onLinkClick?: () => void }) {
                             onClick={onLinkClick}
                             className={cn(
                                 "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                                pathname === item.href && "bg-muted text-primary"
+                                pathname.startsWith(item.href) && item.href !== '/admin' && "bg-muted text-primary",
+                                pathname === item.href && item.href === '/admin' && "bg-muted text-primary"
                             )}
                         >
                             <item.icon className="h-4 w-4" />
@@ -158,5 +160,3 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
-
-    

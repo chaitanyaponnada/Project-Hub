@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Code, Feather, Zap, Target, Loader2, Send, Lightbulb } from "lucide-react";
-import { categories, faqs, reviews } from "@/lib/placeholder-data";
+import { categories, faqs } from "@/lib/placeholder-data";
 import type { Project, Review } from "@/lib/placeholder-data";
 import { useAuth } from "@/hooks/use-auth";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -31,7 +31,7 @@ import { useTheme } from "next-themes";
 import { NodeGarden } from "@/components/node-garden";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getProjects, addInquiry } from "@/lib/firebase-services";
+import { getProjects, addInquiry, getReviews } from "@/lib/firebase-services";
 import { cn } from "@/lib/utils";
 
 
@@ -119,7 +119,9 @@ export default function Home() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   const headlineFonts = ['font-headline', 'font-roboto-slab', 'font-orbitron', 'font-press-start', 'font-bebas-neue', 'font-pacifico'];
   const [currentFontIndex, setCurrentFontIndex] = useState(0);
@@ -159,7 +161,24 @@ export default function Home() {
             setProjectsLoading(false);
         }
     };
+    const fetchReviews = async () => {
+      setReviewsLoading(true);
+      try {
+        const fetchedReviews = await getReviews();
+        setReviews(fetchedReviews);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        toast({
+          title: "Error",
+          description: "Could not fetch reviews.",
+          variant: "destructive",
+        });
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
     fetchProjects();
+    fetchReviews();
   }, [toast]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -363,7 +382,7 @@ export default function Home() {
         </section>
         
         {/* Reviews Section */}
-        <section id="reviews" className="py-16 md:py-20 bg-muted/30 section-gradient overflow-hidden">
+        <section id="reviews" className="py-24 md:py-32 bg-muted/30 section-gradient overflow-hidden">
             <div className="container mx-auto px-4 relative" data-aos="fade-up">
               <header className="mb-12 text-center" data-aos="fade-up">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">What Our Customers Say</h2>
@@ -372,14 +391,24 @@ export default function Home() {
                 </p>
               </header>
             </div>
-             <div className="relative space-y-4" data-aos="fade-up" data-aos-delay="200">
-                <MarqueeRow reviews={reviews.slice(0, 3)} />
-                <MarqueeRow reviews={reviews.slice(3, 5)} direction="right" />
-             </div>
+             {reviewsLoading ? (
+                <div className="flex justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+            ) : reviews.length > 0 ? (
+                <div className="relative space-y-4" data-aos="fade-up" data-aos-delay="200">
+                    <MarqueeRow reviews={reviews.slice(0, Math.ceil(reviews.length / 2))} />
+                    <MarqueeRow reviews={reviews.slice(Math.ceil(reviews.length / 2))} direction="right" />
+                </div>
+            ) : (
+                <div className="text-center text-muted-foreground" data-aos="fade-up" data-aos-delay="200">
+                    No reviews yet. Be the first to leave one!
+                </div>
+            )}
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-16 md:py-20 section-gradient">
+        <section id="about" className="py-20 md:py-24 section-gradient">
             <div className="container mx-auto px-4 relative">
                <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div data-aos="fade-right">
@@ -409,7 +438,7 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="py-16 md:py-20 bg-muted/30 section-gradient">
+        <section id="faq" className="py-20 md:py-24 bg-muted/30 section-gradient">
           <div className="container mx-auto px-4 relative">
             <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
@@ -431,7 +460,7 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-16 md:py-20 section-gradient">
+        <section id="contact" className="py-20 md:py-24 section-gradient">
           <div className="container mx-auto px-4 relative">
             <div className="text-center mb-12" data-aos="fade-up">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">Contact Us</h2>
