@@ -281,11 +281,22 @@ export const getReviewById = async (id: string): Promise<Review | null> => {
  */
 export const addReview = async (reviewData: Omit<Review, 'id' | 'createdAt'>) => {
     const reviewRef = doc(collection(db, 'reviews'));
-    await setDoc(reviewRef, {
+    const dataToSave = {
         id: reviewRef.id,
         ...reviewData,
         createdAt: serverTimestamp()
-    });
+    };
+    try {
+        await setDoc(reviewRef, dataToSave);
+    } catch (serverError) {
+        const permissionError = new FirestorePermissionError({
+            path: reviewRef.path,
+            operation: 'create',
+            requestResourceData: dataToSave,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        throw serverError; // Re-throw to be caught by the form handler
+    }
 };
 
 /**
@@ -293,10 +304,21 @@ export const addReview = async (reviewData: Omit<Review, 'id' | 'createdAt'>) =>
  */
 export const updateReview = async (reviewId: string, reviewData: Partial<Omit<Review, 'id' | 'createdAt'>>) => {
     const reviewRef = doc(db, 'reviews', reviewId);
-    await updateDoc(reviewRef, {
+    const dataToUpdate = {
         ...reviewData,
         lastUpdatedAt: serverTimestamp()
-    });
+    };
+    try {
+        await updateDoc(reviewRef, dataToUpdate);
+    } catch (serverError) {
+        const permissionError = new FirestorePermissionError({
+            path: reviewRef.path,
+            operation: 'update',
+            requestResourceData: dataToUpdate,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        throw serverError;
+    }
 };
 
 /**
@@ -304,5 +326,14 @@ export const updateReview = async (reviewId: string, reviewData: Partial<Omit<Re
  */
 export const deleteReview = async (reviewId: string) => {
     const reviewRef = doc(db, 'reviews', reviewId);
-    await deleteDoc(reviewRef);
+    try {
+        await deleteDoc(reviewRef);
+    } catch (serverError) {
+        const permissionError = new FirestorePermissionError({
+            path: reviewRef.path,
+            operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        throw serverError;
+    }
 };
