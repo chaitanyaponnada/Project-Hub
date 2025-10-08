@@ -84,7 +84,6 @@ const HeroBackground = () => {
           <source src={videoSrc} type="video/mp4" />
         </video>
       )}
-      <div className="absolute inset-0 bg-black/30"></div>
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   );
@@ -448,7 +447,7 @@ export default function Home() {
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq: any, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="border-b">
-                    <AccordionTrigger className={cn("text-lg text-left font-semibold", faq.highlight && "text-destructive")}>
+                    <AccordionTrigger className={cn("text-lg text-left", faq.highlight && "text-destructive font-semibold")}>
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-muted-foreground text-base">
