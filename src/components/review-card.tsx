@@ -3,7 +3,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, MapPin } from "lucide-react";
+import { Star, MapPin, ShoppingBag } from "lucide-react";
 import type { Review } from "@/lib/placeholder-data";
 
 interface ReviewCardProps {
@@ -30,7 +30,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
   }
 
   return (
-    <Card className="h-[200px] flex flex-col p-6 text-left">
+    <Card className="h-full flex flex-col p-6 text-left">
         <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
                 <Avatar className="h-14 w-14 border-2 border-primary/10">
@@ -48,12 +48,16 @@ export function ReviewCard({ review }: ReviewCardProps) {
             </div>
             <StarRating rating={review.rating} />
         </div>
-        <CardContent className="flex-1 p-0 mt-4">
+        <CardContent className="flex-1 p-0 mt-4 space-y-2">
             <p className="text-muted-foreground text-sm line-clamp-3">
                 "{review.reviewText}"
             </p>
+             <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2 border-t border-dashed">
+                <ShoppingBag className="h-4 w-4 text-primary/50" />
+                <span className="font-medium">Purchased:</span>
+                <span className="font-semibold text-primary/80">{review.projectName}</span>
+            </div>
         </CardContent>
     </Card>
   );
 }
-

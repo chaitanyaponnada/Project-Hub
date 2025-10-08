@@ -96,14 +96,14 @@ const MarqueeRow = ({ reviews, direction = 'left' }: { reviews: Review[], direct
       <div className="flex space-x-4">
         <div className={cn("flex-shrink-0 flex space-x-4", animationClass)}>
           {reviews.map((review, index) => (
-            <div key={`${review.id}-${index}-1`} className="w-[320px] sm:w-[400px]">
+            <div key={`${review.id}-${index}-1`} className="w-[320px] sm:w-[450px]">
               <ReviewCard review={review} />
             </div>
           ))}
         </div>
         <div className={cn("flex-shrink-0 flex space-x-4", animationClass)}>
           {reviews.map((review, index) => (
-            <div key={`${review.id}-${index}-2`} className="w-[320px] sm:w-[400px]">
+            <div key={`${review.id}-${index}-2`} className="w-[320px] sm:w-[450px]">
               <ReviewCard review={review} />
             </div>
           ))}
@@ -137,7 +137,7 @@ export default function Home() {
     }, 10000); // Change font every 10 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [headlineFonts.length]);
 
   const plugin = useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
@@ -448,7 +448,7 @@ export default function Home() {
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq: any, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="border-b">
-                    <AccordionTrigger className={cn("text-lg text-left", faq.highlight ? "text-destructive font-bold" : "font-semibold")}>
+                    <AccordionTrigger className={cn("text-lg text-left font-semibold", faq.highlight && "text-destructive")}>
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-muted-foreground text-base">
@@ -564,4 +564,3 @@ export default function Home() {
     </>
   );
 }
-
