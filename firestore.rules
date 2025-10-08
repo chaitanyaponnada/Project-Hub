@@ -4,44 +4,44 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper function to check if a user is an admin
+    // Helper function to check for admin role
     function isAdmin() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
-    // PROJECTS: Publicly readable, admin-only write access
+    // Projects: Public read, admin write
     match /projects/{projectId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if request.auth != null && isAdmin();
     }
 
-    // USERS: Users can read/update their own data, admins can read all
+    // Users: Users can only read/update their own data, admins have full access
     match /users/{userId} {
-      allow read, update: if request.auth.uid == userId || isAdmin();
-      allow create, delete: if isAdmin(); // Only admins can create/delete user records directly
+      allow read, update: if request.auth.uid == userId || (request.auth != null && isAdmin());
+      allow list, create, delete: if request.auth != null && isAdmin();
     }
 
-    // CARTS: Users can only access their own cart
+    // Carts: Users can only manage their own cart
     match /carts/{userId} {
-        allow read, write: if request.auth.uid == userId;
+      allow read, write: if request.auth.uid == userId;
     }
 
-    // SALES: Authenticated users can create sales (on checkout), admins can read all
-    match /sales/{saleId} {
-        allow create: if request.auth != null;
-        allow read, update, delete: if isAdmin();
+    // Inquiries: Anyone can create, only admins can read/delete
+    match /inquiries/{inquiryId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null && isAdmin();
     }
     
-    // INQUIRIES: Anyone can create, admins can read/delete
-    match /inquiries/{inquiryId} {
-        allow create: if true;
-        allow read, update, delete: if isAdmin();
+    // Sales: Authenticated users can create, only admins can read
+    match /sales/{saleId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null && isAdmin();
     }
-
-    // REVIEWS: Publicly readable, admin-only write access
+    
+    // Reviews: Public read, admin write
     match /reviews/{reviewId} {
-        allow read: if true;
-        allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if request.auth != null && isAdmin();
     }
   }
 }
