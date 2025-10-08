@@ -27,13 +27,6 @@ export function Footer() {
       router.push(`/#${targetId}`);
     }
   };
-  
-  const noFooterPaths = ['/admin', '/checkout', '/profile', '/login', '/register', '/contact'];
-
-  if (noFooterPaths.some(path => pathname.startsWith(path)) || (pathname.startsWith('/projects/') && pathname !== '/projects')) {
-      return null;
-  }
-
 
   return (
     <footer className="bg-muted text-muted-foreground mt-auto border-t section-gradient">
@@ -58,7 +51,7 @@ export function Footer() {
               <li><Link href="/about" className="hover:text-primary transition-colors">About</Link></li>
               <li><Link href="/projects" className="hover:text-primary transition-colors">Projects</Link></li>
               <li><Link href="#faq" onClick={handleScroll} className="hover:text-primary transition-colors">FAQ</Link></li>
-              <li><Link href="#contact" onClick={handleScroll} className="hover:text-primary transition-colors">Contact Us</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
             </ul>
           </div>
           <div className="col-span-1">

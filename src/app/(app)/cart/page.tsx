@@ -34,7 +34,7 @@ export default function CartPage() {
   
   if (cartCount === 0) {
       return (
-        <div className="container mx-auto px-4 py-12 animate-fade-in">
+        <div className="container mx-auto px-4 py-16 md:py-24 animate-fade-in">
           <h1 className="font-headline text-4xl font-bold text-primary mb-8 animate-fade-in-down">Shopping Cart</h1>
           
           <Card className="text-center p-12 border-dashed animate-fade-in-up">
@@ -50,7 +50,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 animate-fade-in">
+    <div className="container mx-auto px-4 py-16 md:py-24 animate-fade-in">
         <div className="flex justify-between items-center mb-8">
             <h1 className="font-headline text-4xl font-bold text-primary animate-fade-in-down">Shopping Cart</h1>
              <Button variant="outline" size="sm" onClick={clearCart} disabled={cartCount === 0 || isCheckingOut}>

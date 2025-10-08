@@ -107,8 +107,12 @@ export default function AdminProjectsPage() {
             <div className="flex justify-center items-center h-64">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
+        ) : filteredProjects.length === 0 ? (
+             <div className="text-center py-12">
+                <p className="text-muted-foreground">No projects found.</p>
+            </div>
         ) : (
-        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+        <ScrollArea className="h-[60vh] w-full rounded-md border">
             <Table>
             <TableHeader>
                 <TableRow>
@@ -152,11 +156,6 @@ export default function AdminProjectsPage() {
             </Table>
         </ScrollArea>
         )}
-         {filteredProjects.length === 0 && !isLoading && (
-            <div className="text-center py-12">
-                <p className="text-muted-foreground">No projects found.</p>
-            </div>
-        )}
       </CardContent>
        <AlertDialog open={!!projectToDelete} onOpenChange={() => setProjectToDelete(null)}>
         <AlertDialogContent>
@@ -179,5 +178,3 @@ export default function AdminProjectsPage() {
     </Card>
   );
 }
-
-    

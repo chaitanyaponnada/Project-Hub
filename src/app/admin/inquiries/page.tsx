@@ -35,8 +35,12 @@ export default function AdminInquiriesPage() {
                     <div className="flex justify-center items-center h-64">
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
+                ) : inquiries.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-muted-foreground">No inquiries found.</p>
+                    </div>
                 ) : (
-                    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+                    <ScrollArea className="h-[60vh] w-full rounded-md border">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -64,14 +68,7 @@ export default function AdminInquiriesPage() {
                         </Table>
                     </ScrollArea>
                 )}
-                 {inquiries.length === 0 && !isLoading && (
-                    <div className="text-center py-12">
-                        <p className="text-muted-foreground">No inquiries found.</p>
-                    </div>
-                )}
             </CardContent>
         </Card>
     )
 }
-
-    

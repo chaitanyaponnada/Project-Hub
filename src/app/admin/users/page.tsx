@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, User, ShieldCheck, Eye } from 'lucide-react';
+import { Loader2, User, ShieldCheck, Eye, Package } from 'lucide-react';
 import { getUsers, getSalesByUserId } from '@/lib/firebase-services';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
@@ -61,7 +61,7 @@ export default function AdminUsersPage() {
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
                 ) : (
-                    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+                    <ScrollArea className="h-[60vh] w-full rounded-md border">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -143,7 +143,9 @@ export default function AdminUsersPage() {
                             </div>
                         </ScrollArea>
                     ) : (
-                         <div className="text-center text-muted-foreground py-12">
+                         <div className="text-center text-muted-foreground py-12 border-dashed border-2 rounded-lg">
+                            <Package className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                            <h3 className="font-semibold text-lg">No Purchases Yet</h3>
                             <p>This user has not purchased any projects.</p>
                         </div>
                     )}

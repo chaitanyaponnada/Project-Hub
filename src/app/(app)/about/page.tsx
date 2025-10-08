@@ -12,15 +12,17 @@ export default function AboutPage() {
   const router = useRouter();
 
   return (
-    <div className="bg-background animate-fade-in container mx-auto px-4 py-12">
-      <div className="mb-8">
-        <Button variant="outline" onClick={() => router.back()}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
+    <div className="bg-background animate-fade-in">
+      <div className="container mx-auto px-4 pt-12">
+        <div className="mb-8">
+          <Button variant="outline" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+        </div>
       </div>
       {/* Hero Section */}
-      <section className="py-24 md:py-32 text-center bg-muted/30 relative rounded-lg">
+      <section className="py-24 md:py-32 text-center bg-muted/30 relative">
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 animate-fade-in-down">About Project Hub</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in-down" style={{ animationDelay: '0.2s' }}>

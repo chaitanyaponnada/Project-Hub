@@ -70,8 +70,12 @@ export default function AdminSalesPage() {
                     <div className="flex justify-center items-center h-64">
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
+                ) : filteredSales.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-muted-foreground">No sales found matching your criteria.</p>
+                    </div>
                 ) : (
-                    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+                    <ScrollArea className="h-[60vh] w-full rounded-md border">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -106,11 +110,6 @@ export default function AdminSalesPage() {
                             </TableBody>
                         </Table>
                     </ScrollArea>
-                )}
-                 {filteredSales.length === 0 && !isLoading && (
-                    <div className="text-center py-12">
-                        <p className="text-muted-foreground">No sales found matching your criteria.</p>
-                    </div>
                 )}
             </CardContent>
         </Card>

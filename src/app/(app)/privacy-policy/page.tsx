@@ -16,14 +16,16 @@ export default function PrivacyPolicyPage() {
   }, []);
 
   return (
-    <div className="bg-background animate-fade-in container mx-auto px-4 py-12">
-      <div className="mb-8">
-        <Button variant="outline" onClick={() => router.back()}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
+    <div className="bg-background animate-fade-in">
+      <div className="container mx-auto px-4 pt-12">
+        <div className="mb-8">
+            <Button variant="outline" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+            </Button>
+        </div>
       </div>
-      <section className="py-24 md:py-32 bg-muted/30 relative rounded-lg">
+      <section className="py-24 md:py-32 bg-muted/30 relative">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4">Privacy Policy</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">

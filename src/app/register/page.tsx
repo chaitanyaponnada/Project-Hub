@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -138,7 +137,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-muted/40 p-4 overflow-hidden">
+    <div className="relative flex items-center justify-center min-h-screen bg-background p-4 overflow-hidden">
       {isClient && !isMobile && <NodeGarden />}
       <Card className="w-full max-w-sm animate-fade-in-up z-10">
         <CardHeader className="text-center">
@@ -263,5 +262,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-    

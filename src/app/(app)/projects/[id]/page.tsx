@@ -76,7 +76,7 @@ export default function ProjectDetailsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 animate-fade-in">
+    <div className="container mx-auto px-4 py-16 md:py-24 animate-fade-in">
         <div className="mb-8">
           <Button variant="outline" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 h-4 w-4" />

@@ -90,7 +90,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-20 animate-fade-in">
+    <div className="container mx-auto px-4 py-16 md:py-24 animate-fade-in">
         <div className="max-w-2xl mx-auto">
             <div className="mb-8">
               <Button variant="outline" onClick={() => router.back()}>

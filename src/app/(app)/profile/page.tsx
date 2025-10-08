@@ -60,9 +60,9 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container mx-auto px-4 py-12 animate-fade-in">
+        <div className="container mx-auto px-4 py-16 md:py-24 animate-fade-in">
             <div className="max-w-4xl mx-auto">
-                <header className="flex items-center gap-6 mb-8 animate-fade-in-down">
+                <header className="flex items-center gap-6 mb-12 animate-fade-in-down">
                     <Avatar className="h-24 w-24">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
                         <AvatarFallback className="text-3xl">{getInitials(user.displayName)}</AvatarFallback>

@@ -7,7 +7,6 @@ import { CartProvider } from '@/hooks/use-cart';
 import { AuthProvider } from '@/hooks/use-auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Footer } from '@/components/layout/footer';
 import { FirebaseErrorListener } from '@/components/firebase-error-listener';
 import { AnimationProvider } from '@/components/animation-provider';
 
@@ -47,7 +46,6 @@ export default function RootLayout({
                         {children}
                         <Toaster />
                         <ThemeToggle />
-                        <Footer />
                       </CartProvider>
                   </AuthProvider>
               </div>
@@ -57,7 +55,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-    
-
-    

@@ -3,6 +3,7 @@
 import { Header } from '@/components/layout/header';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Footer } from '@/components/layout/footer';
 
 export default function AppLayout({
   children,
@@ -11,15 +12,18 @@ export default function AppLayout({
 }>) {
   const pathname = usePathname();
 
-  const noHeaderPaths = ['/login', '/register'];
-
-  const showHeader = !noHeaderPaths.includes(pathname) && !pathname.startsWith('/admin');
+  const noHeaderFooterPaths = ['/login', '/register'];
+  const isFullScreenPage = noHeaderFooterPaths.includes(pathname);
   const isHomePage = pathname === '/';
+  
+  const noFooterPaths = ['/admin', '/checkout', '/contact', '/projects/'];
+  const showFooter = !isFullScreenPage && !noFooterPaths.some(path => pathname.startsWith(path));
 
   return (
     <>
-      {showHeader && <Header />}
+      {!isFullScreenPage && <Header />}
       <main className={cn(isHomePage ? '' : 'pt-16')}>{children}</main>
+      {showFooter && <Footer />}
     </>
   );
 }
