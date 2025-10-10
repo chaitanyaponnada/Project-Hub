@@ -4,71 +4,82 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper functions
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
+    // Helper function to check for admin role
     function isAdmin() {
-      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
     
-    function isOwnerOrAdmin(userId) {
-        return isOwner(userId) || isAdmin();
+    // Helper function to check ownership
+    function isOwner(userId) {
+      return request.auth.uid == userId;
     }
 
     // Users Collection
-    // - Users can read/update their own profile.
-    // - Admins can read/write any user profile.
     match /users/{userId} {
-      allow read, update: if isOwner(userId);
-      allow read, write: if isAdmin();
+      // Admins can read any user profile
+      allow get: if isAdmin();
+      // Users can read their own profile
+      allow get: if isOwner(userId);
+      // Users can create their own profile (on signup)
+      allow create: if isOwner(userId);
+      // Users can update their own profile
+      allow update: if isOwner(userId);
+      // Admins can manage all user profiles
+      allow list, write: if isAdmin();
     }
-
+    
     // Projects Collection
-    // - Anyone can read projects.
-    // - Only admins can create, update, delete projects.
     match /projects/{projectId} {
+      // Anyone can view projects
       allow read: if true;
+      // Only admins can create, update, or delete projects
       allow write: if isAdmin();
     }
     
     // Reviews Collection
-    // - Anyone can read reviews.
-    // - Only admins can create, update, or delete reviews.
     match /reviews/{reviewId} {
-      allow read: if true;
-      allow write: if isAdmin();
+        // Anyone can read reviews
+        allow read: if true;
+        // Only admins can create, update, or delete reviews
+        allow write: if isAdmin();
     }
 
     // Carts Collection
-    // - Users can only read and write to their own cart.
     match /carts/{userId} {
+      // A user can only access their own cart
       allow read, write: if isOwner(userId);
     }
     
-    // Sales Collection
-    // - Users can read their own sales history.
-    // - Users can create new sales records (on checkout).
-    // - Admins can read all sales.
+    // Sales Collection (Simulated purchases)
     match /sales/{saleId} {
-       allow read: if isOwner(request.resource.data.userId) || isAdmin();
-       allow create: if isSignedIn();
-       allow delete, update: if isAdmin();
+      // A user can create a sale record for themselves upon checkout
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      // A user can read their own sales history
+      allow list: if request.auth != null && request.query.where[0][2] == request.auth.uid;
+      // Admins can read all sales for analytics
+      allow read, list: if isAdmin();
     }
-
+    
     // Inquiries Collection
-    // - Anyone can create an inquiry.
-    // - Users can read their own inquiries.
-    // - Admins can read/delete all inquiries.
     match /inquiries/{inquiryId} {
+      // Anyone can create an inquiry (submit the contact form)
       allow create: if true;
-      allow read, list: if isSignedIn() && (resource == null || isOwner(resource.data.userId) || isAdmin());
-      allow update, delete: if isAdmin();
+      // Users can read their own submitted inquiries
+      allow list: if request.auth != null && request.query.where[0][2] == request.auth.uid;
+      // Admins can read all inquiries
+      allow read, list: if isAdmin();
+      // Only Admins can delete inquiries
+      allow delete: if isAdmin();
+    }
+    
+    // Purchase Requests Collection
+    match /purchaseRequests/{requestId} {
+      // Authenticated users can create a purchase request
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      // Admins can read all purchase requests
+      allow read, list: if isAdmin();
+      // Admins can update the status of a request
+      allow update: if isAdmin();
     }
   }
 }

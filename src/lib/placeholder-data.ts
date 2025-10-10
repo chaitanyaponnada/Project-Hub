@@ -44,6 +44,18 @@ export type Review = {
   lastUpdatedAt?: any;
 };
 
+export type PurchaseRequest = {
+  id: string;
+  projectId: string;
+  projectTitle: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userPhone: string;
+  requestedAt: any;
+  status: 'pending' | 'contacted';
+};
+
 
 export const categories = [
   "Web Development",

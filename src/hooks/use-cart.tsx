@@ -1,7 +1,7 @@
 
 "use client";
 
-import type { Project } from '@/lib/placeholder-data';
+import type { Project, PurchaseRequest } from '@/lib/placeholder-data';
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useToast } from './use-toast';
 import { useAuth } from './use-auth';
@@ -10,6 +10,7 @@ import { db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { errorEmitter } from '@/lib/error-emitter';
 import { FirestorePermissionError } from '@/lib/errors';
+import { addPurchaseRequest } from '@/lib/firebase-services';
 
 interface CartItem extends Project {
   quantity: number;
@@ -19,7 +20,6 @@ interface CartContextType {
   cartItems: CartItem[];
   purchasedProjectIds: string[];
   addToCart: (project: Project) => void;
-  buyNow: (project: Project) => void;
   removeFromCart: (projectId: string) => void;
   clearCart: () => void;
   handleDummyCheckout: () => void;
@@ -153,26 +153,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     toast({ title: 'Added to Cart', description: `${project.title} has been added to your cart.` });
   };
 
-  const buyNow = async (project: Project) => {
-     if (!user) {
-      router.push('/login?redirect=/projects/' + project.id);
-      return;
-    }
-    
-    setIsCheckingOut(true);
-    toast({ title: 'Processing Purchase', description: 'Please wait...' });
-
-    try {
-        await addItemsToSales([{ ...project, quantity: 1 }]);
-        router.push('/checkout?status=success');
-        toast({ title: 'Purchase Successful!', description: `${project.title} has been added to your profile.` });
-    } catch(e) {
-        toast({ title: 'Purchase Failed', description: 'Could not complete the purchase. Please check your permissions.', variant: 'destructive' });
-    } finally {
-        setIsCheckingOut(false);
-    }
-  };
-
   const removeFromCart = (projectId: string) => {
     const newCartItems = cartItems.filter(item => item.id !== projectId);
     setCartItems(newCartItems);
@@ -220,7 +200,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const totalPrice = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, purchasedProjectIds, addToCart, buyNow, removeFromCart, clearCart, cartCount, totalPrice, handleDummyCheckout, isCheckingOut, setIsCheckingOut }}>
+    <CartContext.Provider value={{ cartItems, purchasedProjectIds, addToCart, removeFromCart, clearCart, cartCount, totalPrice, handleDummyCheckout, isCheckingOut, setIsCheckingOut }}>
       {children}
     </CartContext.Provider>
   );

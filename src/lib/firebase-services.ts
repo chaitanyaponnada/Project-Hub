@@ -4,7 +4,7 @@ import { db, auth, storage } from './firebase';
 import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp, Timestamp, addDoc, onSnapshot, writeBatch } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { User } from 'firebase/auth';
-import type { Project, Review } from './placeholder-data';
+import type { Project, Review, PurchaseRequest } from './placeholder-data';
 import { errorEmitter } from './error-emitter';
 import { FirestorePermissionError } from './errors';
 
@@ -350,6 +350,61 @@ export const deleteReview = async (reviewId: string) => {
         const permissionError = new FirestorePermissionError({
             path: reviewRef.path,
             operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        throw serverError;
+    }
+};
+
+/**
+ * Adds a new purchase request to Firestore.
+ * @param requestData The purchase request data.
+ */
+export const addPurchaseRequest = async (requestData: Omit<PurchaseRequest, 'id' | 'requestedAt'>) => {
+    const requestRef = doc(collection(db, 'purchaseRequests'));
+    const dataToSave = {
+        ...requestData,
+        id: requestRef.id,
+        requestedAt: serverTimestamp(),
+        status: 'pending' as const,
+    };
+    try {
+        await setDoc(requestRef, dataToSave);
+    } catch (serverError) {
+        const permissionError = new FirestorePermissionError({
+            path: requestRef.path,
+            operation: 'create',
+            requestResourceData: dataToSave,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        throw serverError;
+    }
+};
+
+/**
+ * Fetches all purchase requests from Firestore. (Admin only)
+ */
+export const getPurchaseRequests = async (): Promise<PurchaseRequest[]> => {
+    const requestsCol = collection(db, 'purchaseRequests');
+    const q = query(requestsCol, orderBy("requestedAt", "desc"));
+    const requestSnapshot = await getDocs(q);
+    return requestSnapshot.docs.map(doc => doc.data() as PurchaseRequest);
+};
+
+/**
+ * Updates the status of a purchase request. (Admin only)
+ * @param requestId The ID of the request to update.
+ * @param status The new status.
+ */
+export const updatePurchaseRequestStatus = async (requestId: string, status: 'pending' | 'contacted') => {
+    const requestRef = doc(db, 'purchaseRequests', requestId);
+    try {
+        await updateDoc(requestRef, { status });
+    } catch (serverError) {
+         const permissionError = new FirestorePermissionError({
+            path: requestRef.path,
+            operation: 'update',
+            requestResourceData: { status },
         });
         errorEmitter.emit('permission-error', permissionError);
         throw serverError;
