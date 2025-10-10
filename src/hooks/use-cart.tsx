@@ -186,7 +186,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           await addItemsToSales(cartItems);
           clearCart();
           router.push('/checkout?status=success');
-          toast({ title: 'Purchase Successful!', description: 'Your projects are now in your profile.' });
+          toast({ 
+              title: 'Purchase Request Received!', 
+              description: 'Our team will contact you shortly to finalize payment and deliver the project files.',
+              duration: 8000,
+          });
         } catch (error) {
            toast({ title: 'Purchase Failed', description: 'An error occurred during checkout.', variant: 'destructive' });
         } finally {

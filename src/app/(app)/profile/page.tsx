@@ -4,7 +4,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2, Package, Download, MessageSquare } from "lucide-react";
+import { Loader2, Package, Download, MessageSquare, Info } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { format } from 'date-fns';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Project, Sale } from "@/lib/placeholder-data";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function ProfilePage() {
     const { user, loading } = useAuth();
@@ -115,12 +116,19 @@ export default function ProfilePage() {
                                                         Purchased on {item.purchasedAt?.toDate ? format(item.purchasedAt.toDate(), 'PPP') : 'N/A'}
                                                     </p>
                                                 </div>
-                                                <Button asChild className="mt-4 sm:mt-0 sm:ml-4 flex-shrink-0">
-                                                    <a href={item.projectDownloadUrl} target="_blank" rel="noopener noreferrer">
-                                                        <Download className="mr-2 h-4 w-4" />
-                                                        Download Files
-                                                    </a>
-                                                </Button>
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-3 py-2 mt-4 sm:mt-0 sm:ml-4">
+                                                                <Info className="h-4 w-4" />
+                                                                <span>Processing</span>
+                                                            </div>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Your project files will be delivered to your email shortly.</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
                                             </Card>
                                         ))}
                                     </div>
